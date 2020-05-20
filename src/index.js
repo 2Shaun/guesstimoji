@@ -4,6 +4,8 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
+// create-react-app (CRA) use
+
 ReactDOM.render(
   <React.StrictMode>
     <App />
