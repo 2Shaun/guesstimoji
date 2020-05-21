@@ -45,17 +45,31 @@ app.get('/', (request, response) => {
 
 let interval;
 
-var namespaces = [];
-
 io.on('connection', (socket) => {
-    var newGameNamespace = socket.id.substring(0,5);
-    socket.emit('newGameID', newGameNamespace);
+    socket.on('roomFound', (data) => {
+        socket.emit('updateUI', data);
+    });
+    /*
+    this will need to be done on the 
+    room reserved for the game
+    ...
+    I'm not sure I'm going to have each
+    room listen yet
+    the gamepage might need to emit
+    to the root room with the 
+    game specific room as data
+    */
     socket.on('newState', (data) => {
-        io.sockets.emit('setState', data);
+        io.to(data.room).emit('setState', data.squares);
     });
-    socket.on('disconnect', () => {
-        clearInterval(interval);
-    });
+});
+
+io.sockets.on('connection', function (socket) {
+
+    socket.on('subscribe', function(data) { socket.join(data.room); })
+
+    socket.on('unsubscribe', function(data) { socket.leave(data.room); })
+
 });
 
 server.listen(port, () => {
