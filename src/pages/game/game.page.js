@@ -6,7 +6,7 @@ const basicEmojis = ['😁','😂','😃','😄','😅','😆','😉','😊','�
 '😖','😘','😚','😜','😝','😞','😠','😡','😢','😣','😤','😥','😨','😩','😪','😫','😭','😰','😱',
 '😲','😳','😵','😷','😸','😹','😺','😻','😼','😽','😾','😿','🙀','🙅','🙆','🙇','🙈','🙉','🙊',
 '🙋','🙌','🙍','🙎','🙏'];
-
+const URL = 'http://localhost:4001';
 
 // This is the VIEW in MVC
 
@@ -17,7 +17,7 @@ const basicEmojis = ['😁','😂','😃','😄','😅','😆','😉','😊','�
 
 // I can send requests with the root room
 // the response will go to the game specific room
-const socket = io('http://localhost:4001');
+const socket = io(URL);
 
 // I need to figure out how to pass down the values
 class Game extends React.Component{
@@ -82,11 +82,12 @@ class Board extends React.Component {
   renderSquare(i){
     // does not change board unless socket
     // receives response from server
-    var roomsocket = io.connect();
+    var roomsocket = io.connect(URL);
     roomsocket.emit("subscribe", { room: this.props.room});
     console.log(roomsocket.room);
 
     roomsocket.on('setState', (data) => {
+    //socket.on('setState', (data) => {
       console.log(`${data[0]} is the new state.`)
       this.setState({squares: data});
     });

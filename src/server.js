@@ -61,6 +61,8 @@ io.on('connection', (socket) => {
     */
     socket.on('newState', (data) => {
         io.to(data.room).emit('setState', data.squares);
+        //socket.emit('setState', data.squares);
+        //io.emit('setState', data.squares);
     });
 });
 

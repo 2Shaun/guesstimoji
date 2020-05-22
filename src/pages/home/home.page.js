@@ -28,19 +28,21 @@ class Container extends React.Component{
         if(x === 'c'){
             // might be safer to make room
             // as soon as page loads
-            socket.emit('newroom', this.idVal);
+            this.setState({idVal: document.getElementById("room").value})
+            socket.emit('roomFound', this.idVal);
 
         }else if (x === 'j'){
 
         }
     }
+
     render() {
     socket.on('updateUI', (data) => {
         this.setState({idVal: data, undefined: false});
     });
     return(
         <div>
-        {<IDTextBox value={this.idVal} />}
+        {<RoomTextBox value={this.idVal} onChange={(newRoom) => this.setState({idVal: newRoom})}/>}
         {<JoinButton disabled={this.undefined} room={this.idVal} onClick={() =>{}} />}
         </div>
     );
@@ -49,15 +51,44 @@ class Container extends React.Component{
 
 
 }
-
+/*
 function IDTextBox() {
     const [value, setValue] = useState(room);
     socket.on('updateUI', (data) => {
         setValue(data);
     });
+
+    handleChange(event) {
+        setValue(event.target.value);
+    };
     return(
-        <input type="text" value={value} />
+        <input type="text" id="room" onChange={hangleChange} value={value} />
     );
+}
+*/
+
+class RoomTextBox extends React.Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            value: room
+        };
+        this.handleChange = this.handleChange.bind(this);
+        socket.on('updateUI', (data) => {
+            this.setState({value: data});
+        });
+    }
+    handleChange(event) {
+        this.setState({value: event.target.value});
+        const newRoom = event.target.value;
+        this.props.onChange(newRoom);
+    }
+
+    render(){
+        return (
+            <input type="text" id="room" value={this.state.value} onChange={this.handleChange} />
+        );
+    }
 }
 
 function JoinButton(props) {
@@ -69,7 +100,7 @@ function JoinButton(props) {
     });
     if(disabled === false){
     return (
-        <Link to={`/game?room=${value}`} >
+        <Link to={`/game?room=${document.getElementById("room").value}`} >
         <button 
           className="join"
           onClick={() => props.onClick()}
