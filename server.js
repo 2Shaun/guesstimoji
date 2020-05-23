@@ -7,7 +7,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
 
-const port = process.env.PORT || 4001;
+const port = process.env.PORT || 5000;
 
 // now app.get('port') will return 3000
 
@@ -46,7 +46,7 @@ app.get('/', (request, response) => {
 let interval;
 
 io.sockets.on('connection', (socket) => {
-    console.log(`connection made ${socket.id}`);
+    //console.log(`connection made ${socket.id}`);
     socket.on('roomFound', (data) => {
         socket.emit('updateUI', data);
     });
@@ -74,7 +74,7 @@ io.sockets.on('connection', (socket) => {
         // if this is broadcasted to sender,
         // you're liable to cause an inf loop
         socket.broadcast.to(data.room).emit('setState', data.squares);
-        console.log(`${socket.id} has sent ${data.squares} to ${data.room}`);
+        //console.log(`${socket.id} has sent ${data.squares} to ${data.room}`);
         //socket.emit('setState', data.squares);
         //io.emit('setState', data.squares);
     });
@@ -82,6 +82,6 @@ io.sockets.on('connection', (socket) => {
 
 
 server.listen(port, () => {
-    console.log(`Starting server on port ${port}`);
+    //console.log(`Starting server on port ${port}`);
 });
 
