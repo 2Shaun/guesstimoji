@@ -11,6 +11,10 @@ const basicEmojis = ['😁','😂','😃','😄','😅','😆','😉','😊','�
 '😲','😳','😵','😷','😸','😹','😺','😻','😼','😽','😾','😿','🙀','🙅','🙆','🙇','🙈','🙉','🙊',
 '🙋','🙌','🙍','🙎','🙏'];
 
+const finnBoard = ['💩','💩','💩','💩','💩','💩','💩','💩','💩','💩','💩','💩','💩','💩','💩','💩','💩','💩','💩','💩','👋','💩','💩','💩','💩','💩','💩','💩','💩','💩','💩','💩','💩','💩','💩'];
+const momBoard = ['💕','💞','💓','💗','💖','💘','💝','💕','💞','💓','💗','💖','💘','💝','💕','💞','💓','💗','💖','💘','👋','💕','💞','💓','💗','💖','💘','💝','💕','💞','💓','💗','💖','💘','💝'];
+
+
 const topEmojis = ['😁','😂','😃','😄','😅','😆','😉','😊','😋','😌','😍','😏','😒','😓','😔',
 '😖','😘','😚','😜','😝','😞','😠','😡','😢','😣','😤','😥','😨','😩','😪','😫','😭','😰','😱',
 '😲','😳','😵','😷','😸','😹','😺','😻','😼','😽','😾','😿','🙀','🙅','🙆','🙇','🙈','🙉','🙊',
@@ -97,19 +101,33 @@ class Game extends React.Component{
 // TODO : learn why it is bad to define functions
 //        inside functional components
 const Board = (props) => {
-  const [squares, setSquares] = useState(props.board);
+  const [freshBoard, setFreshBoard] = useState(easterEgg(props.room));
+  const [squares, setSquares] = useState(freshBoard);
+
+
+  function easterEgg(room){
+    if(room === 'Mom'){
+      return momBoard;
+    } else if(room === 'Finn'){
+      return finnBoard;
+    } else {
+      return props.board;
+    }
+  }
+
   // it'll be way easier to have the second player submit the board I think,
   // updating the board the other player has in Game
   socket.on(`playerJoinedYourRoom`, () => {
     // you chose board so you emit your's
-    socket.emit('newState', {squares: squares, room: props.room});
+    socket.emit('freshBoard', {board: freshBoard, squares: squares, room: props.room});
   });
   socket.on(`setState`, (newSquares) => (setSquares(newSquares)));
+  socket.on(`setFreshBoard`, (newFreshBoard) => (setFreshBoard(newFreshBoard)));
   var newSquares = squares.slice();
   const handleClick = (i) => {
     // saves typing this.state.
     if(squares[i] === 'X'){
-      newSquares[i] = props.board[i];
+      newSquares[i] = freshBoard[i];
     } else {
       newSquares[i] = 'X';
     }
@@ -139,47 +157,42 @@ const Board = (props) => {
        {renderSquare(4)}
        {renderSquare(5)}
        {renderSquare(6)}
-       {renderSquare(7)}
      </div>
      <div>
+       {renderSquare(7)}
        {renderSquare(8)}
        {renderSquare(9)}
        {renderSquare(10)}
        {renderSquare(11)}
        {renderSquare(12)}
        {renderSquare(13)}
-       {renderSquare(14)}
-       {renderSquare(15)}
      </div>
      <div>
+       {renderSquare(14)}
+       {renderSquare(15)}
        {renderSquare(16)}
        {renderSquare(17)}
        {renderSquare(18)}
        {renderSquare(19)}
        {renderSquare(20)}
+     </div>
+     <div>
        {renderSquare(21)}
        {renderSquare(22)}
        {renderSquare(23)}
-     </div>
-     <div>
        {renderSquare(24)}
        {renderSquare(25)}
        {renderSquare(26)}
        {renderSquare(27)}
+     </div>
+     <div>
        {renderSquare(28)}
        {renderSquare(29)}
        {renderSquare(30)}
        {renderSquare(31)}
-     </div>
-     <div>
        {renderSquare(32)}
        {renderSquare(33)}
        {renderSquare(34)}
-       {renderSquare(35)}
-       {renderSquare(36)}
-       {renderSquare(37)}
-       {renderSquare(38)}
-       {renderSquare(39)}
      </div>
      </div>
    )

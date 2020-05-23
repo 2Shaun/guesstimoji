@@ -3,8 +3,10 @@ import { Link } from 'react-router-dom';
 
 const Container = (props) => {
     return(
-        <RoomTextBox
-        />
+        <div>
+        <h1>{"guesstim😎ji"}</h1>
+        <RoomTextBox />
+        </div>
     );
 };
 
@@ -32,7 +34,7 @@ const RoomTextBox = () => {
                 <button 
           className="join"
           >
-            Join
+            Join Room
           </button>
           </Link>
         </div>

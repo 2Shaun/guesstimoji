@@ -70,6 +70,11 @@ io.sockets.on('connection', (socket) => {
     // servers are kind of all-receiving
     // when it says a broadcast doesn't go to 'sender'
     // it means it doesn't go to the CLIENT who caused it
+    socket.on('freshBoard', (data) => {
+        socket.broadcast.to(data.room).emit('setState', data.squares);
+        socket.broadcast.to(data.room).emit('setFreshBoard', data.board);
+
+    });
     socket.on('newState', (data) => {
         // if this is broadcasted to sender,
         // you're liable to cause an inf loop
