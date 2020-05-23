@@ -45,10 +45,18 @@ app.get('/', (request, response) => {
 
 let interval;
 
-io.on('connection', (socket) => {
+io.sockets.on('connection', (socket) => {
+    console.log(`connection made ${socket.id}`);
     socket.on('roomFound', (data) => {
         socket.emit('updateUI', data);
     });
+    socket.on('subscribe', (data) => { 
+        socket.join(data); 
+        socket.broadcast.to(data).emit('playerJoinedYourRoom');
+        // DEBUG SOCKET IO WITH CONSOLE LOG
+        //console.log(`${socket.id} has joined ${data}`);
+    });
+    socket.on('unsubscribe', (data) => { socket.leave(data); });
     /*
     this will need to be done on the 
     room reserved for the game
@@ -59,20 +67,19 @@ io.on('connection', (socket) => {
     to the root room with the 
     game specific room as data
     */
+    // servers are kind of all-receiving
+    // when it says a broadcast doesn't go to 'sender'
+    // it means it doesn't go to the CLIENT who caused it
     socket.on('newState', (data) => {
-        io.to(data.room).emit('setState', data.squares);
+        // if this is broadcasted to sender,
+        // you're liable to cause an inf loop
+        socket.broadcast.to(data.room).emit('setState', data.squares);
+        console.log(`${socket.id} has sent ${data.squares} to ${data.room}`);
         //socket.emit('setState', data.squares);
         //io.emit('setState', data.squares);
     });
 });
 
-io.sockets.on('connection', function (socket) {
-
-    socket.on('subscribe', function(data) { socket.join(data.room); })
-
-    socket.on('unsubscribe', function(data) { socket.leave(data.room); })
-
-});
 
 server.listen(port, () => {
     console.log(`Starting server on port ${port}`);
