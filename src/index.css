@@ -21,11 +21,18 @@ input{
 }
 
 button {
-  background-color: #ffcc4d;
+  background-color: white;
+  outline: thin;
+  border-width: thin; 
   padding: 1px 10px;
   text-align: center;
   display: inline-block;
   margin: 5px;
+}
+
+button:focus {
+
+  border: 3px solid purple;
 }
 
 h1 {

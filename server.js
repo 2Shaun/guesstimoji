@@ -41,20 +41,45 @@ app.get('/', (request, response) => {
 });
 */
 
-let interval;
+var rooms = new Map(); 
 
 io.sockets.on('connection', (socket) => {
     //console.log(`connection made ${socket.id}`);
-    socket.on('roomFound', (data) => {
-        socket.emit('updateUI', data);
+    socket.on(`joinRoom`, (data) => {
+        /*const test = ((input) => {
+            socket.join(data.room);
+            return input;
+        })(1);
+        */
+        socket.join(data.room);
+        if(rooms.get(data.room) === undefined){
+            console.log(data);
+            rooms.set(data.room, {board: data.board, numPlayers: 1, player1Choice: '', player2Choice: ''});
+            // want to switch gameUpdate to go to socketID
+            io.in(socket.id).emit(`gameUpdate`, {board: data.board, numPlayers: 1}); 
+        } else if(rooms.get(data.room).numPlayers === 1) {
+            const board = rooms.get(data.room).board;
+            io.to(socket.id).emit('gameUpdate', {board: board, numPlayers: 2});
+        } else {
+            io.to(socket.id).emit('gameUpdate', {board: [], numPlayers: 3});
+        }
     });
-    socket.on('subscribe', (data) => { 
-        socket.join(data); 
-        socket.broadcast.to(data).emit('playerJoinedYourRoom');
-        // DEBUG SOCKET IO WITH CONSOLE LOG
-        //console.log(`${socket.id} has joined ${data}`);
+
+    socket.on('newPick', (data) => {
+        const board = rooms.get(data.room).board;
+        const numPlayers = rooms.get(data.room).numPlayers;
+        const player1Choice = rooms.get(data.room).player1Choice;
+        const player2Choice = rooms.get(data.room).player2Choice;
+        if(data.player === 1){
+            rooms.set(data.room, {board: board, numPlayers: numPlayers, player1Choice: data.pick, player2Choice: player2Choice});
+        } else {
+            rooms.set(data.room, {board: board, numPlayers: numPlayers, player1Choice: player1Choice, player2Choice: data.pick});
+        }
+        io.to(socket.id).emit('pickReceived', data.pick);
     });
-    socket.on('unsubscribe', (data) => { socket.leave(data); });
+
+
+
     /*
     this will need to be done on the 
     room reserved for the game
@@ -68,11 +93,6 @@ io.sockets.on('connection', (socket) => {
     // servers are kind of all-receiving
     // when it says a broadcast doesn't go to 'sender'
     // it means it doesn't go to the CLIENT who caused it
-    socket.on('freshBoard', (data) => {
-        socket.broadcast.to(data.room).emit('setState', data.squares);
-        socket.broadcast.to(data.room).emit('setFreshBoard', data.board);
-
-    });
     socket.on('newState', (data) => {
         // if this is broadcasted to sender,
         // you're liable to cause an inf loop

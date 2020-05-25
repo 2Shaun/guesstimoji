@@ -41,37 +41,53 @@ function randomArray(allEmojis){
 
 // I need to figure out how to pass down the values
 const Game = (props) =>{
-  const [roomVal, setRoomVal] = useState('');
-  const [gameBoard, setGameBoard] = useState(randomArray(allEmojis));
+  const [roomAndBoard, setRoomAndBoard] = useState({roomVal: '', board: [], player: 0});
   // websocket should be created here but listen at the board
   // button handle functions are done at the board also
 
   // component needs to do something after EVERY render
-  var roomQuery;
+  console.log(`game board is ${roomAndBoard.board} and roomval is ${roomAndBoard.roomVal}`);
+  var newRoomVal; 
   useEffect(() => {
-    //roomQuery = queryString.parse(props.location.search).room;
-    roomQuery = queryString.parse(props.location.search).room;
-    console.log(`room query is: ${roomQuery}`);
-  });
+    newRoomVal = props.location.state.roomVal;
+    const newGameBoard = props.location.state.board;
+    socket.emit("joinRoom", {room: newRoomVal, board: newGameBoard});
+    console.log(`joining room`);
+    socket.on("gameUpdate", (data) => {
+      console.log(`${socket.id} is player ${data.numPlayers}`);
+      socket.off("gameUpdate");
+      setRoomAndBoard({roomVal: newRoomVal, board: data.board, player: data.numPlayers});
+    });
+  },[]);
+  // the empty array tells useEffect to only run once
+
+    
   // state changes in a useEffect could cause an inf loop
+  /*
   useEffect(() => {
     if(socket.room !== roomQuery ){
       socket.emit("subscribe", roomQuery);
       console.log(`Subscribed to ${socket.room} in useEffect`);
     }
   });
+  */
 
 
-  // calling queryString again was the only way I could figure out
-  // how to pass the room value down...
+  // the component will be mounted if the player number is found
+  if(roomAndBoard.player === 0){
+    return(<div></div>);
+  } else if(roomAndBoard.player > 2){
+    return(<div><p>ROOM IS FULL.</p></div>)
+  } else {
   return(
     <div className="game">
       <div className="game-board">
-        <RoomName room={queryString.parse(props.location.search).room} />
-        <Board room={queryString.parse(props.location.search).room} board={gameBoard} />
+        <RoomName room={roomAndBoard.roomVal} />
+        <Board room={roomAndBoard.roomVal} board={roomAndBoard.board} player={roomAndBoard.player} />
       </div>
     </div>
   );
+  }
 };
 /*
 class Game extends React.Component{
@@ -110,9 +126,11 @@ const RoomName = (props) => {
 }
 
 const Board = (props) => {
-  const [freshBoard, setFreshBoard] = useState(easterEgg(props.room));
-  const [squares, setSquares] = useState(freshBoard);
-
+  //const [freshBoard, setFreshBoard] = useState(easterEgg(props.room));
+  const [squares, setSquares] = useState(props.board);
+  const [numPlayers, setNumPlayers] = useState(props.player);
+  const [chose, setChose] = useState(false);
+  
 
   function easterEgg(room){
     if(room === 'Mom'){
@@ -126,28 +144,36 @@ const Board = (props) => {
 
   // it'll be way easier to have the second player submit the board I think,
   // updating the board the other player has in Game
-  socket.on(`playerJoinedYourRoom`, () => {
-    // you chose board so you emit your's
-    socket.emit('freshBoard', {board: freshBoard, squares: squares, room: props.room});
-  });
   socket.on(`setState`, (newSquares) => (setSquares(newSquares)));
-  socket.on(`setFreshBoard`, (newFreshBoard) => (setFreshBoard(newFreshBoard)));
+  //socket.on(`setFreshBoard`, (newFreshBoard) => (setFreshBoard(newFreshBoard)));
   var newSquares = squares.slice();
   const handleClick = (i) => {
     // saves typing this.state.
-    if(squares[i] === 'X'){
-      newSquares[i] = freshBoard[i];
-    } else {
-      newSquares[i] = 'X';
-    }
-    // sends a request to server to update board on click
-    // might make it return something to synchronize events
-    // emit to everyone in room but self
-    // set square field without server
-    socket.emit('newState', {squares: newSquares, room: props.room});
-    setSquares(newSquares);
-  };
-  const renderSquare = (i) => {
+    // can only change board if 2 players in room
+    // will need some 'original player' condition if I 
+    // allow players to spectate
+      if(chose === false){
+        socket.emit('newPick', {room: props.room, player: props.player, pick: props.board[i]});
+        setChose(true);
+        return;
+      } else if(props.player === 1 || props.player === 2) {
+        if(squares[i] === 'X'){
+          newSquares[i] = props.board[i];
+        } else {
+          newSquares[i] = 'X';
+        }
+      }else{
+        return;
+      }
+      // sends a request to server to update board on click
+      // might make it return something to synchronize events
+      // emit to everyone in room but self
+      // set square field without server
+      socket.emit('newState', {squares: newSquares, room: props.room});
+      setSquares(newSquares);
+    };
+
+  const renderSquare =(i) => {
   return(
         <Square
           index={i}
@@ -203,10 +229,16 @@ const Board = (props) => {
        {renderSquare(33)}
        {renderSquare(34)}
      </div>
+     <div>
+       <center>
+         <Choice room={props.room}
+         player={props.player} />
+       </center>
      </div>
-   )
-};
+     </div>
+   );
 
+  };
 
 
 // Square
@@ -223,6 +255,21 @@ function Square(props) {
       >
         {props.value}
       </button>
+  );
+}
+
+function Choice(props) {
+  const [value, setValue] = useState('');
+  socket.on('pickReceived', (data) => {
+    setValue(data);
+  });
+  return(
+    <button 
+      className="square"
+      onClick={() => props.onClick()}
+      >
+        {value}
+    </button>
   );
 }
 
