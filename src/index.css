@@ -1,10 +1,48 @@
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-size: 100%;
+  font-family: "Arial";
+  vertical-align: baseline;
+  background: transparent;
+}
+
+input{
+  outline: thin;
+  border: 1px solid grey;
+  /*width: 100%;*/
+  /*padding: 12px 20px;*/
+  /*margin: 8px;*/
+  border-width: thin; 
+  box-sizing: border-box;
+  background: white;
+}
+
+button {
+  background-color: #ffcc4d;
+  padding: 1px 10px;
+  text-align: center;
+  display: inline-block;
+  margin: 5px;
+}
+
+h1 {
+  font-weight: normal;
+}
+
 body {
-  font: 20px "OCR A Std", monospace;
-  margin: 20px;
+  /*font: 20px "OCR A Std", monospace;*/
+  margin: 5px;
 }
 
 ol, ul {
   padding-left: 30px;
+}
+
+#room-name {
+  font-size: 12px;
 }
 
 .board-row:after {
@@ -49,6 +87,6 @@ ol, ul {
   margin-left: 20px;
 }
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  /*font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;*/
 }

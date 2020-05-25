@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 const Container = (props) => {
     return(
         <div>
-        <h1>{"guesstim😎ji"}</h1>
+        <h1>{"GUESSTIM😎JI"}</h1>
         <RoomTextBox />
         </div>
     );

@@ -67,6 +67,7 @@ const Game = (props) =>{
   return(
     <div className="game">
       <div className="game-board">
+        <RoomName room={queryString.parse(props.location.search).room} />
         <Board room={queryString.parse(props.location.search).room} board={gameBoard} />
       </div>
     </div>
@@ -100,6 +101,14 @@ class Game extends React.Component{
 // this is why I am not making Board a functional component
 // TODO : learn why it is bad to define functions
 //        inside functional components
+const RoomName = (props) => {
+  return(
+    <div id="room-name">
+      <p>Room Name: {props.room}</p>
+    </div>
+  );
+}
+
 const Board = (props) => {
   const [freshBoard, setFreshBoard] = useState(easterEgg(props.room));
   const [squares, setSquares] = useState(freshBoard);
