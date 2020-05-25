@@ -7,9 +7,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
 
-const port = process.env.PORT || 5000;
-
-// now app.get('port') will return 3000
+const port = process.env.PORT || 4001;
 
 // req object = THE http request
 // res object = THE http response that the Express app sends
