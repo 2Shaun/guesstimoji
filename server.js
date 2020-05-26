@@ -7,7 +7,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
 
-const port = process.env.PORT || 4001;
+const port = process.env.PORT || 5000;
 
 // req object = THE http request
 // res object = THE http response that the Express app sends
@@ -53,7 +53,6 @@ io.sockets.on('connection', (socket) => {
         */
         socket.join(data.room);
         if(rooms.get(data.room) === undefined){
-            console.log(data);
             rooms.set(data.room, {board: data.board, numPlayers: 1, player1Choice: '', player2Choice: ''});
             // want to switch gameUpdate to go to socketID
             io.in(socket.id).emit(`gameUpdate`, {board: data.board, numPlayers: 1}); 

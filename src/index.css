@@ -4,7 +4,8 @@
   border: 0;
   outline: 0;
   font-size: 100%;
-  font-family: "Arial";
+  font-weight:lighter;
+  font-family: Lato,Calibri,Trebuchet MS,Helvetica,sans-serif,Apple Color Emoji,Segoe UI Emoji;
   vertical-align: baseline;
   background: transparent;
 }
@@ -36,6 +37,7 @@ button:focus {
 }
 
 h1 {
+  font-size: 250%;
   font-weight: normal;
 }
 
@@ -50,6 +52,10 @@ ol, ul {
 
 #room-name {
   font-size: 12px;
+}
+
+.board-selector {
+  overflow-x: hidden;
 }
 
 .board-row:after {
