@@ -3,7 +3,7 @@
   padding: 0;
   border: 0;
   outline: 0;
-  font-size: 110%;
+  font-size: 100%;
   font-weight: 200;
   font-family: Lato,Calibri,Trebuchet MS;
   vertical-align: baseline;
@@ -67,8 +67,8 @@ ol, ul {
 #board-select {
   overflow-y: scroll;
   overflow-x: scroll;
-  width: 800px;
-  height: 300px;
+  width: 200px;
+  height: 320px;
 }
 
 .board-row:after {
@@ -90,11 +90,11 @@ ol, ul {
   font-weight: bold;
   line-height: 34px;
   height: 34px;
-  margin-right: 10px;
+  margin-right: 5px;
   margin-top: 5px;
   padding: 0;
   text-align: center;
-  width: 34px;
+  width: 20px;
 }
 .choice{
   background: #fff;
