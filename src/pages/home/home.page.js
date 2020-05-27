@@ -2,13 +2,21 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 // boards is a map where the key is name
 // it returns an object of {data, preview}
-import boards, { boardNames } from '../../boards';
+import boards, { boardNames, smileys } from '../../boards';
 import socket from '../../socketlocal'
+import '../../index.css';
+
+const smiley = smileys[Math.floor(Math.random() * smileys.length)];
+const title = "GUESSTIM"+smiley+"JI";
 
 const Container = (props) => {
+
+
+
+
     return(
         <div>
-        <h1>{"GUESSTIM😎JI"}</h1>
+        <h1 align="center">{title}</ h1>
         <RoomTextBox />
         </div>
     );
@@ -68,7 +76,8 @@ const RoomTextBox = (props) => {
     */
 
     return(
-        <div>
+        <div align="center">
+            Room ID:
             <input value={roomVal} onChange={handleChange} />
             <Link to={{
                 pathname: `/game`,
@@ -87,8 +96,9 @@ const RoomTextBox = (props) => {
 
 const JoinRoom = (props) => {
     return(
-        <button onClick={() => {props.onClick()}}>
-            Join Room
+        <button id="board-select-button"
+        onClick={() => {props.onClick()}}>
+            PLAY 
         </button>
     );
 }
@@ -105,7 +115,8 @@ const BoardSelect = (props) => {
     }
     return(
         <div>
-            {renderBoardPreview(0)}
+        <h3>Select Board</h3>
+        <div id="board-select">
             {renderBoardPreview(1)}
             {renderBoardPreview(2)}
             {renderBoardPreview(3)}
@@ -113,6 +124,8 @@ const BoardSelect = (props) => {
             {renderBoardPreview(5)}
             {renderBoardPreview(6)}
             {renderBoardPreview(7)}
+            {renderBoardPreview(0)}
+        </div>
         </div>
     );
 }
@@ -126,17 +139,19 @@ const BoardPreview = (props) => {
     if ( props.i == 1){
         return(
         <button 
+        id="board-select-button"
         onClick={() => props.onClick(props.i)}
         autoFocus>
-            {boardName + '\n' + preview}
+            {boardName}<br />{preview}
         </button>
         );
     }
     return(
     <button 
+        id="board-select-button"
         onClick={() => props.onClick(props.i)}
         >
-            {boardName + '\n' + preview}
+            {boardName}<br/>{preview}
         </button>
     );
 }

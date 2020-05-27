@@ -1,11 +1,11 @@
 * {
-  margin: 0;
+  margin: 5px;
   padding: 0;
   border: 0;
   outline: 0;
-  font-size: 100%;
-  font-weight:lighter;
-  font-family: Lato,Calibri,Trebuchet MS,Helvetica,sans-serif,Apple Color Emoji,Segoe UI Emoji;
+  font-size: 110%;
+  font-weight: 200;
+  font-family: Lato,Calibri,Trebuchet MS;
   vertical-align: baseline;
   background: transparent;
 }
@@ -19,10 +19,15 @@ input{
   border-width: thin; 
   box-sizing: border-box;
   background: white;
+  padding: 3px;
+  margin: 5px;
 }
 
-button {
+#board-select-button {
   background-color: white;
+  border: #fcc21b;
+  border-style: solid;
+  width: 175px;
   outline: thin;
   border-width: thin; 
   padding: 1px 10px;
@@ -31,14 +36,22 @@ button {
   margin: 5px;
 }
 
-button:focus {
+#board-select-button:focus {
+  background-color: #fcc21b;
+}
 
-  border: 3px solid purple;
+#board-select-button:hover{
+  background-color: #fcc21b;
 }
 
 h1 {
   font-size: 250%;
   font-weight: normal;
+}
+
+h2 {
+  font-size: 200%;
+  font-weight: 200;
 }
 
 body {
@@ -50,12 +63,12 @@ ol, ul {
   padding-left: 30px;
 }
 
-#room-name {
-  font-size: 12px;
-}
 
-.board-selector {
-  overflow-x: hidden;
+#board-select {
+  overflow-y: scroll;
+  overflow-x: scroll;
+  width: 800px;
+  height: 300px;
 }
 
 .board-row:after {
@@ -68,11 +81,12 @@ ol, ul {
   margin-bottom: 10px;
 }
 
-.square {
+.square{
+  overflow: visible;
   background: #fff;
   border: 1px;
   float: left;
-  font-size: 30px;
+  font-size: 100%;
   font-weight: bold;
   line-height: 34px;
   height: 34px;
@@ -81,6 +95,19 @@ ol, ul {
   padding: 0;
   text-align: center;
   width: 34px;
+}
+.choice{
+  background: #fff;
+  border: 1px;
+  float: left;
+  font-size: 125%;
+  line-height: 34px;
+  height: 34px;
+  margin-right: 10px;
+  margin-top: 5px;
+  padding: 0;
+  text-align: center;
+  width: 350px;
 }
 
 .square:focus {

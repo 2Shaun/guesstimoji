@@ -3,11 +3,13 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 import HomePage from "../src/pages/home/home.page";
 import GamePage from "../src/pages/game/game.page";
+import './index.css';
+
 
 function App() {
   return (
     <Router>
-      <div className="App">
+      <div className="App" >
         <Switch>
           <Route exact path="/" component={HomePage} />
           <Route exact path="/game" component={GamePage} />
