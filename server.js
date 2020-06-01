@@ -52,15 +52,19 @@ io.sockets.on('connection', (socket) => {
         })(1);
         */
         socket.join(data.room);
+    });
+    socket.on('requestGameUpdate', (data) => {
         if(rooms.get(data.room) === undefined){
             rooms.set(data.room, {board: data.board, numPlayers: 1, player1Choice: '', player2Choice: ''});
             // want to switch gameUpdate to go to socketID
-            io.in(socket.id).emit(`gameUpdate`, {board: data.board, numPlayers: 1}); 
-        } else if(rooms.get(data.room).numPlayers === 1) {
-            const board = rooms.get(data.room).board;
-            io.to(socket.id).emit('gameUpdate', {board: board, numPlayers: 2});
+            io.in(data.room).emit(`gameUpdate`, {board: data.board, numPlayers: 1}); 
         } else {
-            io.to(socket.id).emit('gameUpdate', {board: [], numPlayers: 3});
+            const board = rooms.get(data.room).board;
+            const numPlayers = rooms.get(data.room).numPlayers+1;
+            const player1Choice = rooms.get(data.room).player1Choice;
+            const player2Choice = rooms.get(data.room).player2Choice;
+            rooms.set(data.room, {board: board, numPlayers: numPlayers, player1Choice: player1Choice, player2Choice: player2Choice})
+            io.in(data.room).emit('gameUpdate', {board: board, numPlayers: numPlayers}); 
         }
     });
 
