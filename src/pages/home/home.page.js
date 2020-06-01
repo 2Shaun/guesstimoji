@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 // boards is a map where the key is name
 // it returns an object of {data, preview}
 import boards, { boardNames, smileys } from '../../boards';
-//import socket from '../../socketlocal'
-import socket from '../../socket';
+import socket from '../../socketlocal';
+//import socket from '../../socket';
 import '../../index.css';
 
 const smiley = smileys[Math.floor(Math.random() * smileys.length)];
