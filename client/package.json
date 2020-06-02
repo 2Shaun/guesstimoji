@@ -1,0 +1,59 @@
+{
+  "name": "guesstimoji2",
+  "version": "0.1.0",
+  "homepage": ".",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
+    "express": "^4.17.1",
+    "install": "^0.13.0",
+    "npm": "^6.14.5",
+    "query-string": "^6.12.1",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "3.4.1",
+    "socket.io": "^2.3.0",
+    "socket.io-client": "^2.3.0",
+    "uws": "10.148.1"
+  },
+  "scripts": {
+    "//": [
+      "when running dynamic webpages locally",
+      "we use npm start and the ReactJS dev server",
+      "uses port 3000",
+      "on the webserver, I serve static webpages",
+      "on port 80 (http) with serve -l"
+    ],
+    "server": "node server.js",
+    "start": "react-scripts start",
+    "dev": "concurrently 'npm run server' 'npm start'",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "description": "",
+  "main": "index.js",
+  "devDependencies": {
+    "concurrently": "^5.2.0"
+  },
+  "author": "2Shaun",
+  "license": "ISC"
+}

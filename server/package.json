@@ -1,0 +1,19 @@
+{
+  "name": "guesstimoji-server",
+  "version": "1.0.0",
+  "description": "backend for guesstimoji",
+  "main": "server.js",
+  "dependencies": {
+    "bufferutil": "^4.0.1",
+    "express": "^4.17.1",
+    "socket.io": "^2.3.0",
+    "utf-8-validate": "^5.0.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "2Shaun",
+  "license": "ISC"
+}
