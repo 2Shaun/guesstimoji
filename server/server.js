@@ -41,10 +41,13 @@ app.get('/', (request, response) => {
 });
 */
 
+// rooms data structure needs to be fixed
 var rooms = new Map(); 
 
 io.sockets.on('connection', (socket) => {
     //console.log(`connection made ${socket.id}`);
+    const id = socket.id;
+    console.log(`User connected: ${id}`);
     socket.on(`joinRoom`, (data) => {
         /*const test = ((input) => {
             socket.join(data.room);
@@ -52,10 +55,10 @@ io.sockets.on('connection', (socket) => {
         })(1);
         */
         socket.join(data.room);
-        console.log(socket.id);
     });
     socket.on('requestGameUpdate', (data) => {
         if(rooms.get(data.room) === undefined){
+            // choices should be an array
             rooms.set(data.room, {board: data.board, numPlayers: 1, player1Choice: '', player2Choice: ''});
             // want to switch gameUpdate to go to socketID
             io.in(data.room).emit(`gameUpdate`, {board: data.board, numPlayers: 1}); 
@@ -68,6 +71,12 @@ io.sockets.on('connection', (socket) => {
             io.in(data.room).emit('gameUpdate', {board: board, numPlayers: numPlayers}); 
         }
     });
+    socket.on('chatMessageSent', data => {
+        const username = `Player ${data.player}: `;
+        const msg = data.msg;
+        console.log(username + msg);
+        io.in(data.room).emit(`chatMessageReceived`, {username, msg});
+    });
 
     socket.on('newPick', (data) => {
         const board = rooms.get(data.room).board;
@@ -79,7 +88,7 @@ io.sockets.on('connection', (socket) => {
         } else {
             rooms.set(data.room, {board: board, numPlayers: numPlayers, player1Choice: player1Choice, player2Choice: data.pick});
         }
-        io.to(socket.id).emit('pickReceived', data.pick);
+        io.to(id).emit('pickReceived', data.pick);
     });
 
 

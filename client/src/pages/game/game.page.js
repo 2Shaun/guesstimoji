@@ -88,6 +88,7 @@ const Game = (props) =>{
       <div >
         <RoomName room={roomAndBoard.roomVal} />
         <Board room={roomAndBoard.roomVal} board={roomAndBoard.board} player={roomAndBoard.player} />
+        <Chat room={roomAndBoard.roomVal} player={roomAndBoard.player} />
       </div>
     </div>
   );
@@ -108,6 +109,47 @@ class Game extends React.Component{
   }
 }
 */
+
+const Chat = (props) => {
+  const [msg, setMsg] = useState("");
+  const [chat, setChat] = useState([]);
+
+  useEffect(() => {
+    socket.on("chatMessageReceived", data => {
+      // the ellipses destructures the array into its discrete elements
+      setChat([...chat, data]);
+    });
+  });
+
+  const handleChange = e => {
+    setMsg(e.target.value);
+  };
+
+  const handleClick = () => {
+    socket.emit("chatMessageSent", {player: props.player, room: props.room, msg: msg});
+    setMsg("");
+  };
+
+ const renderChat = () => {
+   // the second argument of map is optional, takes in the index
+   // of the element
+   return chat.map(({username, msg}, i) => (
+     <div key={i}>
+       <span>{username}</span>
+       <span>{msg}</span>
+     </div>
+   ));
+ };
+
+
+  return (
+    <div>
+      <div>{renderChat()}</div>
+      <input onChange={e => handleChange(e)} value={msg} />
+      <button onClick={handleClick}>SEND</button>
+    </div>
+  );
+}
 
 // there will need to be two boards
 // I chose squares to be a state because
