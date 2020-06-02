@@ -13,7 +13,7 @@ services:
                 ports:
                         - "5000:5000"
                 volumes:
-                        - ./server:/guesstimoji/server
+                        - ./server/server.js:/guesstimoji/server/server.js
                 command: npm run dev
 
         client:
@@ -25,7 +25,8 @@ services:
                 ports:
                         - "3000:3000"
                 volumes:
-                        - ./client:/guesstimoji/client
+                        - ./client/public:/guesstimoji/client/
+                        - ./client/src:/guesstimoji/client/
                 links:
                         - server
                 command: npm run start
