@@ -1,10 +1,31 @@
 version: '3'
+
 services:
-        web:
-                build: .
-                stdin_open: true
+        server:
+                build: ./server
+                #expose:
+                #        - 5000
+                # ports (HOST:CONTAINER)
+                # the application running inside is exposed at port CONTAINER
+                #       this step seems to make expose redundant
+                # map it through host server port HOST
+                # can access with http://{host IP}:HOST
                 ports:
-                        - "3000:3000"
                         - "5000:5000"
                 volumes:
-                        - .:/guesstimoji
+                        - ./server:/guesstimoji/server
+                command: npm run dev
+
+        client:
+                build: ./client
+                # needed for create-react-app to prevent exit on error code 0
+                stdin_open: true
+                #expose:
+                #        - 3000
+                ports:
+                        - "3000:3000"
+                volumes:
+                        - ./client:/guesstimoji/client
+                links:
+                        - server
+                command: npm run start

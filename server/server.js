@@ -52,6 +52,7 @@ io.sockets.on('connection', (socket) => {
         })(1);
         */
         socket.join(data.room);
+        console.log(socket.id);
     });
     socket.on('requestGameUpdate', (data) => {
         if(rooms.get(data.room) === undefined){

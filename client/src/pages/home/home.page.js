@@ -99,7 +99,7 @@ const JoinRoom = (props) => {
     return(
         <button id="board-select-button"
         onClick={() => {props.onClick()}}>
-            PLAY 
+            PLAY
         </button>
     );
 }
