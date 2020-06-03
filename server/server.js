@@ -57,38 +57,48 @@ io.sockets.on('connection', (socket) => {
         socket.join(data.room);
     });
     socket.on('requestGameUpdate', (data) => {
-        if(rooms.get(data.room) === undefined){
+        const room = data.room;
+        var board = data.board;
+        if(rooms.get(room) === undefined){
             // choices should be an array
-            rooms.set(data.room, {board: data.board, numPlayers: 1, player1Choice: '', player2Choice: ''});
+            // I want rooms to be a data structure such that I can do 
+            // rooms.set(data.room).board = data.board
+            //rooms.set(data.room, {board: data.board, numPlayers: 1, player1Choice: '', player2Choice: ''});
+            rooms.set(room, {board: board, numPlayers: 1, choices: []});
             // want to switch gameUpdate to go to socketID
-            io.in(data.room).emit(`gameUpdate`, {board: data.board, numPlayers: 1}); 
+            io.in(room).emit(`gameUpdate`, {board: board, numPlayers: 1}); 
         } else {
-            const board = rooms.get(data.room).board;
-            const numPlayers = rooms.get(data.room).numPlayers+1;
-            const player1Choice = rooms.get(data.room).player1Choice;
-            const player2Choice = rooms.get(data.room).player2Choice;
-            rooms.set(data.room, {board: board, numPlayers: numPlayers, player1Choice: player1Choice, player2Choice: player2Choice})
+            board = rooms.get(room).board;
+            const numPlayers = rooms.get(room).numPlayers+1;
+            rooms.get(room).numPlayers = numPlayers;
             io.in(data.room).emit('gameUpdate', {board: board, numPlayers: numPlayers}); 
         }
     });
     socket.on('chatMessageSent', data => {
-        const username = `Player ${data.player}: `;
+        const player = data.player;
+        const username = `Player ${player}: `;
+        const opponent = (player % 2) + 1;
         const msg = data.msg;
+        const wins = "WINS";
+        const room = data.room;
+        const turn = data.turn;
         console.log(username + msg);
-        io.in(data.room).emit(`chatMessageReceived`, {username, msg});
+        // the winning condition is to send a message that is your opponent's choice
+        if(rooms.get(room).choices[opponent] === msg){
+            console.log(`comparing ${rooms.get(room).choices[opponent]} to ${msg}`);
+            console.log(username + wins);
+            io.in(room).emit(`gameOver`, {username: username, string: msg + msg + wins + msg + msg});
+        } else {
+            io.in(room).emit(`chatMessageReceived`, {username: username, string: msg, turn: turn});
+        }
     });
 
     socket.on('newPick', (data) => {
-        const board = rooms.get(data.room).board;
-        const numPlayers = rooms.get(data.room).numPlayers;
-        const player1Choice = rooms.get(data.room).player1Choice;
-        const player2Choice = rooms.get(data.room).player2Choice;
-        if(data.player === 1){
-            rooms.set(data.room, {board: board, numPlayers: numPlayers, player1Choice: data.pick, player2Choice: player2Choice});
-        } else {
-            rooms.set(data.room, {board: board, numPlayers: numPlayers, player1Choice: player1Choice, player2Choice: data.pick});
-        }
-        io.to(id).emit('pickReceived', data.pick);
+        const room = data.room;
+        const player = data.player;
+        const pick = data.pick;
+        rooms.get(room).choices[player] = pick;
+        io.to(id).emit('pickReceived', pick);
     });
 
 

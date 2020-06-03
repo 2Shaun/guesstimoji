@@ -121,7 +121,6 @@ const BoardSelect = (props) => {
             {renderBoardPreview(1)}
             {renderBoardPreview(2)}
             {renderBoardPreview(3)}
-            {renderBoardPreview(4)}
             {renderBoardPreview(5)}
             {renderBoardPreview(6)}
             {renderBoardPreview(7)}

@@ -111,29 +111,26 @@ class Game extends React.Component{
 */
 
 const Chat = (props) => {
-  const [msg, setMsg] = useState("");
   const [chat, setChat] = useState([]);
 
   useEffect(() => {
     socket.on("chatMessageReceived", data => {
       // the ellipses destructures the array into its discrete elements
+      console.log(`${data}`);
       setChat([...chat, data]);
+    });
+    socket.on(`gameOver`, winner => {
+      console.log(`${winner}`);
+      setChat([...chat, winner]);
     });
   });
 
-  const handleChange = e => {
-    setMsg(e.target.value);
-  };
-
-  const handleClick = () => {
-    socket.emit("chatMessageSent", {player: props.player, room: props.room, msg: msg});
-    setMsg("");
-  };
 
  const renderChat = () => {
    // the second argument of map is optional, takes in the index
    // of the element
-   return chat.map(({username, msg}, i) => (
+   // don't use curly brace tuples that don't have tags!!
+   return chat.map(({username: username, string: msg}, i) => (
      <div key={i}>
        <span>{username}</span>
        <span>{msg}</span>
@@ -144,12 +141,76 @@ const Chat = (props) => {
 
   return (
     <div>
-      <div>{renderChat()}</div>
-      <input onChange={e => handleChange(e)} value={msg} />
-      <button onClick={handleClick}>SEND</button>
+      <div id="chat-box">{renderChat()}</div>
+      <ChatButtons player={props.player} room={props.room} />
     </div>
   );
 }
+
+const ChatButtons = (props) => {
+  // turn [m,n] means it is part n of player m's turn
+  // part 1 represents answering yes or no
+  // part 2 represents asking a yes/no question (chat available)
+  // player 2 asks a question first
+  // WAIT TO SET TURN UNTIL MESSAGE FROM SERVER
+  const [turn, setTurn] = useState([1,2]);
+  const [msg, setMsg] = useState("");
+  const opponent = (props.player % 2) + 1;
+
+  const handleChange = e => {
+    setMsg(e.target.value);
+  };
+  // setTurn with this
+  socket.on(`chatMessageReceived`, data => {
+    setTurn(data.turn);
+  });
+  useEffect(() => {
+    socket.on(`gameOver`, () => {
+      setTurn([0,0]);
+    });
+  },[]);
+
+  const handleSendClick = () => {
+    // it's always part 1 of the other player's turn after a question
+    socket.emit("chatMessageSent", {player: props.player, room: props.room, msg: msg, turn: [(turn[0] % 2) + 1, 1]});
+    setMsg("");
+  };
+  const handleYesClick = () => {
+    // it's time for the same player to ask a question after answering yes or no
+    socket.emit("chatMessageSent", {player: props.player, room: props.room, msg: 'Yes.', turn: [turn[0], 2]});
+  };
+  const handleNoClick = () => {
+    socket.emit("chatMessageSent", {player: props.player, room: props.room, msg: 'No.', turn: [turn[0], 2]});
+  };
+  // if send is available as soon as you join
+  // the chat room for player 2 will need to be updated when they join
+  if(turn[0] === 0 && turn[1] === 0) {
+    return(<div>GAME OVER</div>);
+  }
+  else if(turn[0] !== props.player){
+    if(turn[1] === 1){
+      return(<div>{`Waiting for Player ${opponent} to answer your question...`}</div>);
+    }else{
+      return(<div>{`Waiting for Player ${opponent} to ask... Update your board!`}</div>);
+    }
+  }else{
+    if(turn[1] === 1){
+      return (
+        <div>
+        <button id="board-select-button" onClick={handleYesClick}>YES</button>
+        <button id="board-select-button" onClick={handleNoClick}>NO</button>
+        </div>
+      );
+    } else {
+      return (
+      <div>
+        <input onChange={e => handleChange(e)} value={msg} />
+        <button id="board-select-button" onClick={handleSendClick}>SEND</button>
+      </ div>
+      );
+    }
+  }
+};
 
 // there will need to be two boards
 // I chose squares to be a state because
