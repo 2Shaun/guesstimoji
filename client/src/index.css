@@ -106,6 +106,25 @@ ol, ul {
   text-align: center;
   width: 27px;
 }
+.opponent-square{
+  -webkit-transform:rotate(-180deg);
+  -moz-transform:rotate(-180deg);
+  -o-transform:rotate(-180deg);
+  transform:rotate(-180deg);
+  ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=2)";
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=2);
+  opacity: 0.5;
+  overflow: visible;
+  background: #fff;
+  float: left;
+  font-size: 100%;
+  font-weight: bold;
+  line-height: 34px;
+  height: 27px;
+  padding: 0;
+  text-align: center;
+  width: 27px;
+}
 .choice{
   background: #fff;
   border: 1px;

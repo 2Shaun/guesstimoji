@@ -87,6 +87,7 @@ const Game = (props) =>{
     <div >
       <div >
         <RoomName room={roomAndBoard.roomVal} />
+        <OpponentBoard room={roomAndBoard.roomVal} board={roomAndBoard.board} player={roomAndBoard.player} />
         <Board room={roomAndBoard.roomVal} board={roomAndBoard.board} player={roomAndBoard.player} />
         <Chat room={roomAndBoard.roomVal} player={roomAndBoard.player} />
       </div>
@@ -232,6 +233,89 @@ const RoomName = (props) => {
   );
 }
 
+// OpponentBoard will listen and update remotely
+const OpponentBoard = (props) => {
+  //const [freshBoard, setFreshBoard] = useState(easterEgg(props.room));
+  const [squares, setSquares] = useState(props.board);
+  
+
+  function easterEgg(room){
+    if(room === 'Mom'){
+      return momBoard;
+    } else if(room === 'Finn'){
+      return finnBoard;
+    } else {
+      return props.board;
+    }
+  }
+
+  // it'll be way easier to have the second player submit the board I think,
+  // updating the board the other player has in Game
+  socket.on(`setState`, (newSquares) => (setSquares(newSquares)));
+  //socket.on(`setFreshBoard`, (newFreshBoard) => (setFreshBoard(newFreshBoard)));
+  var newSquares = squares.slice();
+
+  const renderSquare =(i) => {
+  return(
+        <OpponentSquare
+          index={i}
+          value={squares[i]}
+        />
+        );
+   };
+   return(
+     <div >
+     <div class="board-row">
+       {renderSquare(28)}
+       {renderSquare(29)}
+       {renderSquare(30)}
+       {renderSquare(31)}
+       {renderSquare(32)}
+       {renderSquare(33)}
+       {renderSquare(34)}
+     </div>
+     <div class="board-row">
+       {renderSquare(21)}
+       {renderSquare(22)}
+       {renderSquare(23)}
+       {renderSquare(24)}
+       {renderSquare(25)}
+       {renderSquare(26)}
+       {renderSquare(27)}
+     </div>
+     <div class="board-row">
+       {renderSquare(14)}
+       {renderSquare(15)}
+       {renderSquare(16)}
+       {renderSquare(17)}
+       {renderSquare(18)}
+       {renderSquare(19)}
+       {renderSquare(20)}
+     </div>
+     <div class="board-row">
+       {renderSquare(7)}
+       {renderSquare(8)}
+       {renderSquare(9)}
+       {renderSquare(10)}
+       {renderSquare(11)}
+       {renderSquare(12)}
+       {renderSquare(13)}
+     </div>
+     <div class="board-row" >
+       {renderSquare(0)}
+       {renderSquare(1)}
+       {renderSquare(2)}
+       {renderSquare(3)}
+       {renderSquare(4)}
+       {renderSquare(5)}
+       {renderSquare(6)}
+     </div>
+     </div>
+   );
+
+  };
+
+// Board will emit and update locally
 const Board = (props) => {
   //const [freshBoard, setFreshBoard] = useState(easterEgg(props.room));
   const [squares, setSquares] = useState(props.board);
@@ -249,9 +333,8 @@ const Board = (props) => {
     }
   }
 
-  // it'll be way easier to have the second player submit the board I think,
-  // updating the board the other player has in Game
-  socket.on(`setState`, (newSquares) => (setSquares(newSquares)));
+  // with 2 boards, there is no reason to listen on the player's board
+  //socket.on(`setState`, (newSquares) => (setSquares(newSquares)));
   //socket.on(`setFreshBoard`, (newFreshBoard) => (setFreshBoard(newFreshBoard)));
   var newSquares = squares.slice();
   const handleClick = (i) => {
@@ -357,6 +440,18 @@ function Square(props) {
     <button 
       className="square"
       onClick={() => props.onClick()}
+      >
+        {props.value}
+      </button>
+  );
+}
+
+function OpponentSquare(props) {
+  // note the use of jsx in onClick attribute and button content 
+  const [squareVal, setSquareVal] = useState(props.value);
+  return (
+    <button 
+      className="opponent-square"
       >
         {props.value}
       </button>
