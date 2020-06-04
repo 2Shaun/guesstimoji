@@ -171,6 +171,11 @@ const ChatButtons = (props) => {
   const handleChange = e => {
     setMsg(e.target.value);
   };
+  useEffect(() => {
+    if(opponent == 1){
+      setTurn([1,2]);
+    }
+  },[]);
   // setTurn with this
   socket.on(`chatMessageReceived`, data => {
     setTurn(data.turn);
@@ -180,10 +185,13 @@ const ChatButtons = (props) => {
       setTurn([3,3]);
     });
   },[]);
+
   useEffect(() => {
-    socket.on(`player2Joined`, () => {
-      setTurn([1,2]);
-    });
+    if(opponent == 2){
+      socket.on(`player2Joined`, () => {
+        setTurn([1,2]);
+      });
+    }
   },[]);
 
   const handleSendClick = () => {
