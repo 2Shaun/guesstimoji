@@ -135,14 +135,14 @@ const BoardPreview = (props) => {
     // which modifies look of board preview
     // and calls the props.onClick
     const boardName = boardNames[props.i];
-    const preview = boards.get(boardName).preview;
+    const preview = boards.get(boardName).data.join('');
     if ( props.i == 1){
         return(
         <button 
         id="board-select-button"
         onClick={() => props.onClick(props.i)}
         autoFocus>
-            {boardName}<br />{preview}
+            {preview}
         </button>
         );
     }
@@ -151,7 +151,7 @@ const BoardPreview = (props) => {
         id="board-select-button"
         onClick={() => props.onClick(props.i)}
         >
-            {boardName}<br/>{preview}
+            {preview}
         </button>
     );
 }

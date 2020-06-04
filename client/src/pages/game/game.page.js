@@ -118,7 +118,7 @@ const Chat = (props) => {
     socket.on("chatMessageReceived", data => {
       // the ellipses destructures the array into its discrete elements
       console.log(`${data}`);
-      setChat([...chat, data]);
+      setChat([data, ...chat]);
     });
     socket.on(`gameOver`, winner => {
       console.log(`${winner}`);
@@ -142,8 +142,8 @@ const Chat = (props) => {
 
   return (
     <div>
-      <div id="chat-box">{renderChat()}</div>
       <ChatButtons player={props.player} room={props.room} />
+      <div class="chat-box">{renderChat()}</div>
     </div>
   );
 }
@@ -154,6 +154,7 @@ const ChatButtons = (props) => {
   // part 2 represents asking a yes/no question (chat available)
   // player 2 asks a question first
   // WAIT TO SET TURN UNTIL MESSAGE FROM SERVER
+  // Thinking about [1,0]/[2,0] being player 1/2 needs to select emoji
   const [turn, setTurn] = useState([1,2]);
   const [msg, setMsg] = useState("");
   const opponent = (props.player % 2) + 1;
@@ -419,7 +420,7 @@ const Board = (props) => {
        {renderSquare(33)}
        {renderSquare(34)}
      </div>
-     <div>
+     <div class="board-row">
          <Choice room={props.room}
          player={props.player} />
      </div>
@@ -461,7 +462,7 @@ function OpponentSquare(props) {
 function Choice(props) {
   const [value, setValue] = useState('Select your emoji!');
   socket.on('pickReceived', (data) => {
-    setValue(data);
+    setValue('Your emoji: '+ data);
   });
   return(
     <button 

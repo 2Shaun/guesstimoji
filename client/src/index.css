@@ -27,7 +27,6 @@ input{
   background-color: white;
   border: #fcc21b;
   border-style: solid;
-  width: 175px;
   outline: thin;
   border-width: thin; 
   padding: 1px 10px;
@@ -125,18 +124,22 @@ ol, ul {
   text-align: center;
   width: 27px;
 }
-.choice{
+.choice {
   background: #fff;
   border: 1px;
   float: left;
   font-size: 125%;
   line-height: 34px;
   height: 34px;
-  margin-right: 10px;
-  margin-top: 5px;
   padding: 0;
   text-align: center;
-  width: 350px;
+}
+
+.chat-box {
+  overflow-y: scroll;
+  overflow-x: scroll;
+  width: 300px;
+  height: 200px;
 }
 
 .square:focus {
