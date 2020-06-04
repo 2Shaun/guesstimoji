@@ -47,7 +47,6 @@ var rooms = new Map();
 io.sockets.on('connection', (socket) => {
     //console.log(`connection made ${socket.id}`);
     const id = socket.id;
-    console.log(`User connected: ${id}`);
     socket.on(`joinRoom`, (data) => {
         /*const test = ((input) => {
             socket.join(data.room);
@@ -72,6 +71,9 @@ io.sockets.on('connection', (socket) => {
             const numPlayers = rooms.get(room).numPlayers+1;
             rooms.get(room).numPlayers = numPlayers;
             io.in(data.room).emit('gameUpdate', {board: board, numPlayers: numPlayers}); 
+            if(numPlayers === 2){
+                io.in(data.room).emit('player2Joined');
+            }
         }
     });
     socket.on('chatMessageSent', data => {

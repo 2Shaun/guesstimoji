@@ -164,7 +164,7 @@ const ChatButtons = (props) => {
   // player 2 asks a question first
   // WAIT TO SET TURN UNTIL MESSAGE FROM SERVER
   // Thinking about [1,0]/[2,0] being player 1/2 needs to select emoji
-  const [turn, setTurn] = useState([1,2]);
+  const [turn, setTurn] = useState([0,0]);
   const [msg, setMsg] = useState("");
   const opponent = (props.player % 2) + 1;
 
@@ -177,7 +177,12 @@ const ChatButtons = (props) => {
   });
   useEffect(() => {
     socket.on(`gameOver`, () => {
-      setTurn([0,0]);
+      setTurn([3,3]);
+    });
+  },[]);
+  useEffect(() => {
+    socket.on(`player2Joined`, () => {
+      setTurn([1,2]);
     });
   },[]);
 
@@ -195,8 +200,10 @@ const ChatButtons = (props) => {
   };
   // if send is available as soon as you join
   // the chat room for player 2 will need to be updated when they join
-  if(turn[0] === 0 && turn[1] === 0) {
+  if(turn[0] === 3 && turn[1] === 3) {
     return(<div>GAME OVER</div>);
+  } else if(turn[0] === 0 && turn[1] === 0){
+    return(<div>Waiting for Player 2 to join...</div>);
   }
   else if(turn[0] !== props.player){
     if(turn[1] === 1){
