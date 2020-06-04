@@ -123,6 +123,9 @@ ol, ul {
   text-align: center;
   width: 27px;
 }
+
+
+
 .choice {
   background: #fff;
   border: 1px;
@@ -139,6 +142,11 @@ ol, ul {
   overflow-x: scroll;
   width: 300px;
   height: 200px;
+}
+
+.chatMessage0 {
+  background: #fcc21b;
+
 }
 
 .square:focus {

@@ -113,16 +113,25 @@ class Game extends React.Component{
 
 const Chat = (props) => {
   const [chat, setChat] = useState([]);
+  const opponent = (props.player % 2) + 1;
 
   useEffect(() => {
     socket.on("chatMessageReceived", data => {
       // the ellipses destructures the array into its discrete elements
-      console.log(`${data}`);
-      setChat([data, ...chat]);
+      const msg = data.string;
+      if(data.player === props.player){
+        setChat([{username: "You: ", string: msg}, ...chat]);
+      } else {
+        setChat([{username: `Player ${opponent}: `, string: msg}, ...chat]);
+      }
     });
-    socket.on(`gameOver`, winner => {
-      console.log(`${winner}`);
-      setChat([...chat, winner]);
+    socket.on(`gameOver`, data => {
+      const emoji = data.string;
+      if(data.player === props.player){
+        setChat([{username: ``, string: emoji + emoji + "YOU WIN" + emoji + emoji}, ...chat]);
+      } else {
+        setChat([{username: ``, string: emoji + emoji + `PLAYER ${opponent} WINS` + emoji + emoji}, ...chat]);
+      }
     });
   });
 
@@ -132,7 +141,7 @@ const Chat = (props) => {
    // of the element
    // don't use curly brace tuples that don't have tags!!
    return chat.map(({username: username, string: msg}, i) => (
-     <div key={i}>
+     <div class={`chatMessage`+i} key={i}>
        <span>{username}</span>
        <span>{msg}</span>
      </div>

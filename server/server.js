@@ -76,20 +76,15 @@ io.sockets.on('connection', (socket) => {
     });
     socket.on('chatMessageSent', data => {
         const player = data.player;
-        const username = `Player ${player}: `;
         const opponent = (player % 2) + 1;
-        const msg = data.msg;
-        const wins = "WINS";
+        const msg = data.msg.trim();
         const room = data.room;
         const turn = data.turn;
-        console.log(username + msg);
         // the winning condition is to send a message that is your opponent's choice
         if(rooms.get(room).choices[opponent] === msg){
-            console.log(`comparing ${rooms.get(room).choices[opponent]} to ${msg}`);
-            console.log(username + wins);
-            io.in(room).emit(`gameOver`, {username: username, string: msg + msg + wins + msg + msg});
+            io.in(room).emit(`gameOver`, {player: player, string: msg});
         } else {
-            io.in(room).emit(`chatMessageReceived`, {username: username, string: msg, turn: turn});
+            io.in(room).emit(`chatMessageReceived`, {player: player, string: msg, turn: turn});
         }
     });
 
