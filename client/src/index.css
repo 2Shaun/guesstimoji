@@ -110,7 +110,6 @@ ol, ul {
   -moz-transform:rotate(-180deg);
   -o-transform:rotate(-180deg);
   transform:rotate(-180deg);
-  ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=2)";
   filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=2);
   opacity: 0.5;
   overflow: visible;
@@ -157,8 +156,4 @@ ol, ul {
 
 .game-info {
   margin-left: 20px;
-}
-code {
-  /*font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;*/
 }
