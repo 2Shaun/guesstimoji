@@ -1,5 +1,5 @@
 * {
-  margin: 5px;
+  margin: 4px;
   padding: 0;
   border: 0;
   outline: 0;
@@ -9,7 +9,9 @@
   vertical-align: baseline;
   background: transparent;
 }
-
+.App {
+  float: none;
+}
 input{
   outline: thin;
   border: 1px solid grey;
@@ -56,7 +58,6 @@ h2 {
 
 body {
   /*font: 20px "OCR A Std", monospace;*/
-  margin: 5px;
 }
 
 ol, ul {
@@ -83,7 +84,10 @@ ol, ul {
   background-color: white;
 }
 
+.board {
+}
 .board-row:after {
+  margin: 0 auto;
   clear: both;
   content: "";
   display: table;
@@ -94,15 +98,7 @@ ol, ul {
 }
 
 .square{
-  overflow: visible;
-  background: #fff;
-  float: left;
-  font-size: 100%;
-  font-weight: bold;
-  line-height: 34px;
   height: 27px;
-  padding: 0;
-  text-align: center;
   width: 27px;
 }
 .opponent-square{
@@ -114,7 +110,6 @@ ol, ul {
   opacity: 0.5;
   overflow: visible;
   background: #fff;
-  float: left;
   font-size: 100%;
   font-weight: bold;
   line-height: 34px;
@@ -129,7 +124,6 @@ ol, ul {
 .choice {
   background: #fff;
   border: 1px;
-  float: left;
   font-size: 125%;
   line-height: 34px;
   height: 34px;
@@ -151,7 +145,7 @@ ol, ul {
 }
 
 .square:focus {
-  outline: none;
+  /*outline: none;*/
 }
 
 .kbd-navigation .square:focus {
@@ -159,18 +153,17 @@ ol, ul {
 }
 
 .game {
-  display: flex;
-  flex-direction: row;
+  float: none;
 }
 
 .game-info {
+  float: center;
   margin-left: 20px;
 }
 
 .nav-table {
   display: table;
   margin: auto;
-  float: right;
 }
 
 li {
@@ -183,5 +176,4 @@ li a {
 
 ul {
   list-style: none;
-  float: left;
 }

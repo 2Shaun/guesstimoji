@@ -10,7 +10,7 @@ import './index.css';
 function App() {
   return (
     <Router>
-      <div className="App" >
+      <div className="App" align= "center">
         <Switch>
           <Route exact path="/" component={HomePage} />
           <Route exact path="/game" component={GamePage} />

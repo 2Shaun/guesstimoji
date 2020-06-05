@@ -217,7 +217,7 @@ const ChatButtons = (props) => {
     if(turn[1] === 1){
       return(<div>{`Waiting for Player ${opponent} to answer your question...`}</div>);
     }else{
-      return(<div>{`Waiting for Player ${opponent} to ask... Update your board!`}</div>);
+      return(<div>{`Waiting for Player ${opponent} to ask...`}</div>);
     }
   }else{
     if(turn[1] === 1){
@@ -289,7 +289,7 @@ const OpponentBoard = (props) => {
         );
    };
    return(
-     <div >
+     <div class="board">
      <div class="board-row">
        {renderSquare(28)}
        {renderSquare(29)}
@@ -372,10 +372,12 @@ const Board = (props) => {
         setChose(true);
         return;
       } else if(props.player === 1 || props.player === 2) {
-        if(squares[i] === ' '){
+        // this is a white space char, not a space
+        // a space causes shifting of rows
+        if(squares[i] === '⠀'){
           newSquares[i] = props.board[i];
         } else {
-          newSquares[i] = ' ';
+          newSquares[i] = '⠀';
         }
       }else{
         return;
