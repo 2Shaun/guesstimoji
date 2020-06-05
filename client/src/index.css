@@ -146,6 +146,7 @@ ol, ul {
 
 .chatMessage0 {
   background: #fcc21b;
+  padding: 1px;
 
 }
 
@@ -164,4 +165,23 @@ ol, ul {
 
 .game-info {
   margin-left: 20px;
+}
+
+.nav-table {
+  display: table;
+  margin: auto;
+  float: right;
+}
+
+li {
+  float: left;
+}
+
+li a {
+  display: block;
+}
+
+ul {
+  list-style: none;
+  float: left;
 }

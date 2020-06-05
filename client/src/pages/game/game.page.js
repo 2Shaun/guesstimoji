@@ -112,7 +112,7 @@ class Game extends React.Component{
 */
 
 const Chat = (props) => {
-  const [chat, setChat] = useState([]);
+  const [chat, setChat] = useState([{username: `Guesstim😎ji:`, string: `Click to hide, right-click to copy.`}]);
   const opponent = (props.player % 2) + 1;
 
   useEffect(() => {
@@ -230,7 +230,7 @@ const ChatButtons = (props) => {
     } else {
       return (
       <div>
-        <input onChange={e => handleChange(e)} value={msg} />
+        <input onChange={e => handleChange(e)} value={msg} placeholder="Ask question or guess"/>
         <button id="board-select-button" onClick={handleSendClick}>SEND</button>
       </ div>
       );
@@ -388,12 +388,18 @@ const Board = (props) => {
       setSquares(newSquares);
     };
 
+  const handleContextMenu = (i) => {
+    navigator.clipboard.writeText(props.board[i]).then(() => {alert(props.board[i] + ' copied! Paste it in the board to guess!')},
+    () => {alert("Couldn't copy emoji. Invalid permissions.")});
+  }
+
   const renderSquare =(i) => {
   return(
         <Square
           index={i}
           value={squares[i]}
-          onClick = {()=>{handleClick(i)}}
+          onClick = {() => {handleClick(i)}}
+          onContextMenu = {() => {handleContextMenu(i)} }
         />
         );
    };
@@ -465,6 +471,10 @@ function Square(props) {
     <button 
       className="square"
       onClick={() => props.onClick()}
+      onContextMenu={(e) => {
+        e.preventDefault();
+        props.onContextMenu()
+      }}
       >
         {props.value}
       </button>
