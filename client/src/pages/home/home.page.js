@@ -124,6 +124,7 @@ const BoardSelect = (props) => {
             {renderBoardPreview(5)}
             {renderBoardPreview(6)}
             {renderBoardPreview(7)}
+            {renderBoardPreview(8)}
             {renderBoardPreview(0)}
         </div>
         </div>
@@ -135,7 +136,7 @@ const BoardPreview = (props) => {
     // which modifies look of board preview
     // and calls the props.onClick
     const boardName = boardNames[props.i];
-    const preview = boards.get(boardName).data.join('');
+    const preview = boards.get(boardName).data.join(' ');
     if ( props.i == 1){
         return(
         <button 
