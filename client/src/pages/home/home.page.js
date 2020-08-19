@@ -12,7 +12,7 @@ import { updateID } from "../../redux/actions";
 const smiley = smileys[Math.floor(Math.random() * smileys.length)];
 const title = "GUESSTIM" + smiley + "JI";
 
-const Container = (handleJoin, ...props) => {
+const Container = ({ handleJoin }) => {
   console.log("in container", handleJoin);
   return (
     <div>
@@ -22,7 +22,7 @@ const Container = (handleJoin, ...props) => {
   );
 };
 
-const RoomTextBox = (handleJoin, ...props) => {
+const RoomTextBox = ({ handleJoin }) => {
   console.log("in roomtextbox", handleJoin);
   const [board, setBoard] = useState(boards.get(boardNames[1]).data);
   const [roomVal, setRoomVal] = useState();
@@ -76,7 +76,7 @@ const RoomTextBox = (handleJoin, ...props) => {
   );
 };
 
-const JoinRoom = (roomVal, board, handleJoin, ...props) => {
+const JoinRoom = ({ roomVal, board, handleJoin }) => {
   return (
     <button
       id="board-select-button"
