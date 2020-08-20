@@ -14,27 +14,15 @@ const handleJoin = (data) => {
   socket.emit(`joinRoom`, data);
   socket.on(`gameUpdate`, (data) => {
     if (data) {
-      // if data is not null and room isn't full
-      // then it is now full
-      if (data.roomFull == false) {
-        updateGame({ ...data, roomFull: true, playing: true });
-      } else {
-        // socket leave room
-        return;
-      }
-      // if data is null, that means it's a new game
+      updateGame({ ...data, playing: true });
     } else {
-      updateGame({
-        id: data.id,
-        board: topEmojis,
-        roomFull: false,
-        playing: true,
-      });
+      return;
     }
   });
 };
 
-const App = (id, board, roomFull, playing, updateGame) => {
+// the first argument to a component is always the props obj
+const App = ({ id, board, roomFull, playing, updateGame }) => {
   return (
     <Router>
       <div className="App" align="center">
@@ -46,19 +34,15 @@ const App = (id, board, roomFull, playing, updateGame) => {
             render={() => (
               // i don't think homepage needs access to store
               // handleJoin will modify store in App
-              <HomePage handleJoin={handleJoin} />
+              <HomePage handleJoin={handleJoin} id={id} />
             )}
           />
           <Route
             exact
             path="/game"
-            render={
-              playing
-                ? (id, board) => (
-                    <GamePage id={id} board={board} player={roomFull ? 2 : 1} />
-                  )
-                : null
-            }
+            render={() => (
+              <GamePage id={id} board={board} player={roomFull ? 2 : 1} />
+            )}
           />
         </Switch>
         <Footer />

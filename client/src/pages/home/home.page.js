@@ -12,75 +12,53 @@ import { updateID } from "../../redux/actions";
 const smiley = smileys[Math.floor(Math.random() * smileys.length)];
 const title = "GUESSTIM" + smiley + "JI";
 
-const Container = ({ handleJoin }) => {
-  console.log("in container", handleJoin);
+const HomePage = ({ handleJoin, id }) => {
   return (
     <div>
       <h1 align="center">{title}</h1>
-      <RoomTextBox handleJoin={handleJoin} />
+      <RoomTextBox handleJoin={handleJoin} id={id} />
     </div>
   );
 };
 
-const RoomTextBox = ({ handleJoin }) => {
-  console.log("in roomtextbox", handleJoin);
-  const [board, setBoard] = useState(boards.get(boardNames[1]).data);
-  const [roomVal, setRoomVal] = useState();
+const RoomTextBox = ({ handleJoin, id }) => {
+  // the idea is to hold tempBoard and tempID in component state
+  // and hold the 'real' board and 'real' id in store
+  // store id and board will be updated on PLAY
+  // this allows me to not have to connect the home page
+  // to the store
+  const [tempBoard, setTempBoard] = useState(boards.get(boardNames[1]).data);
+  const [tempID, setTempID] = useState(id);
 
   const handleBoardClick = (i) => {
-    setBoard(boards.get(boardNames[i]).data);
-    //console.log(`set board to ${}`);
+    setTempBoard(boards.get(boardNames[i]).data);
   };
 
-  // if this causes the textbox to rerender every keystroke
-  // there's no way I can socket.emit on that
-  // however
-  // if I am emitting the board (which I think I have to for custom boards)
-  // I will have to emit roomVal to associate board with room
-  const handleChange = (event) => {
-    const newRoom = event.target.value;
-    setRoomVal(newRoom);
+  const handleChange = (e) => {
+    setTempID(e.target.value);
   };
-
-  // handleClick will be in JoinButton, a child of RoomTextBox
-  // it will pull from newRoom val and board
-  /*
-    return(
-        <div>
-            <input value={roomVal} onChange={handleChange} />
-            <Link to={`/game?room=${roomVal}`} >
-                <button 
-          className="join"
-          >
-            Join Room
-          </button>
-          </Link>
-        </div>
-    );
-    */
-  console.log(handleJoin);
 
   return (
     <div align="center">
       Room ID:
-      <input value={roomVal} onChange={handleChange} />
+      <input value={tempID} onChange={handleChange} />
       <Link
         to={{
           pathname: `/game`,
         }}
       >
-        <JoinRoom roomVal={roomVal} board={board} handleJoin={handleJoin} />
+        <JoinRoom id={tempID} board={tempBoard} handleJoin={handleJoin} />
       </Link>
       <BoardSelect onClick={handleBoardClick} />
     </div>
   );
 };
 
-const JoinRoom = ({ roomVal, board, handleJoin }) => {
+const JoinRoom = ({ id, board, handleJoin }) => {
   return (
     <button
       id="board-select-button"
-      onClick={() => handleJoin({ id: roomVal, board: board })}
+      onClick={() => handleJoin({ id: id, board: board })}
     >
       PLAY
     </button>
@@ -132,5 +110,5 @@ const BoardPreview = (props) => {
   );
 };
 
-export default Container;
+export default HomePage;
 export { title };

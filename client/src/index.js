@@ -4,11 +4,8 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-import { createStore } from "redux";
-import { appReducer } from "./redux/reducers/appReducers";
-
-const store = createStore(appReducer);
 // create-react-app (CRA) use
+import store from "./redux/store";
 
 ReactDOM.render(
   <React.StrictMode>

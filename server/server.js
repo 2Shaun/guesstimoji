@@ -6,7 +6,7 @@ const socketIO = require("socket.io");
 const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
-const hashtable = {};
+var hashtable = {};
 
 const port = process.env.PORT || 5000;
 
@@ -46,20 +46,30 @@ var rooms = new Map();
 io.sockets.on("connection", (socket) => {
   //console.log(`connection made ${socket.id}`);
   socket.on(`joinRoom`, (data) => {
-    /*const test = ((input) => {
-            socket.join(data.room);
-            return input;
-        })(1);
-        */
     const id = data.id;
+    const board = data.board;
     socket.join(id);
     if (hashtable.id) {
-      socket.emit(`gameUpdate`, { ...hashtable.id, roomFull: true });
+      // if this is defined
+      // the room has a player
+      // hence it is now full
+      if (hashtable.id.roomFull === true) {
+        io.in(id).emit("gameUpdate", null);
+      }
+      io.in(id).emit(`gameUpdate`, {
+        id: id,
+        board: hashtable.id.board,
+        roomFull: true,
+      });
     } else {
+      // roomData EXAMPLE:
+      // {xCf6: {board: boards[2], roomFull: false}}
       const roomData = {};
-      roomData.id = { ...data, roomFull: false };
+      roomData.id = { board: board, roomFull: false };
+      // hashtable EXAMPLE:
+      // {AdxD5: {board: boards[5], roomFull: true}, bxCf6: {board: boards[2], roomFull: false}}
       hashtable = { ...hashtable, ...roomData };
-      socket.emit(`gameUpdate`, roomData.id);
+      io.in(id).emit(`gameUpdate`, { id: id, board: board, roomFull: false });
     }
   });
   socket.on("requestGameUpdate", (data) => {

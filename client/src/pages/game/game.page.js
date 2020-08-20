@@ -17,7 +17,7 @@ import { momBoard, finnBoard } from "../../emojis";
 // the response will go to the game specific room
 
 // I need to figure out how to pass down the values
-const Game = (id, board, player) => {
+const Game = ({ id, board, player }) => {
   // NumPlayers component which has access to store
 
   // make sure that you check to see if you can import socket
