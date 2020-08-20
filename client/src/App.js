@@ -5,16 +5,18 @@ import HomePage from "./pages/home/home.page";
 import GamePage from "./pages/game/game.page";
 import Footer from "./footer";
 import "./index.css";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import { updateGame } from "./redux/actions";
 import { topEmojis } from "./emojis";
 
 // handleJoin data should have both id and board selection
-const handleJoin = (data) => {
+const handleJoin = (dispatch, data) => {
   socket.emit(`joinRoom`, data);
   socket.on(`gameUpdate`, (data) => {
+    console.log("game update received");
     if (data) {
-      updateGame({ ...data, playing: true });
+      console.log("game update received w data");
+      dispatch(updateGame({ ...data, playing: true }));
     } else {
       return;
     }
@@ -37,13 +39,7 @@ const App = ({ id, board, roomFull, playing, updateGame }) => {
               <HomePage handleJoin={handleJoin} id={id} />
             )}
           />
-          <Route
-            exact
-            path="/game"
-            render={() => (
-              <GamePage id={id} board={board} player={roomFull ? 2 : 1} />
-            )}
-          />
+          <Route exact path="/game" render={() => <GamePage />} />
         </Switch>
         <Footer />
       </div>

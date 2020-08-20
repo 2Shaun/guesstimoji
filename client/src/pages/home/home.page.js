@@ -6,7 +6,7 @@ import boards, { boardNames, smileys } from "../../boards";
 import socket from "../../socketlocal";
 //import socket from '../../socket';
 import "../../index.css";
-import { connect } from "react-redux";
+import { useDispatch } from "react-redux";
 import { updateID } from "../../redux/actions";
 
 const smiley = smileys[Math.floor(Math.random() * smileys.length)];
@@ -55,10 +55,11 @@ const RoomTextBox = ({ handleJoin, id }) => {
 };
 
 const JoinRoom = ({ id, board, handleJoin }) => {
+  const dispatch = useDispatch();
   return (
     <button
       id="board-select-button"
-      onClick={() => handleJoin({ id: id, board: board })}
+      onClick={() => handleJoin(dispatch, { id: id, board: board })}
     >
       PLAY
     </button>

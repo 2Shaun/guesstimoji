@@ -48,6 +48,8 @@ io.sockets.on("connection", (socket) => {
   socket.on(`joinRoom`, (data) => {
     const id = data.id;
     const board = data.board;
+    console.log("board", board);
+
     socket.join(id);
     if (hashtable.id) {
       // if this is defined

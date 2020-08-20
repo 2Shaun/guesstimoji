@@ -4,6 +4,7 @@ import socket from "../../socketlocal";
 import "../../index.css";
 import title from "../home/home.page";
 import { momBoard, finnBoard } from "../../emojis";
+import { connect } from "react-redux";
 //import socket from '../../socket';
 
 // This is the VIEW in MVC
@@ -17,7 +18,7 @@ import { momBoard, finnBoard } from "../../emojis";
 // the response will go to the game specific room
 
 // I need to figure out how to pass down the values
-const Game = ({ id, board, player }) => {
+const GamePage = ({ id, board, player }) => {
   // NumPlayers component which has access to store
 
   // make sure that you check to see if you can import socket
@@ -504,4 +505,11 @@ function Choice(props) {
   return <button className="choice">{value}</button>;
 }
 
-export default Game;
+const mapStateToProps = (state) => ({
+  id: state.id,
+  board: state.board,
+  roomFull: state.roomFull,
+  playing: state.playing,
+});
+
+export default connect(mapStateToProps, null)(GamePage);
