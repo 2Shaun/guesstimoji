@@ -12,11 +12,15 @@ import { topEmojis } from "./emojis";
 // handleJoin data should have both id and board selection
 const handleJoin = (dispatch, data) => {
   socket.emit(`joinRoom`, data);
-  socket.on(`gameUpdate`, (data) => {
-    console.log("game update received");
-    if (data) {
-      console.log("game update received w data");
-      dispatch(updateGame({ ...data, playing: true }));
+  socket.on(`gameUpdate`, (updateData) => {
+    if (updateData) {
+      dispatch(
+        updateGame({
+          ...updateData,
+          player: updateData.roomFull ? 2 : 1,
+          playing: true,
+        })
+      );
     } else {
       return;
     }
@@ -39,7 +43,11 @@ const App = ({ id, board, roomFull, playing, updateGame }) => {
               <HomePage handleJoin={handleJoin} id={id} />
             )}
           />
-          <Route exact path="/game" render={() => <GamePage />} />
+          <Route
+            exact
+            path="/game"
+            render={() => <GamePage socket={socket} />}
+          />
         </Switch>
         <Footer />
       </div>

@@ -7,6 +7,16 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
 var hashtable = {};
+const findRoomID = (socketRooms) => {
+  for (const [key, value] of Object.entries(socketRooms)) {
+    // todo: make sure socket.id's are larger than  10 chars
+    // set room id limit to 10
+    if (value.length <= 10) {
+      return value;
+    }
+  }
+  return;
+};
 
 const port = process.env.PORT || 5000;
 
@@ -42,60 +52,41 @@ app.get('/', (request, response) => {
 
 // rooms data structure needs to be fixed
 var rooms = new Map();
-
+// I think rooms are handled server side,
+// i.e., the client has no idea it's in a room
 io.sockets.on("connection", (socket) => {
   //console.log(`connection made ${socket.id}`);
   socket.on(`joinRoom`, (data) => {
     const id = data.id;
     const board = data.board;
-    console.log("board", board);
 
+    socket.on("disconnect", () => {
+      delete hashtable[id];
+    });
     socket.join(id);
-    if (hashtable.id) {
+    if (hashtable[id]) {
       // if this is defined
       // the room has a player
       // hence it is now full
-      if (hashtable.id.roomFull === true) {
-        io.in(id).emit("gameUpdate", null);
+      if (hashtable[id].roomFull === true) {
+        socket.emit("gameUpdate", null);
       }
-      io.in(id).emit(`gameUpdate`, {
+      socket.emit(`gameUpdate`, {
         id: id,
-        board: hashtable.id.board,
+        board: hashtable[id].board,
         roomFull: true,
       });
+      hashtable[id].roomFull = true;
     } else {
       // roomData EXAMPLE:
-      // {xCf6: {board: boards[2], roomFull: false}}
-      const roomData = {};
-      roomData.id = { board: board, roomFull: false };
+      // {xCf6: {board: boards[2], roomFull: false, picks: {1: 😎, 2: 😎}}}
+      const roomData = { [id]: { board: board, roomFull: false } };
+      // hash table also needs to store choices
       // hashtable EXAMPLE:
       // {AdxD5: {board: boards[5], roomFull: true}, bxCf6: {board: boards[2], roomFull: false}}
       hashtable = { ...hashtable, ...roomData };
-      io.in(id).emit(`gameUpdate`, { id: id, board: board, roomFull: false });
-    }
-  });
-  socket.on("requestGameUpdate", (data) => {
-    const room = data.room;
-    var board = data.board;
-    if (rooms.get(room) === undefined) {
-      // choices should be an array
-      // I want rooms to be a data structure such that I can do
-      // rooms.set(data.room).board = data.board
-      //rooms.set(data.room, {board: data.board, numPlayers: 1, player1Choice: '', player2Choice: ''});
-      rooms.set(room, { board: board, numPlayers: 1, choices: [] });
-      // want to switch gameUpdate to go to socketID
-      io.in(room).emit(`gameUpdate`, { board: board, numPlayers: 1 });
-    } else {
-      board = rooms.get(room).board;
-      const numPlayers = rooms.get(room).numPlayers + 1;
-      rooms.get(room).numPlayers = numPlayers;
-      io.in(data.room).emit("gameUpdate", {
-        board: board,
-        numPlayers: numPlayers,
-      });
-      if (numPlayers === 2) {
-        io.in(data.room).emit("player2Joined");
-      }
+      socket.emit(`gameUpdate`, { id: id, board: board, roomFull: false });
+      console.log("hashtable", hashtable);
     }
   });
   socket.on("chatMessageSent", (data) => {
@@ -117,11 +108,12 @@ io.sockets.on("connection", (socket) => {
   });
 
   socket.on("newPick", (data) => {
-    const room = data.room;
-    const player = data.player;
-    const pick = data.pick;
-    rooms.get(room).choices[player] = pick;
-    io.to(id).emit("pickReceived", pick);
+    const id = findRoomID(socket.rooms);
+    hashtable[id].picks = {
+      ...hashtable[id].picks,
+      [data.player]: data.pick,
+    };
+    console.log(hashtable);
   });
 
   /*
