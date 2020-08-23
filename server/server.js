@@ -140,7 +140,18 @@ io.sockets.on("connection", (socket) => {
       // roomData EXAMPLE:
       // {xCf6: {board: boards[2], roomFull: false, picks: {1: 😎, 2: 😎},
       //   gameLog[ {username: 'player1', message: 'is it an animal?'}, {username: 'player2', message:'Yes.'}, ...] }}
-      const roomData = { [roomID]: { board: board, roomFull: false } };
+      const roomData = {
+        [roomID]: {
+          board: board,
+          roomFull: false,
+          players: [
+            {},
+            { username: "Player 1", pick: "" },
+            { username: "Player 2", pick: "" },
+          ],
+          gameLog: [],
+        },
+      };
       // hash table also needs to store choices
       // roomHashTable EXAMPLE:
       // {AdxD5: {board: boards[5], roomFull: true}, bxCf6: {board: boards[2], roomFull: false}}
@@ -154,12 +165,20 @@ io.sockets.on("connection", (socket) => {
       console.log("roomHashTable", roomHashTable);
     }
     socket.on("client:gameLog/turnSubmitted", (turnData) => {
-      socket.to(roomID).emit("server:gameLog/turnSubmitted", turnData);
+      const { player, message } = turnData;
+      const username = roomHashTable[roomID].players[player].username;
+      const newTurnData = { username: username, message: message };
+      socket.to(roomID).emit("server:gameLog/turnSubmitted", newTurnData);
+      const gameLog = roomHashTable[roomID].gameLog;
+      roomHashTable[roomID].gameLog = [newTurnData, ...gameLog];
+      console.log(newTurnData);
     });
     socket.on("client:players/picked", (pickData) => {
       const { player, pick } = pickData;
       // {roomID: players: [{username: , pick: }, {username: ,pick:}]}
+      console.log(roomID);
       roomHashTable[roomID].players[player].pick = pick;
+      console.log(roomHashTable[roomID].players[player]);
     });
   });
 });

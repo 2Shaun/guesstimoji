@@ -38,11 +38,8 @@ const GamePage = ({
   const dispatch = useDispatch();
   useEffect(() => {
     console.log("new listener");
-    socket.on("server:gameLog/turnSubmitted", (data) => {
-      const { player, message } = data;
-      dispatch(
-        turnSubmitted({ username: `Player ${player}: `, message: message })
-      );
+    socket.on("server:gameLog/turnSubmitted", (turnData) => {
+      dispatch(turnSubmitted(turnData));
     });
   }, []);
 

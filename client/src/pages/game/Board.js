@@ -25,7 +25,7 @@ const Board = ({ socket, board, player }) => {
     // can only change board if 2 players in room
     // will need some 'original player' condition if I
     // allow players to spectate
-    socket.emit("newPick", {
+    socket.emit("client:players/picked", {
       player: player,
       pick: board[i],
     });
