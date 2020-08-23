@@ -6,21 +6,15 @@ import GamePage from "./pages/game/game.page";
 import Footer from "./footer";
 import "./index.css";
 import { connect, useDispatch } from "react-redux";
-import { updateGame } from "./redux/actions";
+import { roomJoined } from "./redux/roomSlice";
 import { topEmojis } from "./emojis";
 
 // handleJoin data should have both id and board selection
-const handleJoin = (dispatch, data) => {
-  socket.emit(`joinRoom`, data);
-  socket.on(`gameUpdate`, (updateData) => {
-    if (updateData) {
-      dispatch(
-        updateGame({
-          ...updateData,
-          player: updateData.roomFull ? 2 : 1,
-          playing: true,
-        })
-      );
+const handleJoin = (dispatch, joinData) => {
+  socket.emit("client:room/roomJoined", joinData);
+  socket.on("server:room/roomJoined", (joinData) => {
+    if (joinData) {
+      dispatch(roomJoined(joinData));
     } else {
       return;
     }
@@ -28,7 +22,7 @@ const handleJoin = (dispatch, data) => {
 };
 
 // the first argument to a component is always the props obj
-const App = ({ id, board, roomFull, playing, updateGame }) => {
+const App = ({ roomID }) => {
   return (
     <Router>
       <div className="App" align="center">
@@ -40,7 +34,7 @@ const App = ({ id, board, roomFull, playing, updateGame }) => {
             render={() => (
               // i don't think homepage needs access to store
               // handleJoin will modify store in App
-              <HomePage handleJoin={handleJoin} id={id} />
+              <HomePage handleJoin={handleJoin} roomID={roomID} />
             )}
           />
           <Route
@@ -56,10 +50,7 @@ const App = ({ id, board, roomFull, playing, updateGame }) => {
 };
 
 const mapStateToProps = (state) => ({
-  id: state.id,
-  board: state.board,
-  roomFull: state.roomFull,
-  playing: state.playing,
+  roomID: state.room.roomID,
 });
 
 // actions : {type: TYPE, ...} ARE OBJECTS
@@ -69,7 +60,7 @@ const mapStateToProps = (state) => ({
 // dispatch will give the new action to the reducer who can access state
 // reducers : (state, action) => state'
 const mapDispatchToProps = {
-  updateGame,
+  roomJoined,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

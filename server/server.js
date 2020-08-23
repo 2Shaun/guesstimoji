@@ -2,11 +2,47 @@ const express = require("express");
 const http = require("http");
 const path = require("path");
 const socketIO = require("socket.io");
+// the server should handle all game logic
+// after player 2 joins:
+// game: {turn: [2,2], gameLog:[]}
+// turn cycle:
+// [2,2]->[1,1]->[1,2]->[2,1]->[2,2]
 
+function arraysEqual(a, b) {
+  if (a === b) return true;
+  if (a == null || b == null) return false;
+  if (a.length !== b.length) return false;
+
+  // If you don't care about the order of the elements inside
+  // the array, you should sort both arrays here.
+  // Please note that calling sort on an array will modify that array.
+  // you might want to clone your array first.
+
+  for (var i = 0; i < a.length; ++i) {
+    if (a[i] !== b[i]) return false;
+  }
+  return true;
+}
+const calculateNextTurn = (turn) => {
+  switch (turn) {
+    case arraysEqual(turn, [1, 1]):
+      return [1, 2];
+      break;
+    case arraysEqual(turn, [1, 2]):
+      return [2, 1];
+      break;
+    case arraysEqual(turn, [2, 1]):
+      return [2, 2];
+      break;
+    case arraysEqual(turn, [2, 2]):
+      return [1, 1];
+      break;
+  }
+};
 const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
-var hashtable = {};
+var roomHashTable = {};
 const findRoomID = (socketRooms) => {
   for (const [key, value] of Object.entries(socketRooms)) {
     // todo: make sure socket.id's are larger than  10 chars
@@ -49,74 +85,110 @@ app.get('/', (request, response) => {
     response.sendFile(path.join(__dirname, '/public/index.html'))
 });
 */
+// server.js is a lot like a reducer
+// logic should be here
+// events represent action types
+// data represents actions
+// the hashtable should represent each rooms state tree
+// each room should then have a games hash table
+// representing the state tree of each game
+// game : {1:
+//            {board: board[1],
+//             players: [,{username: 'player1', pick: '😋'},{username: 'player2', pick: '😋'}]
+//             turn: [2,2],
+//             roomFull: true,
+//             gameLog:
+//                [
+//                  {username: 2, message: 'is it a mammal?'},
+//                  {username: 1, message: 'Yes.'}
+//                ]
+//
+//
+//}}
 
 // rooms data structure needs to be fixed
-var rooms = new Map();
 // I think rooms are handled server side,
 // i.e., the client has no idea it's in a room
 io.sockets.on("connection", (socket) => {
-  //console.log(`connection made ${socket.id}`);
-  socket.on(`joinRoom`, (data) => {
-    const id = data.id;
-    const board = data.board;
+  socket.on("client:room/roomJoined", (joinData) => {
+    const { roomID, board } = joinData;
 
     socket.on("disconnect", () => {
-      delete hashtable[id];
+      delete roomHashTable[roomID];
     });
-    socket.join(id);
-    if (hashtable[id]) {
+    socket.join(roomID);
+    if (roomHashTable[roomID]) {
       // if this is defined
       // the room has a player
       // hence it is now full
-      if (hashtable[id].roomFull === true) {
-        socket.emit("gameUpdate", null);
+      if (roomHashTable[roomID].roomFull === true) {
+        socket.emit("server:room/roomJoined", null);
       }
-      socket.emit(`gameUpdate`, {
-        id: id,
-        board: hashtable[id].board,
+      // to sender
+      socket.emit("server:room/roomJoined", {
+        roomID: roomID,
+        board: roomHashTable[roomID].board,
+        roomFull: true,
+        player: 2,
+      });
+      // to player 1
+      socket.to(roomID).emit("server:room/roomJoined", {
         roomFull: true,
       });
-      hashtable[id].roomFull = true;
+      roomHashTable[roomID].roomFull = true;
     } else {
       // roomData EXAMPLE:
-      // {xCf6: {board: boards[2], roomFull: false, picks: {1: 😎, 2: 😎}}}
-      const roomData = { [id]: { board: board, roomFull: false } };
+      // {xCf6: {board: boards[2], roomFull: false, picks: {1: 😎, 2: 😎},
+      //   gameLog[ {username: 'player1', message: 'is it an animal?'}, {username: 'player2', message:'Yes.'}, ...] }}
+      const roomData = { [roomID]: { board: board, roomFull: false } };
       // hash table also needs to store choices
-      // hashtable EXAMPLE:
+      // roomHashTable EXAMPLE:
       // {AdxD5: {board: boards[5], roomFull: true}, bxCf6: {board: boards[2], roomFull: false}}
-      hashtable = { ...hashtable, ...roomData };
-      socket.emit(`gameUpdate`, { id: id, board: board, roomFull: false });
-      console.log("hashtable", hashtable);
+      roomHashTable = { ...roomHashTable, ...roomData };
+      socket.emit("server:room/roomJoined", {
+        roomID: roomID,
+        board: board,
+        roomFull: false,
+        player: 1,
+      });
+      console.log("roomHashTable", roomHashTable);
     }
+    socket.on("client:gameLog/turnSubmitted", (turnData) => {
+      socket.to(roomID).emit("server:gameLog/turnSubmitted", turnData);
+    });
+    socket.on("client:players/picked", (pickData) => {
+      const { player, pick } = pickData;
+      // {roomID: players: [{username: , pick: }, {username: ,pick:}]}
+      roomHashTable[roomID].players[player].pick = pick;
+    });
   });
-  socket.on("chatMessageSent", (data) => {
-    const player = data.player;
+});
+/*
+  socket.on("questionSent", (data) => {
+    const { player, message } = data;
     const opponent = (player % 2) + 1;
-    const msg = data.msg.trim();
-    const room = data.room;
+    // avoiding sending roomID to server since
+    // the information is in socket
+    const roomID = findRoomID(socket.rooms);
     const turn = data.turn;
+    // hashtable entry example
+    // {xCf6: {board: boards[2], roomFull: false, picks: {1: 😎, 2: 😎}}}
     // the winning condition is to send a message that is your opponent's choice
-    if (rooms.get(room).choices[opponent] === msg) {
-      io.in(room).emit(`gameOver`, { player: player, string: msg });
+    if (roomHashTable[roomID].picks[opponent] === message) {
+      io.in(room).emit("gameOver", { player: player, message: message });
     } else {
-      io.in(room).emit(`chatMessageReceived`, {
+      io.in(room).emit("gameLogMessageReceived", {
         player: player,
-        string: msg,
-        turn: turn,
+        message: message,
+        turn: [opponent, 1],
       });
     }
   });
+  */
 
-  socket.on("newPick", (data) => {
-    const id = findRoomID(socket.rooms);
-    hashtable[id].picks = {
-      ...hashtable[id].picks,
-      [data.player]: data.pick,
-    };
-    console.log(hashtable);
-  });
+// can probably use socket.once here
 
-  /*
+/*
     this will need to be done on the 
     room reserved for the game
     ...
@@ -126,19 +198,9 @@ io.sockets.on("connection", (socket) => {
     to the root room with the 
     game specific room as data
     */
-  // servers are kind of all-receiving
-  // when it says a broadcast doesn't go to 'sender'
-  // it means it doesn't go to the CLIENT who caused it
-  socket.on("newState", (data) => {
-    // if this is broadcasted to sender,
-    // you're liable to cause an inf loop
-    socket.broadcast.to(data.room).emit("setState", data.squares);
-    //console.log(`${socket.id} has sent ${data.squares} to ${data.room}`);
-    //socket.emit('setState', data.squares);
-    //io.emit('setState', data.squares);
-  });
-});
-
+// servers are kind of all-receiving
+// when it says a broadcast doesn't go to 'sender'
+// it means it doesn't go to the CLIENT who caused it
 server.listen(port, () => {
   //console.log(`Starting server on port ${port}`);
 });

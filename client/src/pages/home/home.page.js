@@ -6,16 +6,15 @@ import boards, { boardNames, smileys } from "../../boards";
 import socket from "../../socketlocal";
 //import socket from '../../socket';
 import "../../index.css";
-import { updateID } from "../../redux/actions";
 
 const smiley = smileys[Math.floor(Math.random() * smileys.length)];
 const title = "GUESSTIM" + smiley + "JI";
 
-const HomePage = ({ handleJoin, id }) => {
+const HomePage = ({ handleJoin, roomID }) => {
   return (
     <div>
       <h1 align="center">{title}</h1>
-      <RoomTextBox handleJoin={handleJoin} id={id} />
+      <RoomTextBox handleJoin={handleJoin} roomID={roomID} />
     </div>
   );
 };
