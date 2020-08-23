@@ -36,6 +36,9 @@ const GamePage = ({
   console.log("GamePage -> roomID", roomID);
   console.log("GamePage -> socket", socket);
   const dispatch = useDispatch();
+  // have this depend on roomFull
+  // create listeners when full
+  // remove when not
   useEffect(() => {
     console.log("new listener");
     socket.on("server:gameLog/turnSubmitted", (turnData) => {

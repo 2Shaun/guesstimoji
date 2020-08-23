@@ -112,7 +112,7 @@ app.get('/', (request, response) => {
 io.sockets.on("connection", (socket) => {
   socket.on("client:room/roomJoined", (joinData) => {
     const { roomID, board } = joinData;
-
+    // entry shouldn't be deleted if room is full
     socket.on("disconnect", () => {
       delete roomHashTable[roomID];
     });
