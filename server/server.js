@@ -114,11 +114,25 @@ io.sockets.on("connection", (socket) => {
     const { roomID, board } = joinData;
     // entry shouldn't be deleted if room is full
     socket.on("disconnect", () => {
+      // one player disconnected from the game
       if (roomHashTable[roomID].roomFull === true) {
         socket.to(roomID).emit("server:room/roomJoined", {
           roomFull: false,
           player: 1,
         });
+        roomHashTable[roomID].roomFull = false;
+        // player 1 disconnected
+        if (roomHashTable[roomID].players[1].socketid === socket.id) {
+          // player 2 now player 1
+          roomHashTable[roomID].players[1] = roomHashTable[roomID].players[2];
+        }
+        roomHashTable[roomID].players[2] = {
+          username: "Player 2",
+          socketid: "",
+          pick: "",
+        };
+        socket.to(roomID).emit("server:gameLog/cleared");
+        roomHashTable[roomID].gameLog = [];
       } else {
         delete roomHashTable[roomID];
       }
@@ -144,6 +158,7 @@ io.sockets.on("connection", (socket) => {
         roomFull: true,
       });
       roomHashTable[roomID].roomFull = true;
+      roomHashTable[roomID].players[2].socketid = socket.id;
     } else {
       // roomData EXAMPLE:
       // {xCf6: {board: boards[2], roomFull: false, picks: {1: 😎, 2: 😎},
@@ -154,8 +169,8 @@ io.sockets.on("connection", (socket) => {
           roomFull: false,
           players: [
             {},
-            { username: "Player 1", pick: "" },
-            { username: "Player 2", pick: "" },
+            { username: "Player 1", socketid: socket.id, pick: "" },
+            { username: "Player 2", socketid: "", pick: "" },
           ],
           gameLog: [],
         },
@@ -174,9 +189,17 @@ io.sockets.on("connection", (socket) => {
     }
     socket.on("client:gameLog/turnSubmitted", (turnData) => {
       const { player, message } = turnData;
+      const opponent = (player % 2) + 1;
       const username = roomHashTable[roomID].players[player].username;
       const newTurnData = { username: username, message: message };
       socket.to(roomID).emit("server:gameLog/turnSubmitted", newTurnData);
+      if (roomHashTable[roomID].players[opponent].pick === message) {
+        io.in(roomID).emit("server:room/roomJoined", { winner: player });
+        io.in(roomID).emit("server:gameLog/turnSubmitted", {
+          username: "guesstimoji",
+          message: `${username} WINS!!!`,
+        });
+      }
       const gameLog = roomHashTable[roomID].gameLog;
       roomHashTable[roomID].gameLog = [newTurnData, ...gameLog];
       console.log(roomHashTable);
@@ -186,6 +209,9 @@ io.sockets.on("connection", (socket) => {
       // {roomID: players: [{username: , pick: }, {username: ,pick:}]}
       roomHashTable[roomID].players[player].pick = pick;
       console.log(roomHashTable[roomID].players[player]);
+    });
+    socket.on("client:opponentBoard/clicked", (index) => {
+      socket.to(roomID).emit("server:opponentBoard/clicked", index);
     });
   });
 });

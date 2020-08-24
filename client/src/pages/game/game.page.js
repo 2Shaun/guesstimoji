@@ -8,7 +8,8 @@ import socket from "../../socketlocal";
 import "../../index.css";
 import title from "../home/home.page";
 import { connect, useDispatch } from "react-redux";
-import { turnSubmitted } from "../../redux/gameLogSlice";
+import { turnSubmitted, cleared } from "../../redux/gameLogSlice";
+import { clicked } from "../../redux/opponentBoardSlice";
 //import socket from '../../socket';
 
 // This is the VIEW in MVC
@@ -37,10 +38,19 @@ const GamePage = ({
       socket.on("server:gameLog/turnSubmitted", (turnData) => {
         dispatch(turnSubmitted(turnData));
       });
+      socket.on("server:opponentBoard/clicked", (index) => {
+        dispatch(clicked(index));
+      });
     } else {
       socket.off("server:gameLog/turnSubmitted");
+      socket.off("server:opponentBoard/clicked");
     }
   }, [roomFull]);
+  useEffect(() => {
+    socket.on("server:gameLog/cleared", () => {
+      dispatch(cleared());
+    });
+  }, []);
 
   // make sure that you check to see if you can import socket
   // or have to pass it as prop
@@ -103,6 +113,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   turnSubmitted,
+  cleared,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(GamePage);

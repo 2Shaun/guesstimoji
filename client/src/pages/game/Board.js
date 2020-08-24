@@ -57,6 +57,7 @@ const Board = ({ socket, board, player }) => {
     return (
       <Square
         index={i}
+        socket={socket}
         value={board[i]}
         onClick={!chose ? () => handlePick(i) : null}
         onContextMenu={() => {
