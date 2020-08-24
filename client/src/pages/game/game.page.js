@@ -31,20 +31,16 @@ const GamePage = ({
   gameCount,
   winner,
 }) => {
-  console.log("GamePage -> player", player);
-  console.log("GamePage -> board", board);
-  console.log("GamePage -> roomID", roomID);
-  console.log("GamePage -> socket", socket);
   const dispatch = useDispatch();
-  // have this depend on roomFull
-  // create listeners when full
-  // remove when not
   useEffect(() => {
-    console.log("new listener");
-    socket.on("server:gameLog/turnSubmitted", (turnData) => {
-      dispatch(turnSubmitted(turnData));
-    });
-  }, []);
+    if (roomFull) {
+      socket.on("server:gameLog/turnSubmitted", (turnData) => {
+        dispatch(turnSubmitted(turnData));
+      });
+    } else {
+      socket.off("server:gameLog/turnSubmitted");
+    }
+  }, [roomFull]);
 
   // make sure that you check to see if you can import socket
   // or have to pass it as prop

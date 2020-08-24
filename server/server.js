@@ -114,7 +114,15 @@ io.sockets.on("connection", (socket) => {
     const { roomID, board } = joinData;
     // entry shouldn't be deleted if room is full
     socket.on("disconnect", () => {
-      delete roomHashTable[roomID];
+      if (roomHashTable[roomID].roomFull === true) {
+        socket.to(roomID).emit("server:room/roomJoined", {
+          roomFull: false,
+          player: 1,
+        });
+      } else {
+        delete roomHashTable[roomID];
+      }
+      console.log(roomHashTable);
     });
     socket.join(roomID);
     if (roomHashTable[roomID]) {
@@ -171,12 +179,11 @@ io.sockets.on("connection", (socket) => {
       socket.to(roomID).emit("server:gameLog/turnSubmitted", newTurnData);
       const gameLog = roomHashTable[roomID].gameLog;
       roomHashTable[roomID].gameLog = [newTurnData, ...gameLog];
-      console.log(newTurnData);
+      console.log(roomHashTable);
     });
     socket.on("client:players/picked", (pickData) => {
       const { player, pick } = pickData;
       // {roomID: players: [{username: , pick: }, {username: ,pick:}]}
-      console.log(roomID);
       roomHashTable[roomID].players[player].pick = pick;
       console.log(roomHashTable[roomID].players[player]);
     });
