@@ -9,7 +9,7 @@ const OpponentBoard = ({ socket, board, show }) => {
   //socket.on(`setFreshBoard`, (newFreshBoard) => (setFreshBoard(newFreshBoard)));
 
   const renderSquare = (i) => {
-    return <OpponentSquare index={i} value={show[i] ? board[i] : ""} />;
+    return <OpponentSquare index={i} value={show[i] ? board[i] : "█"} />;
   };
   return (
     <div class="board">

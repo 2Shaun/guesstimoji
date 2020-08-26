@@ -3,18 +3,18 @@ import { momBoard, finnBoard } from "../../emojis";
 import Square from "./Square";
 import Choice from "./PickTextBox";
 import { connect } from "react-redux";
+import { playerPicked } from "../../redux/playersSlice"
 
 // i'm hoping that when the client socket emits a request,
 // the server will be able to extract room information
 // and access gamedata hashtable with that
-const Board = ({ socket, board, player }) => {
+const Board = ({ socket, board, player, picked, playerPicked }) => {
   //const [freshBoard, setFreshBoard] = useState(easterEgg(props.room));
   // THE INITIAL VALUE OF STATE WILL BE ASSIGNED ONLY
   // ON THE INITIAL RENDER
   // IN SUBSEQUENT RENDERS, THE ARGUMENT OF USESTATE
   // WILL BE IGNORED AND THE CURRENT VALUE WILL BE
   // RETRIEVED
-  const [chose, setChose] = useState(false);
   const [pick, setPick] = useState("");
 
   // with 2 boards, there is no reason to listen on the player's board
@@ -29,7 +29,7 @@ const Board = ({ socket, board, player }) => {
       player: player,
       pick: board[i],
     });
-    setChose(true);
+    playerPicked();
     setPick(board[i]);
   };
   // this is a white space char, not a space
@@ -59,7 +59,7 @@ const Board = ({ socket, board, player }) => {
         index={i}
         socket={socket}
         value={board[i]}
-        onClick={!chose ? () => handlePick(i) : null}
+        onClick={!picked ? () => handlePick(i) : null}
         onContextMenu={() => {
           handleContextMenu(i);
         }}
@@ -113,19 +113,19 @@ const Board = ({ socket, board, player }) => {
         {renderSquare(33)}
         {renderSquare(34)}
       </div>
-      <div class="board-row">
+      <div class="text-row">
         <Choice pick={pick} />
       </div>
     </div>
   );
 };
 
-/*
 const mapStateToProps = (state) => ({
-  board: state.board,
-  player: state.player,
+  picked: state.player,
 });
 
-export default connect(mapStateToProps, null)(Board);
-*/
-export default Board;
+const mapDispatchToProps = {
+  playerPicked,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Board);

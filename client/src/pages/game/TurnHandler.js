@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { connect } from "react-redux";
 import PlayerTurn from "./PlayerTurn";
 import OpponentTurn from "./OpponentTurn";
 
 const TurnHandler = ({
   socket,
   player,
+  picked,
   turn,
   roomID,
   roomFull,
@@ -33,13 +35,19 @@ const TurnHandler = ({
     return <div>GAME OVER</div>;
   } else if (!roomFull) {
     return <div>Waiting for Player 2 to join...</div>;
+  } else if (!picked) {
+    return <div></div>;
   } else {
     return playerTurn ? (
       <PlayerTurn handleSubmitTurn={handleSubmitTurn} askingTurn={askingTurn} />
     ) : (
-      <OpponentTurn opponent={opponent} askingTurn={askingTurn} />
-    );
+        <OpponentTurn opponent={opponent} askingTurn={askingTurn} />
+      );
   }
 };
 
-export default TurnHandler;
+const mapStateToProps = (state) => ({
+  picked: state.player,
+});
+
+export default connect(mapStateToProps, null)(TurnHandler);

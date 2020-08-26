@@ -23,8 +23,8 @@ const GameLog = ({ socket, roomID, roomFull, gameLog, player, winner }) => {
     // of the element
     // don't use curly brace tuples that don't have tags!!
     return gameLog.map(({ username: username, message: message }, i) => (
-      <div class={`gameLogMessage` + i} key={i}>
-        <span>{username}</span>
+      <div class={i === 0 ? 'game-log-last-message' : 'game-log-message'} key={i}>
+        <span>{username + ':'}</span>
         <span>{message}</span>
       </div>
     ));
@@ -40,7 +40,7 @@ const GameLog = ({ socket, roomID, roomFull, gameLog, player, winner }) => {
         handleSubmitTurn={handleSubmitTurn}
         winner={winner}
       />
-      <div class="gameLog-box">{renderGameLog()}</div>
+      <div class="game-log-box">{renderGameLog()}</div>
     </div>
   );
 };

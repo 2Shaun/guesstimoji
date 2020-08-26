@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import socket from "../../socketlocal";
 function Square({ index, socket, value, onClick, onContextMenu }) {
   // note the use of jsx in onClick attribute and button content
   const [show, setShow] = useState(true);
@@ -11,16 +10,16 @@ function Square({ index, socket, value, onClick, onContextMenu }) {
         onClick
           ? onClick
           : () => {
-              setShow(!show);
-              socket.emit("client:opponentBoard/clicked", index);
-            }
+            setShow(!show);
+            socket.emit("client:opponentBoard/clicked", index);
+          }
       }
       onContextMenu={(e) => {
         e.preventDefault();
         onContextMenu();
       }}
     >
-      {show ? value : null}
+      {show ? value : '█'}
     </button>
   );
 }

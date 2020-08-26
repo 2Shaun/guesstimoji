@@ -43,7 +43,7 @@ const calculateNextTurn = (turn) => {
   }
 };
 const app = express();
-const server = http.createServer(app);
+const server = http.Server(app);
 const io = socketIO(server);
 const url = 'mongodb://127.0.0.1:27017/';
 var roomHashTable = {};
@@ -77,10 +77,10 @@ const port = process.env.PORT || 5000;
 // the middleware functions
 // the express server handles routing:
 // app.METHOD(PATH, HANDLER)
-// Respond to a METHOD request to the PATH route
-// HANDLER is executed when the METHOD and PATH are matched
+// METHOD - http verb
+// PATH - url which client sent METHOD
+// HANDLER is executed when the METHOD is called on PATH
 
-// I think 'node server.js' represents a get request to '/'
 // ReactDOM in index.js doesn't render
 // it probably doesn't render for the same reason
 // it doesn't when opening index.html by itself
@@ -234,44 +234,10 @@ io.sockets.on("connection", (socket) => {
     });
   });
 });
-/*
-  socket.on("questionSent", (data) => {
-    const { player, message } = data;
-    const opponent = (player % 2) + 1;
-    // avoiding sending roomID to server since
-    // the information is in socket
-    const roomID = findRoomID(socket.rooms);
-    const turn = data.turn;
-    // hashtable entry example
-    // {xCf6: {board: boards[2], roomFull: false, picks: {1: 😎, 2: 😎}}}
-    // the winning condition is to send a message that is your opponent's choice
-    if (roomHashTable[roomID].picks[opponent] === message) {
-      io.in(room).emit("gameOver", { player: player, message: message });
-    } else {
-      io.in(room).emit("gameLogMessageReceived", {
-        player: player,
-        message: message,
-        turn: [opponent, 1],
-      });
-    }
-  });
-  */
 
-// can probably use socket.once here
+app.get('/', (req, res) => { res.send('Hello world') });
 
-/*
-    this will need to be done on the 
-    room reserved for the game
-    ...
-    I'm not sure I'm going to have each
-    room listen yet
-    the gamepage might need to emit
-    to the root room with the 
-    game specific room as data
-    */
 // servers are kind of all-receiving
-// when it says a broadcast doesn't go to 'sender'
-// it means it doesn't go to the CLIENT who caused it
 server.listen(port, () => {
-  //console.log(`Starting server on port ${port}`);
+  console.log(`Starting server on port ${port}`);
 });

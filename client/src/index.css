@@ -64,7 +64,6 @@ ol, ul {
   padding-left: 30px;
 }
 
-
 #board-select {
   overflow-y: scroll;
   overflow-x: scroll;
@@ -84,10 +83,20 @@ ol, ul {
   background-color: white;
 }
 
-.board {
+.board-row {
+  margin: 0 0 0 0;
+  padding: 0 0 0 0;
+  height: 35px;
+}
+.text-row {
+  margin: 0 0 0 0;
+  padding: 0 0 0 0;
+  height: 35px;
 }
 .board-row:after {
-  margin: 0 auto;
+  margin: 0 0 0 0;
+  padding: 0 0 0 0;
+  height: 35px;
   clear: both;
   content: "";
   display: table;
@@ -100,6 +109,8 @@ ol, ul {
 .square{
   height: 27px;
   width: 27px;
+  font-size: 20px;
+  color: #fcc21b;
 }
 .opponent-square{
   -webkit-transform:rotate(-180deg);
@@ -110,7 +121,8 @@ ol, ul {
   opacity: 0.5;
   overflow: visible;
   background: #fff;
-  font-size: 100%;
+  font-size: 20px; 
+  color: #fcc21b;
   font-weight: bold;
   line-height: 34px;
   height: 27px;
@@ -131,14 +143,14 @@ ol, ul {
   text-align: center;
 }
 
-.chat-box {
+.game-log-box {
   overflow-y: scroll;
   overflow-x: scroll;
   width: 300px;
   height: 200px;
 }
 
-.chatMessage0 {
+.game-log-last-message{
   background: #fcc21b;
   padding: 1px;
 
