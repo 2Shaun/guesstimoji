@@ -3,11 +3,9 @@
 # assumes you're in root folder of the project
 cd client
 # uncomment any commented import socket
-sed -i "s/\/\/import socket/import socket/g" src/pages/game/game.page.js
-sed -i "s/\/\/import socket/import socket/g" src/pages/home/home.page.js
+sed -i "s/\/\/import socket/import socket/g" client/src/App.js
 # comment out line beginning with: import socket from '../../socketl
-sed -i "s/import socket from '..\/..\/socketl/\/\/import socket from '..\/..\/socketl/g" src/pages/game/game.page.js
-sed -i "s/import socket from '..\/..\/socketl/\/\/import socket from '..\/..\/socketl/g" src/pages/home/home.page.js
+sed -i "s/import socket from '.\/socketl/\/\/import socket from '.\/socketl/g" client/src/App.js
 npm run build
 cd build
 # might want to change this to rsync
