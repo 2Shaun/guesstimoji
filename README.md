@@ -15,7 +15,7 @@ Multiplayer emoji guessing game made with MERN Stack. [You can 'play' the demo h
 5. Click to hide emojis which violate your friend's answer
 6. Repeat from step 2
 
-*Winning condition* 
+*Winning condition*  
 The first player to send the opponent's picked emoji in chat wins
 
 ### Running locally
