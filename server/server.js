@@ -2,6 +2,9 @@ const express = require("express");
 const http = require("http");
 const path = require("path");
 const socketIO = require("socket.io");
+const mongoClient = require('mongodb').MongoClient;
+const moment = require("moment");
+
 // the server should handle all game logic
 // after player 2 joins:
 // game: {turn: [2,2], gameLog:[]}
@@ -42,6 +45,7 @@ const calculateNextTurn = (turn) => {
 const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
+const url = 'mongodb://127.0.0.1:27017/';
 var roomHashTable = {};
 const findRoomID = (socketRooms) => {
   for (const [key, value] of Object.entries(socketRooms)) {
@@ -122,13 +126,13 @@ io.sockets.on("connection", (socket) => {
         });
         roomHashTable[roomID].roomFull = false;
         // player 1 disconnected
-        if (roomHashTable[roomID].players[1].socketid === socket.id) {
+        if (roomHashTable[roomID].players[1].socketID === socket.id) {
           // player 2 now player 1
           roomHashTable[roomID].players[1] = roomHashTable[roomID].players[2];
         }
         roomHashTable[roomID].players[2] = {
           username: "Player 2",
-          socketid: "",
+          socketID: "",
           pick: "",
         };
         socket.to(roomID).emit("server:gameLog/cleared");
@@ -158,7 +162,7 @@ io.sockets.on("connection", (socket) => {
         roomFull: true,
       });
       roomHashTable[roomID].roomFull = true;
-      roomHashTable[roomID].players[2].socketid = socket.id;
+      roomHashTable[roomID].players[2].socketID = socket.id;
     } else {
       // roomData EXAMPLE:
       // {xCf6: {board: boards[2], roomFull: false, picks: {1: 😎, 2: 😎},
@@ -169,10 +173,11 @@ io.sockets.on("connection", (socket) => {
           roomFull: false,
           players: [
             {},
-            { username: "Player 1", socketid: socket.id, pick: "" },
-            { username: "Player 2", socketid: "", pick: "" },
+            { username: "Player 1", socketID: socket.id, pick: "" },
+            { username: "Player 2", socketID: "", pick: "" },
           ],
           gameLog: [],
+          game: 0,
         },
       };
       // hash table also needs to store choices
@@ -190,18 +195,32 @@ io.sockets.on("connection", (socket) => {
     socket.on("client:gameLog/turnSubmitted", (turnData) => {
       const { player, message } = turnData;
       const opponent = (player % 2) + 1;
-      const username = roomHashTable[roomID].players[player].username;
+      roomEntry = roomHashTable[roomID];
+      const username = roomEntry.players[player].username;
       const newTurnData = { username: username, message: message };
       socket.to(roomID).emit("server:gameLog/turnSubmitted", newTurnData);
-      if (roomHashTable[roomID].players[opponent].pick === message) {
+      const gameLog = roomEntry.gameLog;
+      roomEntry.gameLog = [{ time: moment().utc().format(), ...newTurnData }, ...gameLog];
+      if (roomEntry.players[opponent].pick === message) {
         io.in(roomID).emit("server:room/roomJoined", { winner: player });
         io.in(roomID).emit("server:gameLog/turnSubmitted", {
           username: "guesstimoji",
           message: `${username} WINS!!!`,
         });
+        roomEntry.game += 1;
+        // unique game id is [player1 socketid][player2 socketid][game count]
+        const gameID = roomEntry.players[1].socketID + roomEntry.players[2].socketID + roomHashTable[roomID].game;
+        mongoClient.connect(url, (err, db) => {
+          if (err) throw err;
+          var dbo = db.db("guesstimoji");
+          const record = { _id: gameID, roomID: roomID, winner: username, board: roomEntry.board, players: roomEntry.players, gameLog: roomEntry.gameLog, game: roomEntry.game };
+          dbo.collection("games").insertOne(record, (err, res) => {
+            if (err) throw err;
+            console.log("1 document inserted");
+            db.close();
+          });
+        });
       }
-      const gameLog = roomHashTable[roomID].gameLog;
-      roomHashTable[roomID].gameLog = [newTurnData, ...gameLog];
       console.log(roomHashTable);
     });
     socket.on("client:players/picked", (pickData) => {
