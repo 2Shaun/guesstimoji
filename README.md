@@ -19,7 +19,7 @@ Multiplayer emoji guessing game made with MERN Stack. [You can 'play' the demo h
 The first player to send the opponent's picked emoji in chat wins
 
 ### Technical details
-Front end state is managed using `redux`. The `store` provided by `redux` is made up of three slices: `roomSlice`, `opponentBoardSlice`, and `gameLogSlice`. There is a correspondence between action types and server events, i.e.,  
+Front end state is managed using `react-redux`. The `store` provided by `redux` is made up of three slices: `roomSlice`, `opponentBoardSlice`, and `gameLogSlice`. There is a correspondence between action types and server events, i.e.,  
 `room/roomJoined`↔`client:room/roomJoined`,`server:room/roomJoined`.  
 The server runs on a `node.js` instance and handles most of the game logic. Player picks are stored server side. The server groups client sockets into rooms using `socket.io` and emits game events exclusive to that room. Game state is stored in the `roomHashTable` server side. When the game ends, data from the `roomHashTable` is stored with `mongodb` in a collection called `games` in the `guesstimoji` database. Here is an example document in the `games` collection:
 ```json
