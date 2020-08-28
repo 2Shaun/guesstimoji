@@ -79,6 +79,9 @@ const GamePage = ({
           player={player}
           winner={winner}
         />
+        {
+          // Need 'Leave Room' button
+        }
       </div>
     </div>
   );
