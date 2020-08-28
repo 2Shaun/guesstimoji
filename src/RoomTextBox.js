@@ -24,17 +24,11 @@ const RoomTextBox = ({ handleJoin, roomID }) => {
     <div align="center">
       Room ID:
       <input value={tempRoomID} onChange={handleChange} />
-      <Link
-        to={{
-          pathname: "/game",
-        }}
-      >
-        <JoinRoomButton
-          roomID={tempRoomID}
-          board={tempBoard}
-          handleJoin={handleJoin}
-        />
-      </Link>
+      <JoinRoomButton
+        roomID={tempRoomID}
+        board={tempBoard}
+        handleJoin={handleJoin}
+      />
       <BoardSelect onClick={handleBoardClick} />
     </div>
   );

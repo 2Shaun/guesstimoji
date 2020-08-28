@@ -13,7 +13,7 @@ import { topEmojis } from "./emojis";
 // handleJoin data should have both id and board selection
 
 // the first argument to a component is always the props obj
-const App = ({ roomID }) => {
+const App = ({ roomID, player }) => {
   const handleJoin = (dispatch, joinData) => {
     socket.emit("client:room/roomJoined", joinData);
     socket.on("server:room/roomJoined", (joinData) => {
@@ -25,33 +25,21 @@ const App = ({ roomID }) => {
     });
   };
   return (
-    <Router>
-      <div className="App" align="center">
-        <Switch>
-          {/*<Route exact path="/" component={HomePage} />*/}
-          <Route
-            exact
-            path="/"
-            render={(handleJoin, roomID) => (
-              // i don't think homepage needs access to store
-              // handleJoin will modify store in App
-              <HomePage handleJoin={handleJoin} roomID={roomID} />
-            )}
-          />
-          <Route
-            exact
-            path="/game"
-            render={() => <GamePage socket={socket} />}
-          />
-        </Switch>
-        <Footer />
-      </div>
-    </Router>
+    <div className="App" align="center">
+      {
+        // player should only be defined if you're in a room
+        player ?
+          <GamePage socket={socket} /> :
+          <HomePage handleJoin={handleJoin} roomID={roomID} />
+      }
+      <Footer />
+    </div>
   );
 };
 
 const mapStateToProps = (state) => ({
   roomID: state.room.roomID,
+  player: state.room.player,
 });
 
 // actions : {type: TYPE, ...} ARE OBJECTS

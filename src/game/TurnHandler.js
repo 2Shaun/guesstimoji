@@ -32,6 +32,8 @@ const TurnHandler = ({
   // if send is available as soon as you join
   // the gameLog room for player 2 will need to be updated when they join
   if (winner) {
+    // need 'New Game' button which brings up board select for player 1
+    // need 'Waiting for Player 1 to start a new game...' for player 2
     return <div>GAME OVER</div>;
   } else if (!roomFull) {
     return <div>Waiting for Player 2 to join...</div>;
