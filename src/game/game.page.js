@@ -4,12 +4,11 @@ import OpponentBoard from "./OpponentBoard";
 import Board from "./Board";
 import GameLog from "./GameLog";
 import queryString from "query-string";
-import socket from "../../socketlocal";
-import "../../index.css";
-import title from "../home/home.page";
+import socket from "../socketlocal";
+import "../index.css";
 import { connect, useDispatch } from "react-redux";
-import { turnSubmitted, cleared } from "../../redux/gameLogSlice";
-import { clicked } from "../../redux/opponentBoardSlice";
+import { turnSubmitted, cleared } from "../redux/gameLogSlice";
+import { clicked } from "../redux/opponentBoardSlice";
 //import socket from '../../socket';
 
 // This is the VIEW in MVC

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import boards, { boardNames, smileys } from "../../boards";
+import boards, { boardNames, smileys } from "./boards";
 import { Link } from "react-router-dom";
 import BoardSelect from "./BoardSelect";
 import JoinRoomButton from "./JoinRoomButton";
