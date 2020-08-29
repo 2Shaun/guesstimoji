@@ -3,11 +3,15 @@
   padding: 0;
   border: 0;
   outline: 0;
-  font-size: 100%;
+  font-size: 27px;
   font-weight: 200;
   font-family: Lato,Calibri,Trebuchet MS;
   vertical-align: baseline;
   background: transparent;
+}
+
+.Room {
+
 }
 .App {
   float: none;
@@ -47,12 +51,10 @@ input{
 }
 
 h1 {
-  font-size: 250%;
   font-weight: normal;
 }
 
 h2 {
-  font-size: 200%;
   font-weight: 200;
 }
 
@@ -61,18 +63,18 @@ body {
 }
 
 ol, ul {
-  padding-left: 30px;
+  padding-left: 0px;
 }
 
 #board-select {
   overflow-y: scroll;
   overflow-x: scroll;
-  width: 200px;
-  height: 320px;
+  width: 300px;
+  height: 300px;
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 15px;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -136,7 +138,6 @@ ol, ul {
 .choice {
   background: #fff;
   border: 1px;
-  font-size: 125%;
   line-height: 34px;
   height: 34px;
   padding: 0;
