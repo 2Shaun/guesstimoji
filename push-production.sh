@@ -12,6 +12,8 @@ cd build
 scp -r ./* tommy@157.245.254.196:/var/www/html/
 cd ..
 scp -r ../server/server.js tommy@157.245.254.196:/var/www/html/
+scp -r ../server/package.json tommy@157.245.254.196:/var/www/html/
+scp -r ../server/package-lock.json tommy@157.245.254.196:/var/www/html/
 # uncomment any commented import socket
 sed -i "s/\/\/import socket/import socket/g" src/pages/game/game.page.js
 sed -i "s/\/\/import socket/import socket/g" src/pages/home/home.page.js

@@ -47,16 +47,6 @@ const server = http.Server(app);
 const io = socketIO(server);
 const url = 'mongodb://127.0.0.1:27017/';
 var roomHashTable = {};
-const findRoomID = (socketRooms) => {
-  for (const [key, value] of Object.entries(socketRooms)) {
-    // todo: make sure socket.id's are larger than  10 chars
-    // set room id limit to 10
-    if (value.length <= 10) {
-      return value;
-    }
-  }
-  return;
-};
 
 const port = process.env.PORT || 5000;
 
@@ -116,6 +106,11 @@ app.get('/', (request, response) => {
 io.sockets.on("connection", (socket) => {
   socket.on("client:room/roomJoined", (joinData) => {
     const { roomID, board } = joinData;
+    if (roomHashTable[roomID]?.roomFull === true) {
+      socket.emit("server:room/roomJoined", null);
+      return;
+    }
+    socket.join(roomID);
     // entry shouldn't be deleted if room is full
     socket.on("disconnect", () => {
       // one player disconnected from the game
@@ -142,14 +137,10 @@ io.sockets.on("connection", (socket) => {
       }
       console.log(roomHashTable);
     });
-    socket.join(roomID);
     if (roomHashTable[roomID]) {
       // if this is defined
       // the room has a player
       // hence it is now full
-      if (roomHashTable[roomID].roomFull === true) {
-        socket.emit("server:room/roomJoined", null);
-      }
       // to sender
       socket.emit("server:room/roomJoined", {
         roomID: roomID,
