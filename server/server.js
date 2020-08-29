@@ -4,44 +4,6 @@ const path = require("path");
 const socketIO = require("socket.io");
 const mongoClient = require('mongodb').MongoClient;
 const moment = require("moment");
-
-// the server should handle all game logic
-// after player 2 joins:
-// game: {turn: [2,2], gameLog:[]}
-// turn cycle:
-// [2,2]->[1,1]->[1,2]->[2,1]->[2,2]
-
-function arraysEqual(a, b) {
-  if (a === b) return true;
-  if (a == null || b == null) return false;
-  if (a.length !== b.length) return false;
-
-  // If you don't care about the order of the elements inside
-  // the array, you should sort both arrays here.
-  // Please note that calling sort on an array will modify that array.
-  // you might want to clone your array first.
-
-  for (var i = 0; i < a.length; ++i) {
-    if (a[i] !== b[i]) return false;
-  }
-  return true;
-}
-const calculateNextTurn = (turn) => {
-  switch (turn) {
-    case arraysEqual(turn, [1, 1]):
-      return [1, 2];
-      break;
-    case arraysEqual(turn, [1, 2]):
-      return [2, 1];
-      break;
-    case arraysEqual(turn, [2, 1]):
-      return [2, 2];
-      break;
-    case arraysEqual(turn, [2, 2]):
-      return [1, 1];
-      break;
-  }
-};
 const app = express();
 const server = http.Server(app);
 const io = socketIO(server);
