@@ -6,6 +6,7 @@ export const opponentBoardReducer = (
     case "opponentBoard/reset":
       return new Array(35).fill(true);
     case "opponentBoard/click":
+      // try to do the (({})=>({}))(state) trick here
       return state.map((x, i) => (i === action.payload ? !x : x));
     default:
       return state;

@@ -1,10 +1,12 @@
 const utils = require("../src/utils.js");
+const mongoDBStrings = require("../mongoDBStrings.js");
+const mongoose = require("mongoose");
 const express = require("express");
 const http = require("http");
 const path = require("path");
 const socketIO = require("socket.io");
-const mongoClient = require('mongodb').MongoClient;
 const moment = require("moment");
+const { ObjectId } = require("mongodb");
 const app = express();
 const server = http.Server(app);
 const io = socketIO(server);
@@ -64,7 +66,22 @@ app.get('/', (request, response) => {
 //}}
 
 const insertRecordIntoCollection = (rec, coll) => {
-  mongoClient.connect(url, (err, db) => {
+  // mongoClient.connect(url, (err, db) => {
+  mongoose.connect(mongoDBStrings.connectionString, { useNewUrlParser: true });
+  const db = mongoose.connection;
+  db.on('error', console.error.bind(console, 'connection error:'));
+  db.once('open', () => { });
+  const emojisSchema = new mongoose.Schema({
+    _id: ObjectId,
+    emoji: String,
+    name: String,
+    sub_group: String,
+  })
+  const squareSchema = new mongoose.Schema({ emoji: String });
+  const boardsSchema = new mongoose.Schema({
+
+  })
+  mongoClient.connect(mongoDBStrings.connectionString, (err, db) => {
     if (err) throw err;
     var dbo = db.db("guesstimoji");
     dbo.collection(coll).insertOne(rec, (err, res) => {
