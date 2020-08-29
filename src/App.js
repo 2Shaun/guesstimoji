@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import socket from "./socket";
-//import socket from "./socketlocal";
+//import socket from "./socket";
+import socket from "./socketlocal";
 import HomePage from "./home.page";
 import GamePage from "./game/game.page";
 import Footer from "./footer";
