@@ -6,19 +6,24 @@ import HomePage from "./home.page";
 import GamePage from "./game/game.page";
 import Footer from "./footer";
 import "./index.css";
-import { connect, useDispatch } from "react-redux";
+import { connect } from "react-redux";
 import { roomJoined } from "./redux/roomSlice";
 import { topEmojis } from "./emojis";
+import { getEmojis } from "./apiUtils"
+// view layer
+
 
 // handleJoin data should have both id and board selection
 
 // the first argument to a component is always the props obj
-const App = ({ roomID, player }) => {
-  const handleJoin = (dispatch, joinData) => {
+const App = ({ roomJoined, roomID, player }) => {
+  const getEmojisResponse = getEmojis('{getEmojis{emoji}}');
+  console.log("App -> getEmojisResponse", getEmojisResponse);
+  const handleJoin = (joinData) => {
     socket.emit("client:room/roomJoined", joinData);
     socket.on("server:room/roomJoined", (joinData) => {
       if (joinData) {
-        dispatch(roomJoined(joinData));
+        roomJoined(joinData);
       } else {
         return;
       }
@@ -48,6 +53,9 @@ const mapStateToProps = (state) => ({
 //      actionCreator(e) = dispatch(actionCreator(e))
 // dispatch will give the new action to the reducer who can access state
 // reducers : (state, action) => state'
+
+// in order for Redux to wrap dispatch around roomJoined,
+// it needs to be passed as a prop
 const mapDispatchToProps = {
   roomJoined,
 };

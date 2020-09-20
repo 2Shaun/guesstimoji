@@ -34,6 +34,7 @@ export const roomReducer = (
 };
 
 export const roomJoined = (joinData) => {
+  console.log("roomJoined -> joinData", joinData);
   return {
     type: "room/roomJoined",
     payload: joinData,
