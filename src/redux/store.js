@@ -3,6 +3,7 @@ import { roomReducer } from "./roomSlice";
 import { gameLogReducer } from "./gameLogSlice";
 import { opponentBoardReducer } from "./opponentBoardSlice";
 import { playerReducer } from "./playersSlice";
+import { boardsReducer } from "./boardsSlice";
 
 // by default switch cases, combineReducers returns the state tree:
 // {gameLog: [...], app:{...}}
@@ -11,6 +12,7 @@ const rootReducer = combineReducers({
   gameLog: gameLogReducer,
   opponentBoard: opponentBoardReducer,
   player: playerReducer,
+  boards: boardsReducer,
 });
 
 const store = createStore(

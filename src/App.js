@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 //import socket from "./socket";
 import socket from "./socketlocal";
@@ -8,17 +8,22 @@ import Footer from "./footer";
 import "./index.css";
 import { connect } from "react-redux";
 import { roomJoined } from "./redux/roomSlice";
+import { getBoards } from "./apiUtils";
+import { gotBoards } from "./redux/boardsSlice";
 import { topEmojis } from "./emojis";
-import { getEmojis } from "./apiUtils"
+import { populateBoardsCollection } from "./apiUtils"
 // view layer
 
 
 // handleJoin data should have both id and board selection
 
 // the first argument to a component is always the props obj
-const App = ({ roomJoined, roomID, player }) => {
-  const getEmojisResponse = getEmojis('{getEmojis{emoji}}');
-  console.log("App -> getEmojisResponse", getEmojisResponse);
+const App = ({ roomJoined, gotBoards, roomID, player }) => {
+  useEffect(() => {
+    getBoards('{getBoards{emojis}}')
+      .then((res) => res.map(x => x.emojis))
+      .then((boards) => gotBoards(boards))
+  });
   const handleJoin = (joinData) => {
     socket.emit("client:room/roomJoined", joinData);
     socket.on("server:room/roomJoined", (joinData) => {
@@ -58,6 +63,7 @@ const mapStateToProps = (state) => ({
 // it needs to be passed as a prop
 const mapDispatchToProps = {
   roomJoined,
+  gotBoards,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

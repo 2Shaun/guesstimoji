@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import RoomTextBox from "./RoomTextBox";
-import boards, { boardNames, smileys } from "./boards";
+import { smileys } from "./boards";
 // boards is a map where the key is name
 // it returns an object of {data, preview}
 import "./index.css";

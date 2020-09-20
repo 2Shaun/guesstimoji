@@ -19,14 +19,23 @@ const resolvers = {
             try {
                 const emojis = Emoji.find({ ...args });
                 Emoji.find({ ...args })
-                    .distinct('subgroup', (err, subgroups) => {
-                        console.log("getEmojis -> subgroups", subgroups)
+                    .distinct('group', (err, groups) => {
+                        console.log("getEmojis -> groups", groups)
                     });
                 Emoji.count({ ...args })
                     .count({}, (err, count) => {
                         console.log("getEmojis -> count", count)
                     });
                 return emojis;
+            } catch (err) {
+                console.error(err);
+            }
+        },
+
+        getBoards(parent, args, context, info) {
+            try {
+                const boards = Board.find({ ...args });
+                return boards;
             } catch (err) {
                 console.error(err);
             }
@@ -43,7 +52,7 @@ const resolvers = {
         }
     },
     Mutation: {
-        createBoard(parent, { emojis }, { models: { Board } }, info) {
+        createBoard(parent, { emojis }, idk, info) {
             try {
                 const newBoard = Board.create({ emojis });
                 return newBoard;

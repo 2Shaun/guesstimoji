@@ -9,14 +9,9 @@ const BoardSelect = (props) => {
     <div>
       <h3>Select Board</h3>
       <div id="board-select">
+        {renderBoardPreview(0)}
         {renderBoardPreview(1)}
         {renderBoardPreview(2)}
-        {renderBoardPreview(3)}
-        {renderBoardPreview(5)}
-        {renderBoardPreview(6)}
-        {renderBoardPreview(7)}
-        {renderBoardPreview(8)}
-        {renderBoardPreview(0)}
       </div>
     </div>
   );

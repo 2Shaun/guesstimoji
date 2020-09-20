@@ -10,8 +10,7 @@ const emojiSchema = new Schema({
 });
 
 const boardSchema = new Schema({
-    _id: ObjectId,
-    emojis: [emojiSchema],
+    emojis: [String],
 })
 
 module.exports = {

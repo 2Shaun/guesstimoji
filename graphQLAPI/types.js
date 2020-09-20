@@ -13,7 +13,6 @@ const typeDefs = gql`
         oid: String!
     }
     type Board {
-        _id: ID!
         emojis: [String!]!
     }
 
