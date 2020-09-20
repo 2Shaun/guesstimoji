@@ -1,5 +1,5 @@
 ## guesstim😎ji
-Multiplayer emoji guessing game made with MERN Stack. [You can 'play' the demo here.](http://toso.sh)
+Multiplayer emoji guessing game made with MERN Stack. [You can view the demo here (may not be playable).](http://www.guesstimoji.com/)
 
 ### Instructions
 *Setup*
