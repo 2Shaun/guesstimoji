@@ -1,7 +1,7 @@
-## guesstim😎ji
+# guesstim😎ji
 Multiplayer emoji guessing game made with MERN Stack. [You can view the demo here (may not be playable).](http://www.guesstimoji.com/)
 
-### Instructions
+## Instructions
 *Setup*
 1. Select a board
 2. Click play
@@ -18,10 +18,17 @@ Multiplayer emoji guessing game made with MERN Stack. [You can view the demo her
 *Winning condition*  
 The first player to send the opponent's picked emoji in chat wins
 
-### Technical details
-Front end state is managed using `react-redux`. The `store` provided by `redux` is made up of three slices: `roomSlice`, `opponentBoardSlice`, and `gameLogSlice`. There is a correspondence between action types and server events, i.e.,  
-`room/roomJoined`↔`client:room/roomJoined`,`server:room/roomJoined`.  
-The server runs on a `node.js` instance and handles most of the game logic. Player picks are stored server side. The server groups client sockets into rooms using `socket.io` and emits game events exclusive to that room. Game state is stored in the `roomHashTable` server side. When the game ends, data from the `roomHashTable` is stored with `mongodb` in a collection called `games` in the `guesstimoji` database. Here is an example document in the `games` collection:
+## Technical details
+
+### Front end
+
+State is managed using `react-redux`. The `store` provided by `redux` is made up of three slices: `roomSlice`, `opponentBoardSlice`, and `gameLogSlice`. There is a correspondence between action types and server events, i.e.,  
+`room/roomJoined`↔`client:room/roomJoined`,`server:room/roomJoined`.
+
+### Back end
+
+The game logic layer runs on a `node.js` instance. Player picks are stored server side. The server groups client sockets into rooms using `socket.io` and emits game events exclusive to that room. Game state is stored in the `roomHashTable` server side.  
+The data access layer is managed with `mongoose` and controller layer with `GraphQL`.  When the game ends, data from the `roomHashTable` is stored in a `mongodb` collection called `games` in the `guesstimoji` database. Here is an example document in the `games` collection:
 ```json
 {
 	"_id": "LvvuCjDyYUsQEBC5AAAE1MqglVjwr86Z4UK4AAAF1",
