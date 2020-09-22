@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { momBoard, finnBoard } from "../emojis";
 import Square from "./Square";
 import Choice from "./PickTextBox";
 import { connect } from "react-redux";

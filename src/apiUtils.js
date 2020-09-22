@@ -1,6 +1,43 @@
 const graphQlApiUrl = 'http://localhost:3005/graphql';
 
-const getEmojis = async (query) => {
+export const graphQlPost = async (query) => {
+    const res = await fetch(graphQlApiUrl, {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query }),
+    })
+        .then(res => res.json())
+        .then(json => {
+            console.log(`response from ${query}: `, json.data)
+            return json.data;
+        })
+        .catch((err) => { console.error(err); });
+    return res;
+}
+
+export const argsJsonStringify = (argsObject) => {
+    return argsObject
+        ? JSON.stringify(argsObject)
+            // removes quotes from keys
+            .replace(/"([^"]+)":/g, '$1:')
+            .replace("{", "(")
+            .replace("}", ")")
+        : "";
+}
+
+export const getEmojis = async (argsObject = null) => {
+    const args = argsJsonStringify(argsObject);
+    // {getEmojis(group: "Smileys & Emotion"){emoji}}
+    const query = `
+        {
+            getEmojis${args}{
+                emoji
+            }
+        } 
+    `;
     const emojis = await fetch(graphQlApiUrl, {
         method: 'POST',
         credentials: 'same-origin',
@@ -17,7 +54,8 @@ const getEmojis = async (query) => {
         .catch((err) => { console.error(err); });
     return emojis;
 }
-const getBoards = async (query) => {
+
+export const getBoards = async (query) => {
     const boards = await fetch(graphQlApiUrl, {
         method: 'POST',
         credentials: 'same-origin',
@@ -55,18 +93,6 @@ const createBoard = async (mutation) => {
     return board;
 }
 
-const populateBoardsCollection = async () => {
-    getEmojis('{getEmojis(group: "Smileys & Emotion"){emoji}}')
-        .then(array => convertEmojiObjArrayToMutation(array))
-        .then(mutation => createBoard(mutation))
-    getEmojis('{getEmojis(group: "Animals & Nature"){emoji}}')
-        .then(array => convertEmojiObjArrayToMutation(array))
-        .then(mutation => createBoard(mutation))
-    getEmojis('{getEmojis(group: "Food & Drink"){emoji}}')
-        .then(array => convertEmojiObjArrayToMutation(array))
-        .then(mutation => createBoard(mutation))
-}
-
 const convertEmojiObjArrayToMutation = (array) =>
     // the beginning of query
     'mutation{createBoard(emojis: ["'
@@ -77,12 +103,3 @@ const convertEmojiObjArrayToMutation = (array) =>
         // create a string with elements
         .join('","')
     + '"]){emojis}}';
-
-
-
-
-
-module.exports = {
-    getEmojis,
-    getBoards,
-}

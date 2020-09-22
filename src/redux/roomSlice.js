@@ -1,7 +1,6 @@
 // this reducer handles updates to id, board, and roomFull
 // roomFull will decide to render gamePage
 // id and board will be passed to gamePage
-import { topEmojis } from "../emojis";
 function makeid(length) {
   var result = "";
   var characters =
@@ -17,11 +16,17 @@ export const roomReducer = (
   state = {
     roomID: makeid(5),
     roomFull: false,
-    board: topEmojis,
+    board: [],
+    randomSmiley: "😎"
   },
   action
 ) => {
   switch (action.type) {
+    case "homePageLoaded":
+      return {
+        ...state,
+        randomSmiley: action.payload,
+      }
     case "room/roomJoined":
       console.log("new state update game", { ...state, ...action.payload });
       return {
@@ -40,3 +45,10 @@ export const roomJoined = (joinData) => {
     payload: joinData,
   };
 };
+
+export const homePageLoaded = (emoji) => {
+  return {
+    type: "homePageLoaded",
+    payload: emoji,
+  }
+}

@@ -1,29 +1,31 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-//import socket from "./socket";
-import socket from "./socketlocal";
+import socket from "./socket";
+// import socket from "./socketlocal";
 import HomePage from "./home.page";
 import GamePage from "./game/game.page";
 import Footer from "./footer";
 import "./index.css";
 import { connect } from "react-redux";
-import { roomJoined } from "./redux/roomSlice";
-import { getBoards } from "./apiUtils";
+import { homePageLoaded, roomJoined } from "./redux/roomSlice";
+import { getBoards, getEmojis } from "./apiUtils";
 import { gotBoards } from "./redux/boardsSlice";
-import { topEmojis } from "./emojis";
-import { populateBoardsCollection } from "./apiUtils"
 // view layer
 
 
 // handleJoin data should have both id and board selection
 
 // the first argument to a component is always the props obj
-const App = ({ roomJoined, gotBoards, roomID, player }) => {
+const App = ({ roomJoined, homePageLoaded, gotBoards, roomID, player }) => {
   useEffect(() => {
     getBoards('{getBoards{emojis}}')
       .then((res) => res.map(x => x.emojis))
-      .then((boards) => gotBoards(boards))
-  });
+      .then((boards) => { console.log("gotBoards"); gotBoards(boards); });
+    getEmojis({ group: "Smileys & Emotion" })
+      .then(array => array.map(x => x.emoji))
+      .then(array => homePageLoaded(array[Math.floor(Math.random() * array.length)]))
+      .catch(homePageLoaded("❌"));
+  }, []);
   const handleJoin = (joinData) => {
     socket.emit("client:room/roomJoined", joinData);
     socket.on("server:room/roomJoined", (joinData) => {
@@ -64,6 +66,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   roomJoined,
   gotBoards,
+  homePageLoaded,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

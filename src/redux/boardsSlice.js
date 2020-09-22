@@ -1,5 +1,5 @@
 export const boardsReducer = (
-  state = [[], [], []],
+  state = null,
   action
 ) => {
   switch (action.type) {

@@ -10,7 +10,7 @@ const RoomTextBox = ({ boards, handleJoin, roomID }) => {
   // store id and board will be updated on PLAY
   // this allows me to not have to connect the home page
   // to the store
-  const [tempBoard, setTempBoard] = useState(boards[0]);
+  const [tempBoard, setTempBoard] = useState(boards ? boards[0] : null);
   const [tempRoomID, setTempRoomID] = useState(roomID);
 
   const handleBoardClick = (i) => {

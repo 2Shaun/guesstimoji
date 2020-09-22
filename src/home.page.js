@@ -1,21 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { connect } from "react-redux";
 import RoomTextBox from "./RoomTextBox";
-import { smileys } from "./boards";
+import { getEmojis } from "./apiUtils";
 // boards is a map where the key is name
 // it returns an object of {data, preview}
 import "./index.css";
 
-const smiley = smileys[Math.floor(Math.random() * smileys.length)];
-const title = "GUESSTIM" + smiley + "JI";
 
-const HomePage = ({ handleJoin, roomID }) => {
+const HomePage = ({ handleJoin, roomID, randomSmiley }) => {
   return (
     <div>
-      <h1 align="center">{title}</h1>
+      <h1 align="center">{"GUESSTIM" + randomSmiley + "JI"}</h1>
       <RoomTextBox handleJoin={handleJoin} roomID={roomID} />
     </div>
   );
 };
 
-export default HomePage;
-export { title };
+const mapStateToProps = (state) => ({
+  randomSmiley: state.room.randomSmiley,
+})
+
+export default connect(mapStateToProps)(HomePage);

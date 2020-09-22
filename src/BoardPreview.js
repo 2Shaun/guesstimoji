@@ -1,5 +1,4 @@
 import React from "react";
-import { boardNames, smileys } from "./boards";
 import { connect } from "react-redux";
 
 const BoardPreview = ({ i, onClick, boards }) => {
@@ -7,7 +6,7 @@ const BoardPreview = ({ i, onClick, boards }) => {
   // which modifies look of board preview
   // and calls the props.onClick
   //const boardName = boardNames[i];
-  const preview = boards[i].join("");
+  const preview = boards ? boards[i].join("") : "";
   //console.log("BoardPreview -> boards", boards);
   return (
     <button
