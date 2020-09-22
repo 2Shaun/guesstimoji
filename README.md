@@ -22,7 +22,18 @@ The first player to send the opponent's picked emoji in chat wins
 
 ### Front end
 
-State is managed using `react-redux`. The `store` provided by `redux` is made up of three slices: `roomSlice`, `opponentBoardSlice`, and `gameLogSlice`. There is a correspondence between action types and server events, i.e.,  
+State is managed using `react-redux`. The `store` provided by `redux` is made up of the following slices: 
+
+- `roomSlice`
+  - handles room ID, whether the room is full, selected board, and the random emoji that shows in the title
+- `opponentBoardSlice`
+  - handles when opponent hides emojis
+- `gameLogSlice`
+  - handles game log
+- `playersSlice`
+  - handles whether player picked their emoji yet
+
+There is a correspondence between action types and server events, i.e.,  
 `room/roomJoined`↔`client:room/roomJoined`,`server:room/roomJoined`.
 
 ### Back end
