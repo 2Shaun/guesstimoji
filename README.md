@@ -16,7 +16,7 @@ Multiplayer emoji guessing game made with MERN Stack. [You can view the demo her
 6. Repeat from step 2
 
 *Winning condition*  
-The first player **_guesstimate_** the other emoji in chat wins
+The first player to **_guesstimate_** the other emoji in chat wins
 
 ## Technical details
 
