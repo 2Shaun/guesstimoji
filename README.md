@@ -39,7 +39,7 @@ There is a correspondence between action types and server events, i.e.,
 ### Back end
 
 The game logic layer runs on a `node.js` instance. Player picks are stored server side. The server groups client sockets into rooms using `socket.io` and emits game events exclusive to that room. Game state is stored in the `roomHashTable` at this layer.  
-The data access layer is managed with `mongoose` and controller layer with `GraphQL`.  When the game ends, data from the `roomHashTable` is stored in a `mongodb` collection called `games` in the `guesstimoji` database. Here is an example document in the `games` collection:
+The data access/service layer is managed with `mongoose` and the controller layer is managed with `GraphQL`.  When the game ends, data from the `roomHashTable` is stored in a `mongodb` collection called `games` in the `guesstimoji` database. Here is an example document in the `games` collection:
 ```json
 {
 	"_id": "LvvuCjDyYUsQEBC5AAAE1MqglVjwr86Z4UK4AAAF1",
