@@ -115,7 +115,7 @@ In the root directory, run `npm install` in both the `client` and `server` direc
 ```shell
 npm start
 ```
-in the `server` directory, run:
+in both the `server` and `graphQLAPI` directories, run:
 ```shell
-node server
+nodemon server
 ```
