@@ -28,8 +28,8 @@ export const argsJsonStringify = (argsObject) => {
         : "";
 }
 
-export const fetchGraphQLData = async (query) =>
-    (await fetch(graphQlApiUrl, {
+export const fetchGraphQLData = (query) =>
+    (fetch(graphQlApiUrl, {
         method: 'POST',
         credentials: 'same-origin',
         headers: {
@@ -55,7 +55,8 @@ export const getEmojis = async (argsObject = null) => {
             }
         } 
     `;
-    return await fetchGraphQLData(query).getEmojis;
+    const promiseResult = await fetchGraphQLData(query);
+    return promiseResult.getEmojis;
     // return json.data.getEmojis;
 }
 

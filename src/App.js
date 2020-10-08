@@ -34,7 +34,7 @@ const App = ({ roomJoined, homePageLoaded, gotBoards, roomID, player }) => {
   }, []);
   */
   useEffect(() => {
-    console.log(getEmojis({ group: "Animals & Nature" }));
+    console.log('QUERY TEST:', getEmojis({ group: "Animals & Nature" }));
   }, []);
   const handleJoin = (joinData) => {
     console.log("handleJoin -> joinData", joinData);

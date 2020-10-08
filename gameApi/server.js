@@ -65,6 +65,7 @@ app.get('/', (request, response) => {
 //}}
 
 
+/*
 const insertRecordIntoCollection = (rec, coll) => {
   // mongoClient.connect(url, (err, db) => {
   mongoClient.connect(mongoDBStrings.connectionString, (err, db) => {
@@ -77,7 +78,7 @@ const insertRecordIntoCollection = (rec, coll) => {
     });
   });
 }
-
+*/
 const validateBoardIndex = (index) => {
   if (typeof index != 'number') {
     console.log("Invalid index type %s", typeof index);
@@ -305,7 +306,7 @@ io.sockets.on("connection", (socket) => {
            gameLog: gameLog,
            game: game,
          };*/
-        insertRecordIntoCollection(record, "games");
+        //insertRecordIntoCollection(record, "games");
         // if it is gameOver, log game
         io.in(roomID).emit("server:room/roomJoined", { winner: winner });
         io.in(roomID).emit("server:gameLog/turnSubmitted", playerWin ? {
