@@ -12,7 +12,7 @@ function Footer() {
           <img src={"./square-github.png"} width="30px" height="auto" />
         </a>
         </li>
-        <li><a href="http://localhost:3005/graphql" target="_blank">
+        <li><a href="http://157.245.254.196:3005/graphql" target="_blank">
           <img src={"./square-graphql.png"} width="30px" height="auto" />
         </a>
         </li>
