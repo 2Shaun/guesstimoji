@@ -1,4 +1,4 @@
-const graphQlApiUrl = 'http://localhost:3005/graphql';
+const graphQlApiUrl = 'http://157.245.254.196:3005/graphql';
 
 export const graphQlPost = async (query) => {
     const res = await fetch(graphQlApiUrl, {
