@@ -1,26 +1,25 @@
 import React from "react";
 import { connect } from "react-redux";
 
-const BoardPreview = ({ i, onClick, boards }) => {
+const BoardPreview = ({ i, onClick, previews }) => {
   // might be able to create an outer onClick function in here
   // which modifies look of board preview
   // and calls the props.onClick
   //const boardName = boardNames[i];
-  const preview = boards ? boards[i].join("") : "";
-  //console.log("BoardPreview -> boards", boards);
+  console.log("BoardPreview -> previews", previews);
   return (
     <button
       id="board-select-button"
       onClick={() => onClick(i)}
       autoFocus={i == 1}
     >
-      {preview}
+      {previews ? previews[i] : ""}
     </button>
   );
 };
 
 const mapStateToProps = (state) => ({
-  boards: state.boards,
+  previews: state.boards.previews,
 })
 
 export default connect(mapStateToProps)(BoardPreview);

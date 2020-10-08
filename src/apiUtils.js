@@ -93,13 +93,13 @@ const createBoard = async (mutation) => {
     return board;
 }
 
-const convertEmojiObjArrayToMutation = (array) =>
+export const addGetEmojiResponseAsBoard = (array) =>
     // the beginning of query
     'mutation{createBoard(emojis: ["'
     // create array of emoji strings
     + array.map(x => x.emoji)
         // take only first 40 elements
-        .slice(0, 40)
+        .slice(80, 120)
         // create a string with elements
         .join('","')
     + '"]){emojis}}';

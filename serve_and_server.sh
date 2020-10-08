@@ -13,8 +13,10 @@
 # the service file should be located in:
 # /etc/systemd/system/
 # of the webserver
-cd /var/www/html
+cd /var/www/html/gameApi
 node server.js &
+cd ../graphQlApi
+node server.js
 # do not run serve in the background with &
 serve -l 80
 # TODO: try running on both http and https ports

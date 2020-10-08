@@ -29,5 +29,5 @@ db.once('open', async () => {
 
     app.listen({
         port: 3005,
-    })
+    }, () => console.log('Starting server on port 3005'))
 });
