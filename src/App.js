@@ -34,6 +34,7 @@ const App = ({ roomJoined, homePageLoaded, gotBoards, roomID, player }) => {
   }, []);
   */
   const handleJoin = (joinData) => {
+    console.log("handleJoin -> joinData", joinData);
     socket.emit("client:room/roomJoined", joinData);
     socket.on("server:room/roomJoined", (joinData) => {
       if (joinData) {

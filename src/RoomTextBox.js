@@ -36,7 +36,7 @@ const RoomTextBox = ({ boards, handleJoin, roomID }) => {
 };
 
 const mapStateToProps = (state) => ({
-  boards: state.boards,
+  boards: state.boards.boards,
 })
 
 export default connect(mapStateToProps)(RoomTextBox);
