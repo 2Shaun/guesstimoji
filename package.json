@@ -37,7 +37,7 @@
     ],
     "server": "node server.js",
     "start": "react-scripts start",
-    "deploy-production": "git checkout prod && react-scripts build && scp -r ./build tommy@157.245.254.196:/var/www/html && scp -r ./gameApi tommy@157.245.254.196:/var/www/html && scp -r ./graphQlApi tommy@157.245.254.196:/var/www/html && scp ./boards.js tommy@157.245.254.196:/var/www/html && git checkout -",
+    "deploy-production": "git checkout prod && react-scripts build && scp -r ./build tommy@157.245.254.196:/var/www/html && scp -r ./gameApi tommy@157.245.254.196:/var/www/html && scp -r ./graphQlApi tommy@157.245.254.196:/var/www/html && scp ./boards.json tommy@157.245.254.196:/var/www/html && scp ./emojis.json tommy@157.245.254.196:/var/www/html && git checkout -",
     "dev": "concurrently 'npm run server' 'npm start'",
     "build": "react-scripts build",
     "test": "react-scripts test",
