@@ -48,6 +48,7 @@ const typeDefs = gql`
     
     type Mutation {
         createBoard(emojis: [String!]!): Board!
+        createGame(roomID: String!, winner: String, board: ID!, gameLog: [Message!]!, game: Int!): Game!
     }
     `;
 

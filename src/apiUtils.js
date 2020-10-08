@@ -28,6 +28,23 @@ export const argsJsonStringify = (argsObject) => {
         : "";
 }
 
+export const fetchGraphQLData = async (query) =>
+    (await fetch(graphQlApiUrl, {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query }),
+
+    }).then(res => res.json())
+        .then(json => {
+            console.log(`response from ${query}: `, json.data);
+            return json.data;
+
+        }).catch((err) => { console.error(err); }));
+
+
 export const getEmojis = async (argsObject = null) => {
     const args = argsJsonStringify(argsObject);
     // {getEmojis(group: "Smileys & Emotion"){emoji}}
@@ -38,21 +55,8 @@ export const getEmojis = async (argsObject = null) => {
             }
         } 
     `;
-    const emojis = await fetch(graphQlApiUrl, {
-        method: 'POST',
-        credentials: 'same-origin',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ query }),
-    })
-        .then(res => res.json())
-        .then(json => {
-            console.log(`response from ${query}: `, json.data.getEmojis)
-            return json.data.getEmojis;
-        })
-        .catch((err) => { console.error(err); });
-    return emojis;
+    return await fetchGraphQLData(query).getEmojis;
+    // return json.data.getEmojis;
 }
 
 export const getBoards = async (query) => {
