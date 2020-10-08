@@ -33,6 +33,9 @@ const App = ({ roomJoined, homePageLoaded, gotBoards, roomID, player }) => {
     getEmojis({ group: "Animals & Nature" }).then((arr) => addGetEmojiResponseAsBoard(arr)).then((str) => graphQlPost(str));
   }, []);
   */
+  useEffect(() => {
+    console.log('QUERY TEST:', getEmojis({ group: "Animals & Nature" }));
+  }, []);
   const handleJoin = (joinData) => {
     console.log("handleJoin -> joinData", joinData);
     socket.emit("client:room/roomJoined", joinData);
