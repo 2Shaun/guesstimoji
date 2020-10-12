@@ -28,7 +28,6 @@ const App = ({ roomJoined, homePageLoaded, gotBoards, roomID, player }) => {
       .catch((err) => { homePageLoaded("❌"); console.error(err); });
     socket.emit("client:rooms/roomsRequested");
     socket.on("server:rooms/roomsResponded", (vacantRooms) => {
-      console.log("in client: rooms responded");
       console.log("vacantRooms", vacantRooms);
     });
   }, []);
