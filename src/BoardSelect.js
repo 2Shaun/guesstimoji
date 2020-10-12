@@ -1,21 +1,31 @@
 import React from "react";
-import BoardPreview from "./BoardPreview";
+import { connect } from "react-redux";
 
-const BoardSelect = (props) => {
-  const renderBoardPreview = (i) => {
-    return <BoardPreview i={i} onClick={props.onClick} />;
-  };
+const BoardSelect = ({ onClick, previews }) => {
   return (
-    <div>
+    <>
       <h3>Select Board</h3>
       <div id="board-select">
-        {renderBoardPreview(0)}
-        {renderBoardPreview(1)}
-        {renderBoardPreview(2)}
-        {renderBoardPreview(3)}
+        {
+          previews
+            ? previews.map((preview, index) => (
+              <button
+                id="board-select-button"
+                onClick={() => onClick(index)}
+                autoFocus={index == 1}
+              >
+                {previews[index]}
+              </button>
+            ))
+            : null
+        }
       </div>
-    </div>
+    </>
   );
 };
 
-export default BoardSelect;
+const mapStateToProps = (state) => ({
+  previews: state.boards.previews,
+})
+
+export default connect(mapStateToProps)(BoardSelect);
