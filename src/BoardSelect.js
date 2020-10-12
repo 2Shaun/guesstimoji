@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 
+// Select component which will take in rooms or preview
 const BoardSelect = ({ onClick, previews }) => {
   return (
     <>

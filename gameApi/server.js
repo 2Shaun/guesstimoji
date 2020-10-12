@@ -160,6 +160,13 @@ const validateObject = (data, valid) => {
 // I think rooms are handled server side,
 // i.e., the client has no idea it's in a room
 io.sockets.on("connection", (socket) => {
+  socket.on('client:rooms/roomsRequested', () => {
+    const roomIds = Object.keys(roomHashTable);
+    console.log('rooms requested');
+    // only show roomIds for which the room is not full
+    socket.emit("server:rooms/roomsResponded", roomIds.filter(id => roomHashTable[id] ? !roomHashTable[id].roomFull : false));
+  });
+
   socket.on("client:room/roomJoined", (joinData) => {
     if (!validateObject(joinData, utils.JOINDATA_TYPES)) {
       return;

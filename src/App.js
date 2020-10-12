@@ -26,6 +26,11 @@ const App = ({ roomJoined, homePageLoaded, gotBoards, roomID, player }) => {
       .then(array => array.map(x => x.emoji))
       .then(array => homePageLoaded(array[Math.floor(Math.random() * array.length)]))
       .catch((err) => { homePageLoaded("❌"); console.error(err); });
+    socket.emit("client:rooms/roomsRequested");
+    socket.on("server:rooms/roomsResponded", (vacantRooms) => {
+      console.log("in client: rooms responded");
+      console.log("vacantRooms", vacantRooms);
+    });
   }, []);
   /*
   // add boards
@@ -51,6 +56,8 @@ const App = ({ roomJoined, homePageLoaded, gotBoards, roomID, player }) => {
     <div className="App" align="center">
       {
         // player should only be defined if you're in a room
+        // might wanna turn this into a switch statement
+        // page state = {home, game, find}
         player ?
           <GamePage socket={socket} /> :
           <HomePage handleJoin={handleJoin} roomID={roomID} />
