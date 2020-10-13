@@ -10,13 +10,14 @@ import { connect } from "react-redux";
 import { homePageLoaded, roomJoined } from "./redux/roomSlice";
 import { getBoards, getEmojis, addGetEmojiResponseAsBoard, graphQlPost } from "./apiUtils";
 import { gotBoards } from "./redux/boardsSlice";
+import { gotRooms } from "./redux/roomsSlice";
 // view layer
 
 
 // handleJoin data should have both id and board selection
 
 // the first argument to a component is always the props obj
-const App = ({ roomJoined, homePageLoaded, gotBoards, roomID, player }) => {
+const App = ({ roomJoined, homePageLoaded, gotBoards, gotRooms, roomID, player }) => {
   useEffect(() => {
     getBoards('{getBoards{emojis}}')
       .then((res) => res.map(x => x.emojis))
@@ -27,8 +28,8 @@ const App = ({ roomJoined, homePageLoaded, gotBoards, roomID, player }) => {
       .then(array => homePageLoaded(array[Math.floor(Math.random() * array.length)]))
       .catch((err) => { homePageLoaded("❌"); console.error(err); });
     socket.emit("client:rooms/roomsRequested");
-    socket.on("server:rooms/roomsResponded", (vacantRooms) => {
-      console.log("vacantRooms", vacantRooms);
+    socket.on("server:rooms/roomsResponded", (rooms) => {
+      gotRooms(rooms);
     });
   }, []);
   /*
@@ -83,6 +84,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   roomJoined,
   gotBoards,
+  gotRooms,
   homePageLoaded,
 };
 
