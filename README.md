@@ -115,7 +115,49 @@ In the root directory, run `npm install` in both the `client` and `server` direc
 ```shell
 npm start
 ```
-in both the `server` and `graphQLAPI` directories, run:
+in both the `gameApi` and `graphQlApi` directories, run:
 ```shell
 nodemon server
 ```
+
+### Deployment
+The website and APIs are served with `.service` unit files in the `/etc/systemd/system` directory. The website is served with this:
+```
+[Unit]
+Description=HTTP Web Server
+After=network.target
+
+[Service]
+User=root
+Type=simple
+ExecStart=/var/www/html/serve.sh
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+```
+where `serve.sh` is:
+```
+#!/bin/bash
+cd /var/www/html/build
+serve -n -l 80
+```
+The game logic API is started with this:
+```
+[Unit]
+Description=HTTP Game Logic API
+After=network.target
+
+[Service]
+User=tommy
+Environment=GAME_API_PORT=5000
+Type=simple
+WorkingDirectory=/var/www/html/gameApi
+ExecStart=/usr/bin/node server.js
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+```
+The GraphQL API is started similarly.
+
