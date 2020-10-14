@@ -29,6 +29,7 @@ const App = ({ roomJoined, homePageLoaded, gotBoards, gotRooms, roomID, player }
       .catch((err) => { homePageLoaded("❌"); console.error(err); });
     socket.emit("client:rooms/roomsRequested");
     socket.on("server:rooms/roomsResponded", (rooms) => {
+      console.log('rooms responded');
       gotRooms(rooms);
     });
   }, []);
@@ -60,7 +61,7 @@ const App = ({ roomJoined, homePageLoaded, gotBoards, gotRooms, roomID, player }
         // page state = {home, game, find}
         player ?
           <GamePage socket={socket} /> :
-          <HomePage handleJoin={handleJoin} roomID={roomID} />
+          <HomePage handleJoin={handleJoin} roomID={roomID} socket={socket} />
       }
       <Footer />
     </div>

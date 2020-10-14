@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import RoomTextBox from "./RoomTextBox";
+import HomePageDiv from "./HomePageDiv";
 import { getEmojis } from "./apiUtils";
 // boards is a map where the key is name
 // it returns an object of {data, preview}
 import "./index.css";
 
 
-const HomePage = ({ handleJoin, roomID, randomSmiley }) => {
+const HomePage = ({ handleJoin, roomID, randomSmiley, socket }) => {
   return (
     <div>
       <h1 align="center">{"GUESSTIM" + randomSmiley + "JI"}</h1>
-      <RoomTextBox handleJoin={handleJoin} roomID={roomID} />
+      <HomePageDiv handleJoin={handleJoin} roomID={roomID} socket={socket} />
     </div>
   );
 };

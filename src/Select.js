@@ -1,32 +1,28 @@
 import React from "react";
-import { connect } from "react-redux";
 
 // Select component which will take in rooms or preview
-const BoardSelect = ({ onClick, previews }) => {
+const Select = ({ header, emptyMessage, onClick, selections }) => {
   return (
     <>
-      <h3>Select Board</h3>
+      <h3>{header}</h3>
       <div id="board-select">
         {
-          previews
-            ? previews.map((preview, index) => (
+          selections != null && selections.length > 0
+            ? selections.map((_, index) => (
               <button
                 id="board-select-button"
                 onClick={() => onClick(index)}
                 autoFocus={index == 1}
               >
-                {previews[index]}
+                {selections[index]}
               </button>
             ))
-            : null
+            : `${emptyMessage}`
         }
       </div>
     </>
   );
 };
 
-const mapStateToProps = (state) => ({
-  previews: state.boards.previews,
-})
 
-export default connect(mapStateToProps)(BoardSelect);
+export default Select;
