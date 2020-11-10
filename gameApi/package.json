@@ -1,0 +1,19 @@
+{
+  "name": "guesstimoji-game-api",
+  "version": "1.0.0",
+  "description": "Game logic layer for guesstimoji",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "2shaun",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "http": "0.0.1-security",
+    "moment": "^2.29.1",
+    "path": "^0.12.7",
+    "socket.io": "^3.0.1"
+  }
+}
