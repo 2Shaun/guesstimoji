@@ -26,3 +26,4 @@ yarn-error.log*
 
 /app/mongoDBStrings.js
 /app/dbTest.js
+.env*.local

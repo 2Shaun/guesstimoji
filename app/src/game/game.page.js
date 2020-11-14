@@ -1,15 +1,14 @@
-import React, { Component, useEffect, useState } from "react";
-import RoomName from "./RoomName";
-import OpponentBoard from "./OpponentBoard";
-import Board from "./Board";
-import GameLog from "./GameLog";
-import queryString from "query-string";
-import socket from "../socketlocal";
-import "../index.css";
-import { connect, useDispatch } from "react-redux";
-import { turnSubmitted, cleared } from "../redux/gameLogSlice";
-import { clicked } from "../redux/opponentBoardSlice";
-//import socket from '../../socket';
+import React, { Component, useEffect, useState } from 'react';
+import RoomName from './RoomName';
+import OpponentBoard from './OpponentBoard';
+import Board from './Board';
+import GameLog from './GameLog';
+import queryString from 'query-string';
+import '../index.css';
+import { connect, useDispatch } from 'react-redux';
+import { turnSubmitted, cleared } from '../redux/gameLogSlice';
+import { clicked } from '../redux/opponentBoardSlice';
+import socket from '../socket';
 
 // This is the VIEW in MVC
 
@@ -23,40 +22,40 @@ import { clicked } from "../redux/opponentBoardSlice";
 
 // I need to figure out how to pass down the values
 const GamePage = ({
-  socket,
-  roomID,
-  roomFull,
-  board,
-  player,
-  gameCount,
-  winner,
+	socket,
+	roomID,
+	roomFull,
+	board,
+	player,
+	gameCount,
+	winner,
 }) => {
-  const dispatch = useDispatch();
-  useEffect(() => {
-    if (roomFull) {
-      socket.on("server:gameLog/turnSubmitted", (turnData) => {
-        dispatch(turnSubmitted(turnData));
-      });
-      socket.on("server:opponentBoard/clicked", (index) => {
-        dispatch(clicked(index));
-      });
-    } else {
-      socket.off("server:gameLog/turnSubmitted");
-      socket.off("server:opponentBoard/clicked");
-    }
-  }, [roomFull]);
-  useEffect(() => {
-    socket.on("server:gameLog/cleared", () => {
-      dispatch(cleared());
-    });
-  }, []);
+	const dispatch = useDispatch();
+	useEffect(() => {
+		if (roomFull) {
+			socket.on('server:gameLog/turnSubmitted', (turnData) => {
+				dispatch(turnSubmitted(turnData));
+			});
+			socket.on('server:opponentBoard/clicked', (index) => {
+				dispatch(clicked(index));
+			});
+		} else {
+			socket.off('server:gameLog/turnSubmitted');
+			socket.off('server:opponentBoard/clicked');
+		}
+	}, [roomFull]);
+	useEffect(() => {
+		socket.on('server:gameLog/cleared', () => {
+			dispatch(cleared());
+		});
+	}, []);
 
-  // make sure that you check to see if you can import socket
-  // or have to pass it as prop
-  // the empty array tells useEffect to only run once
+	// make sure that you check to see if you can import socket
+	// or have to pass it as prop
+	// the empty array tells useEffect to only run once
 
-  // state changes in a useEffect could cause an inf loop
-  /*
+	// state changes in a useEffect could cause an inf loop
+	/*
   useEffect(() => {
     if(socket.room !== roomQuery ){
       socket.emit("subscribe", roomQuery);
@@ -65,26 +64,26 @@ const GamePage = ({
   });
   */
 
-  // the component will be mounted if the player number is found
-  return (
-    <div>
-      <div>
-        <RoomName roomID={roomID} />
-        <OpponentBoard board={board} socket={socket} roomID={roomID} />
-        <Board board={board} socket={socket} roomID={roomID} player={player} />
-        <GameLog
-          socket={socket}
-          roomID={roomID}
-          roomFull={roomFull}
-          player={player}
-          winner={winner}
-        />
-        {
-          // Need 'Leave Room' button
-        }
-      </div>
-    </div>
-  );
+	// the component will be mounted if the player number is found
+	return (
+		<div>
+			<div>
+				<RoomName roomID={roomID} />
+				<OpponentBoard board={board} socket={socket} roomID={roomID} />
+				<Board board={board} socket={socket} roomID={roomID} player={player} />
+				<GameLog
+					socket={socket}
+					roomID={roomID}
+					roomFull={roomFull}
+					player={player}
+					winner={winner}
+				/>
+				{
+					// Need 'Leave Room' button
+				}
+			</div>
+		</div>
+	);
 };
 
 // there will need to be two boards
@@ -110,12 +109,12 @@ const GamePage = ({
 //      onClick
 
 const mapStateToProps = (state) => ({
-  ...state.room,
+	...state.room,
 });
 
 const mapDispatchToProps = {
-  turnSubmitted,
-  cleared,
+	turnSubmitted,
+	cleared,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(GamePage);

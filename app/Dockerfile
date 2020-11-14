@@ -4,7 +4,7 @@ ENV PATH /app/node_modules/.bin:$PATH
 
 COPY package*.json ./
 RUN npm install
-RUN install react-scripts -g
+RUN npm i react-scripts -g
 
 COPY . ./
 

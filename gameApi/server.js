@@ -9,10 +9,8 @@ const moment = require("moment");
 const app = express();
 const server = http.Server(app);
 const io = socketIO(server);
-const url = 'mongodb://127.0.0.1:27017/';
 var roomHashTable = {};
 
-const port = process.env.PORT || 5000;
 
 // req object = THE http request
 // res object = THE http response that the Express app sends
@@ -349,6 +347,6 @@ io.sockets.on("connection", (socket) => {
 app.get('/', (req, res) => { res.send('Hello world') });
 
 // servers are kind of all-receiving
-server.listen(port, () => {
-  console.log(`Starting server on port ${port}`);
+server.listen(process.env.GAME_API_PORT, () => {
+  console.log(`Starting server on port ${process.env.GAME_API_PORT}`);
 });

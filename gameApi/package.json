@@ -15,5 +15,9 @@
     "moment": "^2.29.1",
     "path": "^0.12.7",
     "socket.io": "^3.0.1"
+  },
+  "devDependencies": {
+    "prettier": "^2.1.2",
+    "prettier-airbnb-config": "^1.0.0"
   }
 }
