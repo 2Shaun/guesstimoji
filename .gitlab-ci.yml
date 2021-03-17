@@ -7,7 +7,7 @@ build:
   stage: build
   script:
     - npm i
-    - npm build
+    - npm run build
   artifacts:
     expire_in: 1 hour
     paths:
