@@ -1,0 +1,22 @@
+stages:
+  - build
+  - test
+  - deploy
+
+build:
+  stage: build
+  script:
+    - npm i
+    - npm build
+  artifacts:
+    expire_in: 1 hour
+    paths:
+      - build
+      - node_modules/
+
+test:
+  stage: test
+  dependencies:
+    - build
+  script:
+    - CI=true npm t
