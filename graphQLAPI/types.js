@@ -1,4 +1,4 @@
-const { gql } = require('apollo-server-express')
+const { gql } = require('apollo-server-express');
 
 const typeDefs = gql`
     type Emoji {
@@ -49,8 +49,8 @@ const typeDefs = gql`
     type Mutation {
         createBoard(emojis: [String!]!): Board!
     }
-`
+`;
 
 module.exports = {
     typeDefs,
-}
+};

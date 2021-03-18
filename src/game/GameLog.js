@@ -1,22 +1,22 @@
-import React, { useEffect, useState } from 'react'
-import TurnHandler from './TurnHandler'
-import { connect, useDispatch } from 'react-redux'
-import { turnSubmitted } from '../redux/gameLogSlice'
+import React, { useEffect, useState } from 'react';
+import TurnHandler from './TurnHandler';
+import { connect, useDispatch } from 'react-redux';
+import { turnSubmitted } from '../redux/gameLogSlice';
 
 const GameLog = ({ socket, roomID, roomFull, gameLog, player, winner }) => {
-    const opponent = (player % 2) + 1
-    console.log('GameLog -> player', player)
-    console.log('GameLog -> opponent', opponent)
-    const dispatch = useDispatch()
+    const opponent = (player % 2) + 1;
+    console.log('GameLog -> player', player);
+    console.log('GameLog -> opponent', opponent);
+    const dispatch = useDispatch();
 
     const handleSubmitTurn = (untrimmedMessage) => {
-        const message = untrimmedMessage.trim()
+        const message = untrimmedMessage.trim();
         socket.emit('client:gameLog/turnSubmitted', {
             player: player,
             message: message,
-        })
-        dispatch(turnSubmitted({ username: 'You', message: message }))
-    }
+        });
+        dispatch(turnSubmitted({ username: 'You', message: message }));
+    };
 
     const renderGameLog = () => {
         // the second argument of map is optional, takes in the index
@@ -30,8 +30,8 @@ const GameLog = ({ socket, roomID, roomFull, gameLog, player, winner }) => {
                 <span>{username + ':'}</span>
                 <span>{message}</span>
             </div>
-        ))
-    }
+        ));
+    };
     return (
         <div>
             <TurnHandler
@@ -45,15 +45,15 @@ const GameLog = ({ socket, roomID, roomFull, gameLog, player, winner }) => {
             />
             <div class="game-log-box">{renderGameLog()}</div>
         </div>
-    )
-}
+    );
+};
 
 const mapStateToProps = (state) => ({
     gameLog: state.gameLog,
-})
+});
 
 const mapDispatchToProps = {
     turnSubmitted,
-}
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(GameLog)
+export default connect(mapStateToProps, mapDispatchToProps)(GameLog);

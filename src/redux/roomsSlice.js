@@ -3,13 +3,13 @@ export const roomsReducer = (state = [], action) => {
     switch (action.type) {
         case 'gotRooms':
             // don't want to spread array here bc not saving
-            return action.payload
+            return action.payload;
         default:
-            return state
+            return state;
     }
-}
+};
 
 export const gotRooms = (rooms) => ({
     type: 'gotRooms',
     payload: rooms,
-})
+});

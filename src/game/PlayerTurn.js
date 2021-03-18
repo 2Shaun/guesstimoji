@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 
 const PlayerTurn = ({ handleSubmitTurn, askingTurn }) => {
-    const [tempQuestion, setTempQuestion] = useState('')
+    const [tempQuestion, setTempQuestion] = useState('');
     const onChange = (e) => {
-        setTempQuestion(e.target.value)
-    }
+        setTempQuestion(e.target.value);
+    };
     return askingTurn ? (
         <div>
             <input
@@ -34,7 +34,7 @@ const PlayerTurn = ({ handleSubmitTurn, askingTurn }) => {
                 NO
             </button>
         </div>
-    )
-}
+    );
+};
 
-export default PlayerTurn
+export default PlayerTurn;

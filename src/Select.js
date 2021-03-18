@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 
 // Select component which will take in rooms or preview
 const Select = ({ header, emptyMessage, onClick, selections }) => {
@@ -19,7 +19,7 @@ const Select = ({ header, emptyMessage, onClick, selections }) => {
                     : `${emptyMessage}`}
             </div>
         </>
-    )
-}
+    );
+};
 
-export default Select
+export default Select;

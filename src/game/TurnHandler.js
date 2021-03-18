@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
-import { connect } from 'react-redux'
-import PlayerTurn from './PlayerTurn'
-import OpponentTurn from './OpponentTurn'
+import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
+import PlayerTurn from './PlayerTurn';
+import OpponentTurn from './OpponentTurn';
 
 const TurnHandler = ({
     socket,
@@ -20,12 +20,12 @@ const TurnHandler = ({
     // player 1 turn 1/2
     // player 1 turn 2/2
     // player 2 turn 1/2
-    const player1Turn = turn % 4 === 1 || turn % 4 === 2
-    const player2Turn = !player1Turn
+    const player1Turn = turn % 4 === 1 || turn % 4 === 2;
+    const player2Turn = !player1Turn;
     const playerTurn =
-        (player === 1 && player1Turn) || (player === 2 && player2Turn)
-    const askingTurn = turn % 2 === 0
-    const opponent = (player % 2) + 1
+        (player === 1 && player1Turn) || (player === 2 && player2Turn);
+    const askingTurn = turn % 2 === 0;
+    const opponent = (player % 2) + 1;
 
     // message can be populated with yes/no button or
 
@@ -34,11 +34,11 @@ const TurnHandler = ({
     if (winner) {
         // need 'New Game' button which brings up board select for player 1
         // need 'Waiting for Player 1 to start a new game...' for player 2
-        return <div>GAME OVER</div>
+        return <div>GAME OVER</div>;
     } else if (!roomFull) {
-        return <div>Waiting for Player 2 to join...</div>
+        return <div>Waiting for Player 2 to join...</div>;
     } else if (!picked) {
-        return <div></div>
+        return <div></div>;
     } else {
         return playerTurn ? (
             <PlayerTurn
@@ -47,12 +47,12 @@ const TurnHandler = ({
             />
         ) : (
             <OpponentTurn opponent={opponent} askingTurn={askingTurn} />
-        )
+        );
     }
-}
+};
 
 const mapStateToProps = (state) => ({
     picked: state.player,
-})
+});
 
-export default connect(mapStateToProps, null)(TurnHandler)
+export default connect(mapStateToProps, null)(TurnHandler);

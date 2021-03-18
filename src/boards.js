@@ -1179,7 +1179,7 @@ let allEmojis = [
     '🕥',
     '🕦',
     '🕧',
-]
-let smileys = allEmojis.slice(0, 56)
+];
+let smileys = allEmojis.slice(0, 56);
 
-export { smileys }
+export { smileys };

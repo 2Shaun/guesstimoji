@@ -1,14 +1,14 @@
-import React, { Component, useEffect, useState } from 'react'
-import RoomName from './RoomName'
-import OpponentBoard from './OpponentBoard'
-import Board from './Board'
-import GameLog from './GameLog'
-import queryString from 'query-string'
-import socket from '../socketlocal'
-import '../index.css'
-import { connect, useDispatch } from 'react-redux'
-import { turnSubmitted, cleared } from '../redux/gameLogSlice'
-import { clicked } from '../redux/opponentBoardSlice'
+import React, { Component, useEffect, useState } from 'react';
+import RoomName from './RoomName';
+import OpponentBoard from './OpponentBoard';
+import Board from './Board';
+import GameLog from './GameLog';
+import queryString from 'query-string';
+import socket from '../socketlocal';
+import '../index.css';
+import { connect, useDispatch } from 'react-redux';
+import { turnSubmitted, cleared } from '../redux/gameLogSlice';
+import { clicked } from '../redux/opponentBoardSlice';
 //import socket from '../../socket';
 
 // This is the VIEW in MVC
@@ -31,25 +31,25 @@ const GamePage = ({
     gameCount,
     winner,
 }) => {
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
     useEffect(() => {
         if (roomFull) {
             socket.on('server:gameLog/turnSubmitted', (turnData) => {
-                dispatch(turnSubmitted(turnData))
-            })
+                dispatch(turnSubmitted(turnData));
+            });
             socket.on('server:opponentBoard/clicked', (index) => {
-                dispatch(clicked(index))
-            })
+                dispatch(clicked(index));
+            });
         } else {
-            socket.off('server:gameLog/turnSubmitted')
-            socket.off('server:opponentBoard/clicked')
+            socket.off('server:gameLog/turnSubmitted');
+            socket.off('server:opponentBoard/clicked');
         }
-    }, [roomFull])
+    }, [roomFull]);
     useEffect(() => {
         socket.on('server:gameLog/cleared', () => {
-            dispatch(cleared())
-        })
-    }, [])
+            dispatch(cleared());
+        });
+    }, []);
 
     // make sure that you check to see if you can import socket
     // or have to pass it as prop
@@ -89,8 +89,8 @@ const GamePage = ({
                 }
             </div>
         </div>
-    )
-}
+    );
+};
 
 // there will need to be two boards
 // I chose squares to be a state because
@@ -116,11 +116,11 @@ const GamePage = ({
 
 const mapStateToProps = (state) => ({
     ...state.room,
-})
+});
 
 const mapDispatchToProps = {
     turnSubmitted,
     cleared,
-}
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(GamePage)
+export default connect(mapStateToProps, mapDispatchToProps)(GamePage);

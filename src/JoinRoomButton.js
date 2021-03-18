@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 
 const JoinRoomButton = ({ roomID, board, handleJoin }) => {
     return (
@@ -8,7 +8,7 @@ const JoinRoomButton = ({ roomID, board, handleJoin }) => {
         >
             PLAY
         </button>
-    )
-}
+    );
+};
 
-export default JoinRoomButton
+export default JoinRoomButton;

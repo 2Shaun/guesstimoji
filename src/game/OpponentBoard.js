@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
-import OpponentSquare from './OpponentSquare'
-import { connect } from 'react-redux'
+import React, { useState } from 'react';
+import OpponentSquare from './OpponentSquare';
+import { connect } from 'react-redux';
 const OpponentBoard = ({ socket, board, show }) => {
     //const [freshBoard, setFreshBoard] = useState(easterEgg(props.room));
 
@@ -9,8 +9,8 @@ const OpponentBoard = ({ socket, board, show }) => {
     //socket.on(`setFreshBoard`, (newFreshBoard) => (setFreshBoard(newFreshBoard)));
 
     const renderSquare = (i) => {
-        return <OpponentSquare index={i} value={show[i] ? board[i] : '█'} />
-    }
+        return <OpponentSquare index={i} value={show[i] ? board[i] : '█'} />;
+    };
     return (
         <div class="board">
             <div class="board-row">
@@ -59,11 +59,11 @@ const OpponentBoard = ({ socket, board, show }) => {
                 {renderSquare(6)}
             </div>
         </div>
-    )
-}
+    );
+};
 
 const mapStateToProps = (state) => ({
     show: state.opponentBoard,
-})
+});
 
-export default connect(mapStateToProps, null)(OpponentBoard)
+export default connect(mapStateToProps, null)(OpponentBoard);

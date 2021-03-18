@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
-import Select from './Select'
-import JoinRoomButton from './JoinRoomButton'
-import { connect } from 'react-redux'
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import Select from './Select';
+import JoinRoomButton from './JoinRoomButton';
+import { connect } from 'react-redux';
 
 const HomePageDiv = ({
     boards,
@@ -17,24 +17,24 @@ const HomePageDiv = ({
     // store id and board will be updated on PLAY
     // this allows me to not have to connect the home page
     // to the store
-    const [tempBoard, setTempBoard] = useState(boards ? boards[0] : null)
-    const [tempRoomID, setTempRoomID] = useState(roomID)
+    const [tempBoard, setTempBoard] = useState(boards ? boards[0] : null);
+    const [tempRoomID, setTempRoomID] = useState(roomID);
 
     const handleBoardClick = (i) => {
-        setTempBoard(boards[i])
-    }
+        setTempBoard(boards[i]);
+    };
 
     const handleRoomClick = (i) => {
         // join room should not require board
         handleJoin({
             roomID: rooms[i],
             board: [],
-        })
-    }
+        });
+    };
 
     const handleChange = (e) => {
-        setTempRoomID(e.target.value)
-    }
+        setTempRoomID(e.target.value);
+    };
 
     return (
         <div align="center">
@@ -64,13 +64,13 @@ const HomePageDiv = ({
                 Refresh Rooms
             </button>
         </div>
-    )
-}
+    );
+};
 
 const mapStateToProps = (state) => ({
     boards: state.boards.boards,
     previews: state.boards.previews,
     rooms: state.rooms,
-})
+});
 
-export default connect(mapStateToProps)(HomePageDiv)
+export default connect(mapStateToProps)(HomePageDiv);

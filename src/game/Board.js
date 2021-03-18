@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
-import Square from './Square'
-import Choice from './PickTextBox'
-import { connect } from 'react-redux'
-import { playerPicked } from '../redux/playersSlice'
+import React, { useState } from 'react';
+import Square from './Square';
+import Choice from './PickTextBox';
+import { connect } from 'react-redux';
+import { playerPicked } from '../redux/playersSlice';
 
 // i'm hoping that when the client socket emits a request,
 // the server will be able to extract room information
@@ -14,7 +14,7 @@ const Board = ({ socket, board, player, picked, playerPicked }) => {
     // IN SUBSEQUENT RENDERS, THE ARGUMENT OF USESTATE
     // WILL BE IGNORED AND THE CURRENT VALUE WILL BE
     // RETRIEVED
-    const [pick, setPick] = useState('')
+    const [pick, setPick] = useState('');
 
     // with 2 boards, there is no reason to listen on the player's board
     //socket.on(`setState`, (newSquares) => (setSquares(newSquares)));
@@ -27,10 +27,10 @@ const Board = ({ socket, board, player, picked, playerPicked }) => {
         socket.emit('client:players/picked', {
             player: player,
             pick: board[i],
-        })
-        playerPicked()
-        setPick(board[i])
-    }
+        });
+        playerPicked();
+        setPick(board[i]);
+    };
     // this is a white space char, not a space
     // a space causes shifting of rows
 
@@ -44,13 +44,13 @@ const Board = ({ socket, board, player, picked, playerPicked }) => {
     const handleContextMenu = (i) => {
         navigator.clipboard.writeText(board[i]).then(
             () => {
-                alert(board[i] + ' copied! Paste it in the board to guess!')
+                alert(board[i] + ' copied! Paste it in the board to guess!');
             },
             () => {
-                alert("Couldn't copy emoji. Invalid permissions.")
+                alert("Couldn't copy emoji. Invalid permissions.");
             }
-        )
-    }
+        );
+    };
 
     const renderSquare = (i) => {
         return (
@@ -60,11 +60,11 @@ const Board = ({ socket, board, player, picked, playerPicked }) => {
                 value={board[i]}
                 onClick={!picked ? () => handlePick(i) : null}
                 onContextMenu={() => {
-                    handleContextMenu(i)
+                    handleContextMenu(i);
                 }}
             />
-        )
-    }
+        );
+    };
     return (
         <div>
             <div class="board-row">
@@ -116,15 +116,15 @@ const Board = ({ socket, board, player, picked, playerPicked }) => {
                 <Choice pick={pick} />
             </div>
         </div>
-    )
-}
+    );
+};
 
 const mapStateToProps = (state) => ({
     picked: state.player,
-})
+});
 
 const mapDispatchToProps = {
     playerPicked,
-}
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(Board)
+export default connect(mapStateToProps, mapDispatchToProps)(Board);

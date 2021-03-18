@@ -1,4 +1,4 @@
-const { Schema, ObjectId } = require('mongoose')
+const { Schema, ObjectId } = require('mongoose');
 
 const emojiSchema = new Schema({
     _id: ObjectId,
@@ -7,13 +7,13 @@ const emojiSchema = new Schema({
     group: String,
     subgroup: String,
     codepoints: String,
-})
+});
 
 const boardSchema = new Schema({
     emojis: [String],
-})
+});
 
 module.exports = {
     emojiSchema,
     boardSchema,
-}
+};

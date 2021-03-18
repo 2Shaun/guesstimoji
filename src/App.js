@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from 'react'
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 // import socket from "./socket";
-import socket from './socketlocal'
-import HomePage from './home.page'
-import GamePage from './game/game.page'
-import Footer from './footer'
-import './index.css'
-import { connect } from 'react-redux'
-import { homePageLoaded, roomJoined } from './redux/roomSlice'
+import socket from './socketlocal';
+import HomePage from './home.page';
+import GamePage from './game/game.page';
+import Footer from './footer';
+import './index.css';
+import { connect } from 'react-redux';
+import { homePageLoaded, roomJoined } from './redux/roomSlice';
 import {
     getBoards,
     getEmojis,
     addGetEmojiResponseAsBoard,
     graphQlPost,
-} from './apiUtils'
-import { gotBoards } from './redux/boardsSlice'
-import { gotRooms } from './redux/roomsSlice'
+} from './apiUtils';
+import { gotBoards } from './redux/boardsSlice';
+import { gotRooms } from './redux/roomsSlice';
 // view layer
 
 // handleJoin data should have both id and board selection
@@ -33,25 +33,25 @@ const App = ({
         getBoards('{getBoards{emojis}}')
             .then((res) => res.map((x) => x.emojis))
             .then((boards) => {
-                console.log('gotBoards')
-                gotBoards(boards)
+                console.log('gotBoards');
+                gotBoards(boards);
             })
-            .catch((err) => console.error(err))
+            .catch((err) => console.error(err));
         getEmojis({ group: 'Smileys & Emotion' })
             .then((array) => array.map((x) => x.emoji))
             .then((array) =>
                 homePageLoaded(array[Math.floor(Math.random() * array.length)])
             )
             .catch((err) => {
-                homePageLoaded('❌')
-                console.error(err)
-            })
-        socket.emit('client:rooms/roomsRequested')
+                homePageLoaded('❌');
+                console.error(err);
+            });
+        socket.emit('client:rooms/roomsRequested');
         socket.on('server:rooms/roomsResponded', (rooms) => {
-            console.log('rooms responded')
-            gotRooms(rooms)
-        })
-    }, [])
+            console.log('rooms responded');
+            gotRooms(rooms);
+        });
+    }, []);
     /*
   // add boards
   useEffect(() => {
@@ -59,19 +59,19 @@ const App = ({
   }, []);
   */
     useEffect(() => {
-        console.log('QUERY TEST:', getEmojis({ group: 'Animals & Nature' }))
-    }, [])
+        console.log('QUERY TEST:', getEmojis({ group: 'Animals & Nature' }));
+    }, []);
     const handleJoin = (joinData) => {
-        console.log('handleJoin -> joinData', joinData)
-        socket.emit('client:room/roomJoined', joinData)
+        console.log('handleJoin -> joinData', joinData);
+        socket.emit('client:room/roomJoined', joinData);
         socket.on('server:room/roomJoined', (joinData) => {
             if (joinData) {
-                roomJoined(joinData)
+                roomJoined(joinData);
             } else {
-                return
+                return;
             }
-        })
-    }
+        });
+    };
     return (
         <div className="App" align="center">
             {
@@ -90,13 +90,13 @@ const App = ({
             }
             <Footer />
         </div>
-    )
-}
+    );
+};
 
 const mapStateToProps = (state) => ({
     roomID: state.room.roomID,
     player: state.room.player,
-})
+});
 
 // actions : {type: TYPE, ...} ARE OBJECTS
 // actionCreators : (obj) => {...action, ...obj} RETURN ACTIONS
@@ -112,6 +112,6 @@ const mapDispatchToProps = {
     gotBoards,
     gotRooms,
     homePageLoaded,
-}
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(App)
+export default connect(mapStateToProps, mapDispatchToProps)(App);

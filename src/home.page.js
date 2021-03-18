@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react'
-import { connect } from 'react-redux'
-import HomePageDiv from './HomePageDiv'
-import { getEmojis } from './apiUtils'
+import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
+import HomePageDiv from './HomePageDiv';
+import { getEmojis } from './apiUtils';
 // boards is a map where the key is name
 // it returns an object of {data, preview}
-import './index.css'
+import './index.css';
 
 const HomePage = ({ handleJoin, roomID, randomSmiley, socket }) => {
     return (
@@ -16,11 +16,11 @@ const HomePage = ({ handleJoin, roomID, randomSmiley, socket }) => {
                 socket={socket}
             />
         </div>
-    )
-}
+    );
+};
 
 const mapStateToProps = (state) => ({
     randomSmiley: state.room.randomSmiley,
-})
+});
 
-export default connect(mapStateToProps)(HomePage)
+export default connect(mapStateToProps)(HomePage);
