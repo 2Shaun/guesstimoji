@@ -1,17 +1,14 @@
-export const playerReducer = (
-    state = false,
-    action
-) => {
+export const playerReducer = (state = false, action) => {
     switch (action.type) {
-        case "player/picked":
+        case 'player/picked':
             return true
-        case "player/reset":
-            return false;
+        case 'player/reset':
+            return false
         default:
-            return state;
+            return state
     }
-};
+}
 
 export const playerPicked = () => ({
-    type: "player/picked",
-});
+    type: 'player/picked',
+})
