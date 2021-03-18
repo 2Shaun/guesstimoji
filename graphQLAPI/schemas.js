@@ -11,9 +11,9 @@ const emojiSchema = new Schema({
 
 const boardSchema = new Schema({
     emojis: [String],
-})
+});
 
 module.exports = {
     emojiSchema,
     boardSchema,
-}
+};

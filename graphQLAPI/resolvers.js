@@ -1,4 +1,4 @@
-const { Emoji, Board } = require("./models.js");
+const { Emoji, Board } = require('./models.js');
 // service / data access layer
 
 const resolvers = {
@@ -14,18 +14,15 @@ const resolvers = {
         }
         */
 
-
         getEmojis(parent, args, context, info) {
             try {
                 const emojis = Emoji.find({ ...args });
-                Emoji.find({ ...args })
-                    .distinct('group', (err, groups) => {
-                        console.log("getEmojis -> groups", groups)
-                    });
-                Emoji.count({ ...args })
-                    .count({}, (err, count) => {
-                        console.log("getEmojis -> count", count)
-                    });
+                Emoji.find({ ...args }).distinct('group', (err, groups) => {
+                    console.log('getEmojis -> groups', groups);
+                });
+                Emoji.count({ ...args }).count({}, (err, count) => {
+                    console.log('getEmojis -> count', count);
+                });
                 return emojis;
             } catch (err) {
                 console.error(err);
@@ -47,9 +44,11 @@ const resolvers = {
         },
 
         async getEmojisByGroup(parent, args, context, info) {
-            const retval = await Emoji.find({ subgroup: args.group }).sort({ _id: 'asc' });
+            const retval = await Emoji.find({ subgroup: args.group }).sort({
+                _id: 'asc',
+            });
             return retval;
-        }
+        },
     },
     Mutation: {
         createBoard(parent, { emojis }, idk, info) {

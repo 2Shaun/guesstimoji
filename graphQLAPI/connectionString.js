@@ -4,4 +4,4 @@ const connectionString = 'mongodb://' + hostName + '/' + dbName;
 
 module.exports = {
     connectionString,
-}
+};

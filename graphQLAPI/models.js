@@ -1,4 +1,3 @@
-
 const { emojiSchema, boardSchema } = require('./schemas.js');
 const { model } = require('mongoose');
 // model layer
@@ -9,4 +8,4 @@ const Board = model('Board', boardSchema);
 module.exports = {
     Emoji,
     Board,
-} 
+};

@@ -45,12 +45,12 @@ const typeDefs = gql`
         getEmojisByGroup(group: String!): [Emoji]!
         getBoards: [Board]!
     }
-    
+
     type Mutation {
         createBoard(emojis: [String!]!): Board!
     }
-    `;
+`;
 
 module.exports = {
     typeDefs,
-}
+};

@@ -15,21 +15,21 @@ const SERVER_TIMEOUT = 600000;
 // make sure keys are in alphabetical order
 const JOINDATA_TYPES = {
     // it's a BAD idea to send objects in objects over the server
-    board: "object",
-    roomID: "string",
+    board: 'object',
+    roomID: 'string',
 };
 
 const PICKDATA_TYPES = {
-    pick: "string",
-    player: "number",
+    pick: 'string',
+    player: 'number',
 };
 
 const TURNDATA_TYPES = {
-    message: "string",
-    player: "number",
+    message: 'string',
+    player: 'number',
 };
 
-const INDEX_TYPE = "number";
+const INDEX_TYPE = 'number';
 
 module.exports = {
     MESSAGE_MAX_LENGTH,
@@ -43,4 +43,4 @@ module.exports = {
     PICKDATA_TYPES,
     TURNDATA_TYPES,
     INDEX_TYPE,
-}
+};
