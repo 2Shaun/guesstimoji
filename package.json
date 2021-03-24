@@ -43,7 +43,7 @@
         "prod:start": "npm-run-all --parallel start:backend:* --sequential serve",
         "deploy-production": "git checkout prod && git merge master && git push && react-scripts build && scp -r ./build tommy@157.245.254.196:/var/www/html && scp -r ./gameApi tommy@157.245.254.196:/var/www/html && scp -r ./graphQlApi tommy@157.245.254.196:/var/www/html && scp ./boards.json tommy@157.245.254.196:/var/www/html && scp ./emojis.json tommy@157.245.254.196:/var/www/html && git checkout -",
         "build": "react-scripts build",
-        "test": "react-scripts test",
+        "test": "react-scripts test --passWithNoTests",
         "test:e2e:run": "npx start-server-and-test prod:start http://localhost:3000 cy:run",
         "cy:open": "cypress open",
         "cy:run": "cypress run",
