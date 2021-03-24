@@ -59,7 +59,7 @@ export const getEmojis = async (argsObject = null) => {
         } 
     `;
     const promiseResult = await fetchGraphQLData(query);
-    return promiseResult.getEmojis;
+    return promiseResult?.getEmojis;
     // return json.data.getEmojis;
 };
 

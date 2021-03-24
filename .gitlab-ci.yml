@@ -1,7 +1,43 @@
+stages:
+    - analysis
+    - setup
+    - jestTest
+    - build
+    - cypressTest
+
 include:
     - template: Code-Quality.gitlab-ci.yml
 
 code_quality:
     services: # Shut off Docker-in-Docker
+    stage: analysis
     tags:
         - cq-sans-dind # Set this job to only run on our new specialized runner
+
+install:
+    stage: setup
+    script:
+        - npm i
+    artifacts:
+        expire_in: 1 hour
+        paths:
+            - node_modules/
+
+jestTest:
+    stage: jestTest
+    script:
+        - npm t
+
+build:
+    stage: build
+    script:
+        - npm run build
+    artifacts:
+        expire_in: 1 hour
+        paths:
+            - build
+
+cypressTest:
+    stage: cypressTest
+    script:
+        - npm run test:e2e:run
