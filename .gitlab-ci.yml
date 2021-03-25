@@ -38,6 +38,7 @@ build:
             - build
 
 cypressTest:
+    image: mongo
     stage: cypressTest
     script:
         - npm run test:e2e:run
