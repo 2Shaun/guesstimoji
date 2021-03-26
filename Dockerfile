@@ -1,18 +1,12 @@
-FROM node:current-alpine
-# sets the working director for RUN, CMD, ENTRYPOINT, COPY, and ADD
-# this will be a directory ON THE CONTAINER
-RUN mkdir -p /guesstimoji/client
-WORKDIR /guesstimoji/client
-# COPY <src> <dest>
-# takes from <src> and adds them to the filesystem of the 
-# container at the path <dest>
-COPY package*.json /guesstimoji/client/
-# RUN excutes commands in a new layer on top of the current image
-# and commits the results
-# this committed image will be used for the next step
-RUN npm install
-# <src> = . represents the dir on the host which this Dockerfile is in
-# <dest> = . represents the WORKDIR on the container
-# I don't think I need it if I'm mounting a volume
-# COPY . .
-CMD ["npm", "start"]
+FROM mongo
+ENV NODE_VERSION=15.12.0
+RUN apt-get update
+RUN apt install -y curl
+RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
+ENV NVM_DIR=/root/.nvm
+RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION}
+RUN . "$NVM_DIR/nvm.sh" && nvm use v${NODE_VERSION}
+RUN . "$NVM_DIR/nvm.sh" && nvm alias default v${NODE_VERSION}
+ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
+RUN node --version
+RUN npm --version

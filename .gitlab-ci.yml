@@ -38,7 +38,7 @@ build:
             - build
 
 cypressTest:
-    image: mongo
+    image: toshaughnessy/guesstimoji:build
     stage: cypressTest
     script:
         - npm run test:e2e:run
