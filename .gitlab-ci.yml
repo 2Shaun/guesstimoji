@@ -41,4 +41,5 @@ cypressTest:
     image: toshaughnessy/guesstimoji:build
     stage: cypressTest
     script:
+        - echo $(service mongod status)
         - npm run test:e2e:run
