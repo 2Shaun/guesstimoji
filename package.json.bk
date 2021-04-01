@@ -1,0 +1,80 @@
+{
+    "name": "guesstimoji2",
+    "version": "0.1.0",
+    "homepage": ".",
+    "private": true,
+    "dependencies": {
+        "@testing-library/jest-dom": "^4.2.4",
+        "@testing-library/react": "^9.3.2",
+        "@testing-library/user-event": "^7.1.2",
+        "apollo-server": "^2.17.0",
+        "apollo-server-express": "^2.17.0",
+        "express": "^4.17.1",
+        "graphql": "^15.3.0",
+        "install": "^0.13.0",
+        "moment": "^2.27.0",
+        "mongodb": "^3.6.0",
+        "mongoose": "^5.10.2",
+        "npm": "^6.14.5",
+        "query-string": "^6.12.1",
+        "react": "^16.13.1",
+        "react-dom": "^16.13.1",
+        "react-redux": "^7.2.1",
+        "react-router-dom": "^5.2.0",
+        "react-scripts": "^4.0.3",
+        "redux": "^4.0.5",
+        "socket.io": "^2.3.0",
+        "socket.io-client": "^2.3.0",
+        "uws": "10.148.1"
+    },
+    "scripts": {
+        "//": [
+            "when running dynamic webpages locally",
+            "we use npm start and the ReactJS dev server",
+            "uses port 3000",
+            "on the webserver, I serve static webpages",
+            "on port 80 (http) with serve -l"
+        ],
+        "start": "npm-run-all --parallel start:backend:* --sequential start:*",
+        "start:react-app": "react-scripts start &",
+        "start:backend:graph-api": "node ./graphQLAPI/server.js &",
+        "start:backend:game-api": "node ./gameApi/server.js &",
+        "serve": "serve --no-clipboard --single --listen 3000 build",
+        "prod:start": "npm-run-all --parallel start:backend:* --sequential serve",
+        "deploy-production": "git checkout prod && git merge master && git push && react-scripts build && scp -r ./build tommy@157.245.254.196:/var/www/html && scp -r ./gameApi tommy@157.245.254.196:/var/www/html && scp -r ./graphQlApi tommy@157.245.254.196:/var/www/html && scp ./boards.json tommy@157.245.254.196:/var/www/html && scp ./emojis.json tommy@157.245.254.196:/var/www/html && git checkout -",
+        "build": "react-scripts build",
+        "test": "react-scripts test --passWithNoTests",
+        "test:e2e:run": "npx start-server-and-test prod:start http://localhost:3000 cy:run",
+        "cy:open": "cypress open",
+        "cy:run": "cypress run",
+        "eject": "react-scripts eject"
+    },
+    "eslintConfig": {
+        "extends": "react-app"
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "description": "",
+    "main": "index.js",
+    "devDependencies": {
+        "@testing-library/cypress": "^7.0.4",
+        "concurrently": "^5.2.0",
+        "cypress": "^6.8.0",
+        "eslint-config-prettier": "^8.1.0",
+        "nodemon": "^2.0.7",
+        "npm-run-all": "^4.1.5",
+        "prettier": "^2.2.1"
+    },
+    "author": "2Shaun",
+    "license": "ISC"
+}
