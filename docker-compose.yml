@@ -1,8 +1,9 @@
 version: '3'
 
 services:
-    server:
-        build: ./server
+    game-api:
+        # where the dockerfile is
+        build: ./gameApi
         #expose:
         #        - 5000
         # ports (HOST:CONTAINER)
@@ -13,20 +14,38 @@ services:
         ports:
             - '5000:5000'
         volumes:
-            - ./server/server.js:/guesstimoji/server/server.js
-        command: npm run dev
+            - ./gameApi:/home/node/gameApi
 
-    client:
-        build: ./client
-        # needed for create-react-app to prevent exit on error code 0
-        stdin_open: true
+    graph-ql-api:
+        build: ./graphQLAPI
         #expose:
-        #        - 3000
+        #        - 5000
+        # ports (HOST:CONTAINER)
+        # the application running inside is exposed at port CONTAINER
+        #       this step seems to make expose redundant
+        # map it through host server port HOST
+        # can access with http://{host IP}:HOST
+        depends_on:
+            - mongo
+        ports:
+            - '3005:3005'
+        volumes:
+            - ./gameApi:/home/node/gameApi
+
+    mongo:
+        image: mongo
+        volumes:
+            - /var/lib/mongodb:/data/db
+        ports:
+            - '27018:27017'
+
+    app:
+        image: node:latest
+        depends_on:
+            - graph-ql-api
+            - mongo
+            - game-api
         ports:
             - '3000:3000'
         volumes:
-            - ./client/public:/guesstimoji/client/public
-            - ./client/src:/guesstimoji/client/src
-        links:
-            - server
-        command: npm run start
+            - ./build:/home/node/app

@@ -1,4 +1,3 @@
-FROM mongo
 ENV NODE_VERSION=15.12.0
 RUN apt-get update
 RUN apt install -y curl
