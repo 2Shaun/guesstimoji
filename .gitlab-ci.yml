@@ -14,14 +14,35 @@ code_quality:
     tags:
         - cq-sans-dind # Set this job to only run on our new specialized runner
 
-install:
+installReactApp:
     stage: setup
     script:
+        - cd reactApp
         - npm i
     artifacts:
         expire_in: 1 hour
         paths:
-            - node_modules/
+            - reactApp/node_modules/
+
+installGameApi:
+    stage: setup
+    script:
+        - cd gameApi
+        - npm i
+    artifacts:
+        expire_in: 1 hour
+        paths:
+            - gameApi/node_modules/
+
+installGraphQLAPI:
+    stage: setup
+    script:
+        - cd graphQLAPI
+        - npm i
+    artifacts:
+        expire_in: 1 hour
+        paths:
+            - graphQLAPI/node_modules/
 
 jestTest:
     stage: jestTest
