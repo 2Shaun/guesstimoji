@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "react-scripts test",
+    "test": "react-scripts test --passWithNoTests",
     "start": "react-scripts start"
   },
   "keywords": [],
