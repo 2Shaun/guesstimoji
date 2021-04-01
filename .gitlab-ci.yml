@@ -20,7 +20,7 @@ installReactApp:
         - cd reactApp
         - npm i
     artifacts:
-        expire_in: 1 hour
+        expire_in: 15 mins
         paths:
             - reactApp/node_modules/
 
@@ -30,7 +30,7 @@ installGameApi:
         - cd gameApi
         - npm i
     artifacts:
-        expire_in: 1 hour
+        expire_in: 15 mins
         paths:
             - gameApi/node_modules/
 
@@ -40,21 +40,23 @@ installGraphQLAPI:
         - cd graphQLAPI
         - npm i
     artifacts:
-        expire_in: 1 hour
+        expire_in: 15 mins
         paths:
             - graphQLAPI/node_modules/
 
 jestTest:
     stage: jestTest
     script:
+        - cd reactApp
         - npm t
 
 build:
     stage: build
     script:
+        - cd reactApp
         - npm run build
     artifacts:
-        expire_in: 1 hour
+        expire_in: 15 mins
         paths:
             - build
 
