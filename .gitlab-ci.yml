@@ -60,7 +60,7 @@ build:
         paths:
             - build
 e2eTests:
-    image: docker
+    image: gitlab/dind
     stage: cypressTest
     services:
         - docker:dind
