@@ -59,10 +59,12 @@ build:
         expire_in: 15 mins
         paths:
             - build
-
-cypressTest:
-    image: toshaughnessy/guesstimoji:build
+e2eTests:
+    image: docker
     stage: cypressTest
-    script:
-        - echo $(service mongod status)
-        - npm run test:e2e:run
+    services:
+        - docker:dind
+    build:
+        script:
+            - apk add --no-cache docker-compose
+            - docker-compose up -d
