@@ -1,8 +1,9 @@
 version: '3'
 
 services:
-    game-api:
+    gameApi:
         # where the dockerfile is
+        image: guesstimoji/game-api
         build: ./gameApi
         #expose:
         #        - 5000
@@ -13,10 +14,9 @@ services:
         # can access with http://{host IP}:HOST
         ports:
             - '5000:5000'
-        volumes:
-            - ./gameApi:/home/node/gameApi
 
-    graph-ql-api:
+    graphQlApi:
+        image: guesstimoji/graph-ql-api
         build: ./graphQLAPI
         #expose:
         #        - 5000
@@ -29,8 +29,6 @@ services:
             - mongo
         ports:
             - '3005:3005'
-        volumes:
-            - ./gameApi:/home/node/gameApi
 
     mongo:
         image: mongo
@@ -39,13 +37,13 @@ services:
         ports:
             - '27018:27017'
 
-    app:
-        image: node:latest
+    reactApp:
+        image: guesstimoji/react-app
+        build: ./reactApp
         depends_on:
-            - graph-ql-api
+            - graphQlApi
             - mongo
-            - game-api
+            - gameApi
         ports:
             - '3000:3000'
-        volumes:
-            - ./build:/home/node/app
+        command: [nginx, '-g', 'daemon off;']

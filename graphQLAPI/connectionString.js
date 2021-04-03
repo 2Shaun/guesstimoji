@@ -1,5 +1,6 @@
 const dbName = 'guesstimoji';
-const hostName = 'localhost';
+const hostName = 'mongo';
+// TODO: define with environment variables
 const connectionString = 'mongodb://' + hostName + '/' + dbName;
 
 module.exports = {
