@@ -62,6 +62,8 @@ build:
 e2eTests:
     image: gitlab/dind
     stage: cypressTest
+    depends_on:
+        - build
     services:
         - docker:dind
     script:
