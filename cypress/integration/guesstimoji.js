@@ -1,6 +1,6 @@
 describe('testing the game', () => {
     it('can make a game', () => {
-        cy.visit('http://localhost:3000');
+        cy.visit('http://reactApp:80');
         cy.findByTestId('roomId').focus().clear().type('testGame');
         cy.findByRole('button', { name: 'PLAY' }).click();
         cy.get('h3').should('have.text', 'Room Name: testGame');

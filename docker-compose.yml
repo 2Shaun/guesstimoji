@@ -45,5 +45,19 @@ services:
             - mongo
             - gameApi
         ports:
-            - '3000:3000'
+            - '3000:80'
         command: [nginx, '-g', 'daemon off;']
+
+    cypress:
+        image: guesstimoji/cypress
+        build:
+            context: .
+            dockerfile: cypress.Dockerfile
+        volumes:
+            - ./cypress:/e2e
+        depends_on:
+            - graphQlApi
+            - mongo
+            - gameApi
+            - reactApp
+        command: [npx, 'cypress', 'run']

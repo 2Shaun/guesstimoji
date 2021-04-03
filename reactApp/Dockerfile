@@ -12,4 +12,4 @@ ADD ./build /usr/share/nginx/html
 # <dest> = . represents the WORKDIR on the container
 # I don't think I need it if I'm mounting a volume
 # COPY . .
-EXPOSE 8080:80
+EXPOSE 3000:80

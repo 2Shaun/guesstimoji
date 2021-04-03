@@ -10,7 +10,7 @@ const app = express();
 const server = http.Server(app);
 const io = socketIO(server, {
     cors: {
-        origin: process.env.ORIGINS,
+        origin: '*',
     },
 });
 console.log(process.env.ORIGINS);
