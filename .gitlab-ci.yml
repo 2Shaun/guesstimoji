@@ -60,7 +60,7 @@ build:
         paths:
             - reactApp/build
 e2eTests:
-    image: docker:19.03.12-dind
+    image: docker:dind
     stage: cypressTest
     before_script:
         - apk update
@@ -68,7 +68,5 @@ e2eTests:
         - pip install docker-compose
     dependencies:
         - build
-    services:
-        - docker:dind
     script:
         - docker-compose up --abort-on-container-exit --exit-code-from cypress
