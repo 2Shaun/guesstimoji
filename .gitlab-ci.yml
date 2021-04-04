@@ -58,7 +58,7 @@ build:
     artifacts:
         expire_in: 15 mins
         paths:
-            - build
+            - build/
 e2eTests:
     image: gitlab/dind
     stage: cypressTest
