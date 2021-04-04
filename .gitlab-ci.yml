@@ -61,7 +61,7 @@ build:
             - reactApp/build
 e2eTests:
     image: docker:19.03.12
-    varibles:
+    variables:
         DOCKER_TLS_CERTDIR: "/certs"
     stage: cypressTest
     services:
