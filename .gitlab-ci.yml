@@ -60,7 +60,7 @@ build:
         paths:
             - reactApp/build
 e2eTests:
-    image: docker
+    image: docker:19.03.12
     stage: cypressTest
     before_script:
         - apk update
