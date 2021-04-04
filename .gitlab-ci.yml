@@ -60,7 +60,7 @@ build:
         paths:
             - reactApp/build
 e2eTests:
-    image: gitlab/dind
+    image: docker:dind
     stage: cypressTest
     dependencies:
         - build
