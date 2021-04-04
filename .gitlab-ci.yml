@@ -67,4 +67,4 @@ e2eTests:
     services:
         - docker:dind
     script:
-        - docker-compose up -d
+        - docker-compose up
