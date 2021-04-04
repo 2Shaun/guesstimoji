@@ -64,8 +64,8 @@ e2eTests:
     stage: cypressTest
     before_script:
         - apk update
-        - pip install --upgrade pip
         - apk add py-pip python3-dev libffi-dev openssl-dev gcc libc-dev make
+        - pip install --upgrade pip
         - pip install docker-compose
     dependencies:
         - build
