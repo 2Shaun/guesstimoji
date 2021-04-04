@@ -61,6 +61,8 @@ build:
             - reactApp/build
 e2eTests:
     image: docker:19.03.12
+    varibles:
+        DOCKER_TLS_CERTDIR: "/certs"
     stage: cypressTest
     services:
         - docker:19.03.12-dind
@@ -68,6 +70,7 @@ e2eTests:
         - apk update
         - apk add py-pip musl-dev python3-dev libffi-dev openssl-dev gcc libc-dev rust cargo make
         - pip install docker-compose
+        - docker info
     dependencies:
         - build
     services:
