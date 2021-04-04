@@ -67,4 +67,4 @@ e2eTests:
     services:
         - docker:dind
     script:
-        - docker-compose up --exit-code-from cypress
+        - docker-compose up --abort-on-container-exit
