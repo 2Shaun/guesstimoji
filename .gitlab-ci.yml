@@ -71,4 +71,6 @@ e2eTests:
     services:
         - docker:dind
     script:
+        - systemctl status docker
+        - systemctl start docker
         - docker-compose up --abort-on-container-exit --exit-code-from cypress
