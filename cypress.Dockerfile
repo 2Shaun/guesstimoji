@@ -4,6 +4,5 @@ WORKDIR /
 
 COPY ./cypress ./cypress
 COPY ./cypress.json ./cypress.json
-RUN cd cypress
-RUN ls
+WORKDIR /cypress/support
 RUN npm i
