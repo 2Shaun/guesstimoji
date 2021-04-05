@@ -39,7 +39,11 @@ const HomePageDiv = ({
     return (
         <div align="center">
             Room ID:
-            <input value={tempRoomID} onChange={handleChange} />
+            <input
+                data-testid="roomId"
+                value={tempRoomID}
+                onChange={handleChange}
+            />
             <JoinRoomButton
                 roomID={tempRoomID}
                 board={tempBoard}

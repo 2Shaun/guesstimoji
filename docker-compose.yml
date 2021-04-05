@@ -1,8 +1,10 @@
-version: '3'
+version: '2'
 
 services:
-    server:
-        build: ./server
+    gameApi:
+        # where the dockerfile is
+        image: guesstimoji/game-api
+        build: ./gameApi
         #expose:
         #        - 5000
         # ports (HOST:CONTAINER)
@@ -12,21 +14,50 @@ services:
         # can access with http://{host IP}:HOST
         ports:
             - '5000:5000'
-        volumes:
-            - ./server/server.js:/guesstimoji/server/server.js
-        command: npm run dev
 
-    client:
-        build: ./client
-        # needed for create-react-app to prevent exit on error code 0
-        stdin_open: true
+    graphQlApi:
+        image: guesstimoji/graph-ql-api
+        build: ./graphQLAPI
         #expose:
-        #        - 3000
+        #        - 5000
+        # ports (HOST:CONTAINER)
+        # the application running inside is exposed at port CONTAINER
+        #       this step seems to make expose redundant
+        # map it through host server port HOST
+        # can access with http://{host IP}:HOST
+        depends_on:
+            - mongo
         ports:
-            - '3000:3000'
+            - '3005:3005'
+
+    mongo:
+        image: mongo
         volumes:
-            - ./client/public:/guesstimoji/client/public
-            - ./client/src:/guesstimoji/client/src
-        links:
-            - server
-        command: npm run start
+            - /var/lib/mongodb:/data/db
+        ports:
+            - '27018:27017'
+
+    reactApp:
+        image: guesstimoji/react-app
+        build: ./reactApp
+        depends_on:
+            - graphQlApi
+            - mongo
+            - gameApi
+        ports:
+            - '3000:80'
+        command: [nginx, '-g', 'daemon off;']
+
+    cypress:
+        image: guesstimoji/cypress
+        build:
+            context: .
+            dockerfile: cypress.Dockerfile
+        volumes:
+            - ./cypress:/e2e
+        depends_on:
+            - graphQlApi
+            - mongo
+            - gameApi
+            - reactApp
+        command: [npx, 'cypress', 'run']

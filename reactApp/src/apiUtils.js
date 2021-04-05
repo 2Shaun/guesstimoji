@@ -1,4 +1,4 @@
-const graphQlApiUrl = 'http://localhost:3005/graphql';
+const graphQlApiUrl = 'http://graphQlApi:3005/graphql';
 
 export const graphQlPost = async (query) => {
     const res = await fetch(graphQlApiUrl, {
@@ -59,7 +59,7 @@ export const getEmojis = async (argsObject = null) => {
         } 
     `;
     const promiseResult = await fetchGraphQLData(query);
-    return promiseResult.getEmojis;
+    return promiseResult?.getEmojis;
     // return json.data.getEmojis;
 };
 

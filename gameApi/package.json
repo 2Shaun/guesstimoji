@@ -1,0 +1,23 @@
+{
+    "name": "gameApi",
+    "version": "1.0.0",
+    "description": "",
+    "main": "server.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "env-cmd -f ./.env.local nodemon server.js",
+        "start:prod": "env-cmd -f ./.env.prod node server.js"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "express": "^4.17.1",
+        "moment": "^2.29.1",
+        "socket.io": "^4.0.0"
+    },
+    "devDependencies": {
+        "env-cmd": "^10.1.0",
+        "nodemon": "^2.0.7"
+    }
+}

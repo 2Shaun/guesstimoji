@@ -1,18 +1,15 @@
-FROM node:current-alpine
+FROM nginx:latest
 # sets the working director for RUN, CMD, ENTRYPOINT, COPY, and ADD
 # this will be a directory ON THE CONTAINER
-RUN mkdir -p /guesstimoji/client
-WORKDIR /guesstimoji/client
-# COPY <src> <dest>
+ADD ./build /usr/share/nginx/html
 # takes from <src> and adds them to the filesystem of the 
 # container at the path <dest>
-COPY package*.json /guesstimoji/client/
 # RUN excutes commands in a new layer on top of the current image
 # and commits the results
 # this committed image will be used for the next step
-RUN npm install
+# may install new version with breaking changes
 # <src> = . represents the dir on the host which this Dockerfile is in
 # <dest> = . represents the WORKDIR on the container
 # I don't think I need it if I'm mounting a volume
 # COPY . .
-CMD ["npm", "start"]
+EXPOSE 3000:80
