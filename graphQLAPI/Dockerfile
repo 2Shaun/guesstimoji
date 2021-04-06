@@ -16,4 +16,4 @@ RUN npm i
 # I don't think I need it if I'm mounting a volume
 # COPY . .
 EXPOSE 3005:3005
-CMD ["node", "server"]
+CMD ["npm", "run", "start:ci"]

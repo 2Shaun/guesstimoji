@@ -1,7 +1,5 @@
-const graphQlApiUrl = 'http://graphQlApi:3005/graphql';
-
 export const graphQlPost = async (query) => {
-    const res = await fetch(graphQlApiUrl, {
+    const res = await fetch(process.env.REACT_APP_GRAPH_QL_API_URL, {
         method: 'POST',
         credentials: 'same-origin',
         headers: {

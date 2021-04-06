@@ -10,10 +10,9 @@ const app = express();
 const server = http.Server(app);
 const io = socketIO(server, {
     cors: {
-        origin: '*',
+        origin: process.env.ORIGINS,
     },
 });
-console.log(process.env.ORIGINS);
 const url = 'mongodb://127.0.0.1:27017/';
 var roomHashTable = {};
 
