@@ -1,5 +1,4 @@
 export const gameLogReducer = (state = [], action) => {
-    console.log('in gameLog reducer');
     switch (action.type) {
         case 'gameLog/cleared':
             return [];

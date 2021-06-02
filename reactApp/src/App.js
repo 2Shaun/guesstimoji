@@ -33,7 +33,6 @@ const App = ({
         getBoards('{getBoards{emojis}}')
             .then((res) => res.map((x) => x.emojis))
             .then((boards) => {
-                console.log('gotBoards');
                 gotBoards(boards);
             })
             .catch((err) => console.error(err));
@@ -48,21 +47,10 @@ const App = ({
             });
         socket.emit('client:rooms/roomsRequested');
         socket.on('server:rooms/roomsResponded', (rooms) => {
-            console.log('rooms responded');
             gotRooms(rooms);
         });
     }, []);
-    /*
-  // add boards
-  useEffect(() => {
-    getEmojis({ group: "Animals & Nature" }).then((arr) => addGetEmojiResponseAsBoard(arr)).then((str) => graphQlPost(str));
-  }, []);
-  */
-    useEffect(() => {
-        console.log('QUERY TEST:', getEmojis({ group: 'Animals & Nature' }));
-    }, []);
     const handleJoin = (joinData) => {
-        console.log('handleJoin -> joinData', joinData);
         socket.emit('client:room/roomJoined', joinData);
         socket.on('server:room/roomJoined', (joinData) => {
             if (joinData) {

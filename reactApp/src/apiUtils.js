@@ -11,7 +11,6 @@ export const graphQlPost = async (query) => {
     })
         .then((res) => res.json())
         .then((json) => {
-            console.log(`response from ${query}: `, json.data);
             return json.data;
         })
         .catch((err) => {
@@ -41,7 +40,6 @@ export const fetchGraphQLData = (query) =>
     })
         .then((res) => res.json())
         .then((json) => {
-            console.log(`response from ${query}: `, json.data);
             return json.data;
         })
         .catch((err) => {
@@ -50,7 +48,6 @@ export const fetchGraphQLData = (query) =>
 
 export const getEmojis = async (argsObject = null) => {
     const args = argsJsonStringify(argsObject);
-    // {getEmojis(group: "Smileys & Emotion"){emoji}}
     const query = `
         {
             getEmojis${args}{
@@ -60,7 +57,6 @@ export const getEmojis = async (argsObject = null) => {
     `;
     const promiseResult = await fetchGraphQLData(query);
     return promiseResult?.getEmojis;
-    // return json.data.getEmojis;
 };
 
 export const getBoards = async (query) => {
@@ -74,7 +70,6 @@ export const getBoards = async (query) => {
     })
         .then((res) => res.json())
         .then((json) => {
-            console.log(`response from ${query}: `, json.data.getBoards);
             return json.data.getBoards;
         })
         .catch((err) => {
@@ -84,7 +79,6 @@ export const getBoards = async (query) => {
 };
 
 const createBoard = async (mutation) => {
-    console.log('createBoard -> mutation', mutation);
     const board = await fetch(graphQlApiUrl, {
         method: 'POST',
         credentials: 'same-origin',
@@ -95,7 +89,6 @@ const createBoard = async (mutation) => {
     })
         .then((res) => res.json())
         .then((json) => {
-            console.log(`response from ${mutation}: `, json.data.getEmojis);
             return json.data.getEmojis;
         })
         .catch((err) => {

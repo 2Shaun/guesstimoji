@@ -55,16 +55,6 @@ const GamePage = ({
     // or have to pass it as prop
     // the empty array tells useEffect to only run once
 
-    // state changes in a useEffect could cause an inf loop
-    /*
-  useEffect(() => {
-    if(socket.room !== roomQuery ){
-      socket.emit("subscribe", roomQuery);
-      console.log(`Subscribed to ${socket.room} in useEffect`);
-    }
-  });
-  */
-
     // the component will be mounted if the player number is found
     return (
         <div>

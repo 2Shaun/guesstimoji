@@ -30,10 +30,6 @@ export const roomReducer = (
                 randomSmiley: action.payload,
             };
         case 'room/roomJoined':
-            console.log('new state update game', {
-                ...state,
-                ...action.payload,
-            });
             return {
                 ...state,
                 ...action.payload,
@@ -44,7 +40,6 @@ export const roomReducer = (
 };
 
 export const roomJoined = (joinData) => {
-    console.log('roomJoined -> joinData', joinData);
     return {
         type: 'room/roomJoined',
         payload: joinData,

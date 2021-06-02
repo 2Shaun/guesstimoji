@@ -5,8 +5,6 @@ import { turnSubmitted } from '../redux/gameLogSlice';
 
 const GameLog = ({ socket, roomID, roomFull, gameLog, player, winner }) => {
     const opponent = (player % 2) + 1;
-    console.log('GameLog -> player', player);
-    console.log('GameLog -> opponent', opponent);
     const dispatch = useDispatch();
 
     const handleSubmitTurn = (untrimmedMessage) => {
