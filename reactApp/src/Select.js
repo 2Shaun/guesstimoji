@@ -12,6 +12,7 @@ const Select = ({ header, emptyMessage, onClick, selections }) => {
                               id="board-select-button"
                               onClick={() => onClick(index)}
                               autoFocus={index == 1}
+                              key={index}
                           >
                               {selections[index]}
                           </button>
