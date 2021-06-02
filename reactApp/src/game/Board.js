@@ -67,7 +67,7 @@ const Board = ({ socket, board, player, picked, playerPicked }) => {
     };
     return (
         <div>
-            <div class="board-row">
+            <div className="board-row">
                 {renderSquare(0)}
                 {renderSquare(1)}
                 {renderSquare(2)}
@@ -76,7 +76,7 @@ const Board = ({ socket, board, player, picked, playerPicked }) => {
                 {renderSquare(5)}
                 {renderSquare(6)}
             </div>
-            <div class="board-row">
+            <div className="board-row">
                 {renderSquare(7)}
                 {renderSquare(8)}
                 {renderSquare(9)}
@@ -85,7 +85,7 @@ const Board = ({ socket, board, player, picked, playerPicked }) => {
                 {renderSquare(12)}
                 {renderSquare(13)}
             </div>
-            <div class="board-row">
+            <div className="board-row">
                 {renderSquare(14)}
                 {renderSquare(15)}
                 {renderSquare(16)}
@@ -94,7 +94,7 @@ const Board = ({ socket, board, player, picked, playerPicked }) => {
                 {renderSquare(19)}
                 {renderSquare(20)}
             </div>
-            <div class="board-row">
+            <div className="board-row">
                 {renderSquare(21)}
                 {renderSquare(22)}
                 {renderSquare(23)}
@@ -103,7 +103,7 @@ const Board = ({ socket, board, player, picked, playerPicked }) => {
                 {renderSquare(26)}
                 {renderSquare(27)}
             </div>
-            <div class="board-row">
+            <div className="board-row">
                 {renderSquare(28)}
                 {renderSquare(29)}
                 {renderSquare(30)}
@@ -112,7 +112,7 @@ const Board = ({ socket, board, player, picked, playerPicked }) => {
                 {renderSquare(33)}
                 {renderSquare(34)}
             </div>
-            <div class="text-row">
+            <div className="text-row">
                 <Choice pick={pick} />
             </div>
         </div>
