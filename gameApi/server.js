@@ -345,14 +345,15 @@ io.sockets.on('connection', (socket) => {
                     game,
                 }))(roomHashTable[roomID]);
                 /* const record = {
-           _id: gameID,
-           roomID: roomID,
-           winner: winner,
-           board: board,
-           players: players,
-           gameLog: gameLog,
-           game: game,
-         };*/
+                    _id: gameID,
+                    roomID: roomID,
+                    winner: winner,
+                    board: board,
+                    players: players,
+                    gameLog: gameLog,
+                    game: game,
+                    };
+                */
                 //insertRecordIntoCollection(record, "games");
                 // if it is gameOver, log game
                 io.in(roomID).emit('server:room/roomJoined', {
@@ -388,6 +389,13 @@ io.sockets.on('connection', (socket) => {
                 return;
             }
             socket.to(roomID).emit('server:opponentBoard/clicked', index);
+        });
+        socket.on('client:gameLog/restartGame', (restartData) => {
+            if (!validateObject(restartData, utils.RESTARTDATA_TYPES)) {
+                return;
+            }
+
+            socket.to(roomID).emit('server:gameLog/restartGame', restartData);
         });
     });
 });

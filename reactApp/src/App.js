@@ -50,6 +50,7 @@ const App = ({
             gotRooms(rooms);
         });
     }, []);
+
     const handleJoin = (joinData) => {
         socket.emit('client:room/roomJoined', joinData);
         socket.on('server:room/roomJoined', (joinData) => {
@@ -60,6 +61,7 @@ const App = ({
             }
         });
     };
+
     return (
         <div className="App" align="center">
             {

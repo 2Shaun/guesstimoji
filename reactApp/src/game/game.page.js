@@ -3,11 +3,12 @@ import RoomName from './RoomName';
 import OpponentBoard from './OpponentBoard';
 import Board from './Board';
 import GameLog from './GameLog';
+import RestartGameButton from './RestartGameButton';
 import queryString from 'query-string';
 import socket from '../socketlocal';
 import '../index.css';
 import { connect, useDispatch } from 'react-redux';
-import { turnSubmitted, cleared } from '../redux/gameLogSlice';
+import { turnSubmitted, cleared, gameRestarted } from '../redux/gameLogSlice';
 import { clicked } from '../redux/opponentBoardSlice';
 //import socket from '../../socket';
 
@@ -37,11 +38,15 @@ const GamePage = ({
             socket.on('server:gameLog/turnSubmitted', (turnData) => {
                 dispatch(turnSubmitted(turnData));
             });
+            socket.on('server:gameLog/restartGame', (restartData) => {
+                dispatch(gameRestarted(restartData));
+            });
             socket.on('server:opponentBoard/clicked', (index) => {
                 dispatch(clicked(index));
             });
         } else {
             socket.off('server:gameLog/turnSubmitted');
+            socket.off('server:gameLog/restartGame');
             socket.off('server:opponentBoard/clicked');
         }
     }, [roomFull]);
@@ -50,6 +55,11 @@ const GamePage = ({
             dispatch(cleared());
         });
     }, []);
+
+    const handleRestart = (restartData) => {
+        dispatch(gameRestarted(restartData));
+        socket.emit('client:gameLog/restartGame', restartData);
+    };
 
     // make sure that you check to see if you can import socket
     // or have to pass it as prop
@@ -73,6 +83,11 @@ const GamePage = ({
                     roomFull={roomFull}
                     player={player}
                     winner={winner}
+                />
+                <RestartGameButton
+                    board={board}
+                    roomID={roomID}
+                    handleRestart={handleRestart}
                 />
                 {
                     // Need 'Leave Room' button

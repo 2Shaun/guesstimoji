@@ -2,6 +2,8 @@ export const gameLogReducer = (state = [], action) => {
     switch (action.type) {
         case 'gameLog/cleared':
             return [];
+        case 'gameLog/gameRestarted':
+            return [];
         case 'gameLog/turnSubmitted':
             return [action.payload, ...state];
         default:
@@ -14,6 +16,11 @@ export const gameLogReducer = (state = [], action) => {
 export const turnSubmitted = (turnData) => ({
     type: 'gameLog/turnSubmitted',
     payload: turnData,
+});
+
+export const gameRestarted = (restartData) => ({
+    type: 'gameLog/gameRestarted',
+    payload: restartData,
 });
 
 export const cleared = () => ({
