@@ -383,19 +383,22 @@ io.sockets.on('connection', (socket) => {
             roomHashTable[roomID].players[player].pick = pick;
             console.log(roomHashTable[roomID].players[player]);
         });
+        socket.on('client:players/reset', (resetData) => {
+            console.log('Trying to reset', resetData);
+            if (!validateObject(resetData, utils.RESETDATA_TYPES)) {
+                return;
+            }
+            // {roomID: players: [{username: , pick: }, {username: ,pick:}]}
+            delete roomHashTable[roomID].players[2].pick;
+            delete roomHashTable[roomID].players[1].pick;
+            socket.to(roomID).emit('server:players/reset', resetData);
+        });
         socket.on('client:opponentBoard/clicked', (unflooredIndex) => {
             const index = Math.floor(unflooredIndex);
             if (!validateBoardIndex(index)) {
                 return;
             }
             socket.to(roomID).emit('server:opponentBoard/clicked', index);
-        });
-        socket.on('client:gameLog/restartGame', (restartData) => {
-            if (!validateObject(restartData, utils.RESTARTDATA_TYPES)) {
-                return;
-            }
-
-            socket.to(roomID).emit('server:gameLog/restartGame', restartData);
         });
     });
 });

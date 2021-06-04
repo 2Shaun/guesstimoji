@@ -3,7 +3,6 @@ import RoomName from './RoomName';
 import OpponentBoard from './OpponentBoard';
 import Board from './Board';
 import GameLog from './GameLog';
-import RestartGameButton from './RestartGameButton';
 import queryString from 'query-string';
 import socket from '../socketlocal';
 import '../index.css';
@@ -56,9 +55,9 @@ const GamePage = ({
         });
     }, []);
 
-    const handleRestart = (restartData) => {
-        dispatch(gameRestarted(restartData));
-        socket.emit('client:gameLog/restartGame', restartData);
+    const handleRestart = () => {
+        dispatch(gameRestarted());
+        socket.emit('client:gameLog/restartGame', {});
     };
 
     // make sure that you check to see if you can import socket
@@ -83,11 +82,6 @@ const GamePage = ({
                     roomFull={roomFull}
                     player={player}
                     winner={winner}
-                />
-                <RestartGameButton
-                    board={board}
-                    roomID={roomID}
-                    handleRestart={handleRestart}
                 />
                 {
                     // Need 'Leave Room' button

@@ -30,6 +30,9 @@ const PICKDATA_TYPES = {
     player: 'number',
 };
 
+// we don't need to send anything to reset a game
+const RESETDATA_TYPES = {};
+
 const TURNDATA_TYPES = {
     message: 'string',
     player: 'number',
@@ -48,6 +51,7 @@ module.exports = {
     JOINDATA_TYPES,
     RESTARTDATA_TYPES,
     PICKDATA_TYPES,
+    RESETDATA_TYPES,
     TURNDATA_TYPES,
     INDEX_TYPE,
 };

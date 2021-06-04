@@ -18,9 +18,8 @@ export const turnSubmitted = (turnData) => ({
     payload: turnData,
 });
 
-export const gameRestarted = (restartData) => ({
+export const gameRestarted = () => ({
     type: 'gameLog/gameRestarted',
-    payload: restartData,
 });
 
 export const cleared = () => ({

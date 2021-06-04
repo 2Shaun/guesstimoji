@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import Square from './Square';
 import Choice from './PickTextBox';
-import { connect } from 'react-redux';
-import { playerPicked } from '../redux/playersSlice';
+import { connect, useDispatch } from 'react-redux';
+import { playerPicked, playerReset } from '../redux/playersSlice';
+import { gameRestarted } from '../redux/gameLogSlice';
 
 // i'm hoping that when the client socket emits a request,
 // the server will be able to extract room information
 // and access gamedata hashtable with that
-const Board = ({ socket, board, player, picked, playerPicked }) => {
+const Board = ({ socket, board, player, picked, playerPicked, playerReset }) => {
     //const [freshBoard, setFreshBoard] = useState(easterEgg(props.room));
     // THE INITIAL VALUE OF STATE WILL BE ASSIGNED ONLY
     // ON THE INITIAL RENDER
@@ -15,6 +16,7 @@ const Board = ({ socket, board, player, picked, playerPicked }) => {
     // WILL BE IGNORED AND THE CURRENT VALUE WILL BE
     // RETRIEVED
     const [pick, setPick] = useState('');
+    const dispatch = useDispatch();
 
     // with 2 boards, there is no reason to listen on the player's board
     //socket.on(`setState`, (newSquares) => (setSquares(newSquares)));
@@ -31,6 +33,24 @@ const Board = ({ socket, board, player, picked, playerPicked }) => {
         playerPicked();
         setPick(board[i]);
     };
+
+    const handleGameRestart = () => {
+        // saves typing this.state.
+        // can only change board if 2 players in room
+        // will need some 'original player' condition if I
+        // allow players to spectate
+        socket.emit('client:players/reset', {});
+        setPick('');
+        playerReset();
+        gameRestarted({});
+        dispatch(gameRestarted({}));
+    };
+    socket.on('server:players/reset', () => {
+        setPick('');
+        playerReset();
+        gameRestarted({});
+        dispatch(gameRestarted({}));
+    });
     // this is a white space char, not a space
     // a space causes shifting of rows
 
@@ -115,16 +135,19 @@ const Board = ({ socket, board, player, picked, playerPicked }) => {
             <div className="text-row">
                 <Choice pick={pick} />
             </div>
+            <button onClick={handleGameRestart}>RESTART GAME</button>
         </div>
     );
 };
 
 const mapStateToProps = (state) => ({
+    roomID: state.roomID,
     picked: state.player,
 });
 
 const mapDispatchToProps = {
     playerPicked,
+    playerReset,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Board);
