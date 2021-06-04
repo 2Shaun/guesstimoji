@@ -7,6 +7,7 @@ import queryString from 'query-string';
 import socket from '../socketlocal';
 import '../index.css';
 import { connect, useDispatch } from 'react-redux';
+import { roomRestartable } from '../redux/roomSlice';
 import { turnSubmitted, cleared, gameRestarted } from '../redux/gameLogSlice';
 import { clicked } from '../redux/opponentBoardSlice';
 //import socket from '../../socket';
@@ -30,15 +31,13 @@ const GamePage = ({
     player,
     gameCount,
     winner,
+    roomRestartable,
 }) => {
     const dispatch = useDispatch();
     useEffect(() => {
         if (roomFull) {
             socket.on('server:gameLog/turnSubmitted', (turnData) => {
                 dispatch(turnSubmitted(turnData));
-            });
-            socket.on('server:gameLog/restartGame', (restartData) => {
-                dispatch(gameRestarted(restartData));
             });
             socket.on('server:opponentBoard/clicked', (index) => {
                 dispatch(clicked(index));
@@ -55,10 +54,12 @@ const GamePage = ({
         });
     }, []);
 
-    const handleRestart = () => {
-        dispatch(gameRestarted());
-        socket.emit('client:gameLog/restartGame', {});
-    };
+    useEffect(() => {
+        if (winner) {
+            dispatch(roomRestartable());
+        }
+    
+    }, [winner]);
 
     // make sure that you check to see if you can import socket
     // or have to pass it as prop
@@ -120,6 +121,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
     turnSubmitted,
     cleared,
+    roomRestartable,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(GamePage);

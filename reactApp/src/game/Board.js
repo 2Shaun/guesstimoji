@@ -4,17 +4,20 @@ import Choice from './PickTextBox';
 import { connect, useDispatch } from 'react-redux';
 import { playerPicked, playerReset } from '../redux/playersSlice';
 import { gameRestarted } from '../redux/gameLogSlice';
+import { roomRestarted } from '../redux/roomSlice';
+import './game.css';
 
 // i'm hoping that when the client socket emits a request,
 // the server will be able to extract room information
 // and access gamedata hashtable with that
-const Board = ({ socket, board, player, picked, playerPicked, playerReset }) => {
+const Board = ({ socket, board, player, picked, playerPicked, playerReset, restartable }) => {
     //const [freshBoard, setFreshBoard] = useState(easterEgg(props.room));
     // THE INITIAL VALUE OF STATE WILL BE ASSIGNED ONLY
     // ON THE INITIAL RENDER
     // IN SUBSEQUENT RENDERS, THE ARGUMENT OF USESTATE
     // WILL BE IGNORED AND THE CURRENT VALUE WILL BE
     // RETRIEVED
+
     const [pick, setPick] = useState('');
     const dispatch = useDispatch();
 
@@ -44,12 +47,14 @@ const Board = ({ socket, board, player, picked, playerPicked, playerReset }) => 
         playerReset();
         gameRestarted({});
         dispatch(gameRestarted({}));
+        dispatch(roomRestarted());
     };
     socket.on('server:players/reset', () => {
         setPick('');
         playerReset();
         gameRestarted({});
         dispatch(gameRestarted({}));
+        dispatch(roomRestarted());
     });
     // this is a white space char, not a space
     // a space causes shifting of rows
@@ -85,6 +90,7 @@ const Board = ({ socket, board, player, picked, playerPicked, playerReset }) => 
             />
         );
     };
+    
     return (
         <div>
             <div className="board-row">
@@ -135,7 +141,12 @@ const Board = ({ socket, board, player, picked, playerPicked, playerReset }) => 
             <div className="text-row">
                 <Choice pick={pick} />
             </div>
-            <button onClick={handleGameRestart}>RESTART GAME</button>
+            {
+                restartable ?
+                    <button className="golden-button" onClick={handleGameRestart}>RESTART GAME</button>
+                :
+                    <div></div>
+            }
         </div>
     );
 };
@@ -143,6 +154,8 @@ const Board = ({ socket, board, player, picked, playerPicked, playerReset }) => 
 const mapStateToProps = (state) => ({
     roomID: state.roomID,
     picked: state.player,
+
+    restartable: state.room.restartable,
 });
 
 const mapDispatchToProps = {

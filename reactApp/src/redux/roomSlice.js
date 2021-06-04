@@ -20,6 +20,7 @@ export const roomReducer = (
         roomFull: false,
         board: [],
         randomSmiley: '😎',
+        restartable: false,
     },
     action
 ) => {
@@ -30,6 +31,16 @@ export const roomReducer = (
                 randomSmiley: action.payload,
             };
         case 'room/roomJoined':
+            return {
+                ...state,
+                ...action.payload,
+            };
+        case 'room/roomRestartable':
+            return {
+                ...state,
+                ...action.payload,
+            };
+        case 'room/roomRestarted':
             return {
                 ...state,
                 ...action.payload,
@@ -50,5 +61,19 @@ export const homePageLoaded = (emoji) => {
     return {
         type: 'homePageLoaded',
         payload: emoji,
+    };
+};
+
+export const roomRestartable = () => {
+    return {
+        type: 'room/roomRestartable',
+        payload: { restartable: true },
+    };
+};
+
+export const roomRestarted = () => {
+    return {
+        type: 'room/roomRestarted',
+        payload: { restartable: false, winner: undefined },
     };
 };
