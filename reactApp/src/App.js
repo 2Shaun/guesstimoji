@@ -46,9 +46,9 @@ const App = ({
                 console.error(err);
             });
         socket.emit('client:rooms/roomsRequested');
-        socket.on('server:rooms/roomsResponded', (rooms) => {
-            gotRooms(rooms);
-        });
+        socket.on('server:rooms/roomsResponded', gotRooms);
+        
+        return () => socket.off('server:rooms/roomsResponded', gotRooms);
     }, []);
 
     const handleJoin = (joinData) => {

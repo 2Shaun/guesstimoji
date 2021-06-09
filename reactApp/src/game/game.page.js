@@ -51,9 +51,9 @@ const GamePage = ({
         }
     }, [roomFull]);
     useEffect(() => {
-        socket.on('server:gameLog/cleared', () => {
-            dispatch(cleared());
-        });
+        const update = () => dispatch(cleared());
+        socket.on('server:gameLog/cleared', update);
+        return socket.off('server:gameLog/cleared', update);
     }, []);
 
     useEffect(() => {

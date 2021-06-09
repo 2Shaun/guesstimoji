@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Square from './Square';
 import Choice from './PickTextBox';
 import { connect, useDispatch } from 'react-redux';
@@ -49,13 +49,18 @@ const Board = ({ socket, board, player, picked, playerPicked, playerReset, resta
         dispatch(gameRestarted({}));
         dispatch(roomRestarted());
     };
-    socket.on('server:players/reset', () => {
-        setPick('');
-        playerReset();
-        gameRestarted({});
-        dispatch(gameRestarted({}));
-        dispatch(roomRestarted());
-    });
+
+    useEffect(() => {
+        const update = () => {
+            setPick('');
+            playerReset();
+            gameRestarted({});
+            dispatch(gameRestarted({}));
+            dispatch(roomRestarted());
+        };
+        socket.on('server:players/reset', update);
+        return socket.off('server:players/reset', update);
+    })
     // this is a white space char, not a space
     // a space causes shifting of rows
 
