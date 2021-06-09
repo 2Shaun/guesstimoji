@@ -3,7 +3,7 @@ import TurnHandler from './TurnHandler';
 import { connect, useDispatch } from 'react-redux';
 import { turnSubmitted } from '../redux/gameLogSlice';
 
-const GameLog = ({ socket, roomID, roomFull, gameLog, player, winner }) => {
+const GameLog = ({ socket, roomID, roomFull, gameLog, player, winner, allPlayersReady }) => {
     const opponent = (player % 2) + 1;
     const dispatch = useDispatch();
 
@@ -40,6 +40,7 @@ const GameLog = ({ socket, roomID, roomFull, gameLog, player, winner }) => {
                 roomFull={roomFull}
                 handleSubmitTurn={handleSubmitTurn}
                 winner={winner}
+                allPlayersReady={allPlayersReady}
             />
             <div className="game-log-box">{renderGameLog()}</div>
         </div>

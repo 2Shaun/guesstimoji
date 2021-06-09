@@ -7,7 +7,7 @@ import queryString from 'query-string';
 import socket from '../socketlocal';
 import '../index.css';
 import { connect, useDispatch } from 'react-redux';
-import { roomRestartable } from '../redux/roomSlice';
+import { allPlayersBecameReady, roomRestartable } from '../redux/roomSlice';
 import { turnSubmitted, cleared, gameRestarted } from '../redux/gameLogSlice';
 import { clicked } from '../redux/opponentBoardSlice';
 //import socket from '../../socket';
@@ -32,6 +32,8 @@ const GamePage = ({
     gameCount,
     winner,
     roomRestartable,
+    allPlayersBecameReady,
+    allPlayersReady,
 }) => {
     const dispatch = useDispatch();
     useEffect(() => {
@@ -61,6 +63,12 @@ const GamePage = ({
     
     }, [winner]);
 
+    useEffect(() => {
+        const update = () => dispatch(allPlayersBecameReady());
+        socket.on('server:room/allPlayersBecameReady', update);
+        return () => socket.off('server:room/allPlayersBecameReady', update);
+    });
+
     // make sure that you check to see if you can import socket
     // or have to pass it as prop
     // the empty array tells useEffect to only run once
@@ -83,6 +91,7 @@ const GamePage = ({
                     roomFull={roomFull}
                     player={player}
                     winner={winner}
+                    allPlayersReady={allPlayersReady}
                 />
                 {
                     // Need 'Leave Room' button
@@ -122,6 +131,7 @@ const mapDispatchToProps = {
     turnSubmitted,
     cleared,
     roomRestartable,
+    allPlayersBecameReady,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(GamePage);

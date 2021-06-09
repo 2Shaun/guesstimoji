@@ -381,6 +381,9 @@ io.sockets.on('connection', (socket) => {
             const { pick, player } = pickData;
             // {roomID: players: [{username: , pick: }, {username: ,pick:}]}
             roomHashTable[roomID].players[player].pick = pick;
+            if (roomHashTable[roomID].players[1].pick && roomHashTable[roomID].players[2].pick) {
+                io.in(roomID).emit('server:room/allPlayersBecameReady', {});
+            }
             console.log(roomHashTable[roomID].players[player]);
         });
         socket.on('client:players/reset', (resetData) => {

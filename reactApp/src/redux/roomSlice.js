@@ -21,6 +21,7 @@ export const roomReducer = (
         board: [],
         randomSmiley: '😎',
         restartable: false,
+        allPlayersReady: false,
     },
     action
 ) => {
@@ -41,6 +42,11 @@ export const roomReducer = (
                 ...action.payload,
             };
         case 'room/roomRestarted':
+            return {
+                ...state,
+                ...action.payload,
+            };
+        case 'room/allPlayersBecameReady':
             return {
                 ...state,
                 ...action.payload,
@@ -74,6 +80,13 @@ export const roomRestartable = () => {
 export const roomRestarted = () => {
     return {
         type: 'room/roomRestarted',
-        payload: { restartable: false, winner: undefined },
+        payload: { restartable: false, winner: undefined, allPlayersReady: false },
+    };
+};
+
+export const allPlayersBecameReady = () => {
+    return {
+        type: 'room/allPlayersBecameReady',
+        payload: { allPlayersReady: true },
     };
 };
