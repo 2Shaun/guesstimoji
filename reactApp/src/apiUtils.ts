@@ -1,6 +1,6 @@
 const graphQlApiUrl = 'http://localhost:3005/graphql';
 
-export const graphQlPost = async (query) => {
+export const graphQlPost = async (query: string) => {
     const res = await fetch(graphQlApiUrl, {
         method: 'POST',
         credentials: 'same-origin',
@@ -8,45 +8,34 @@ export const graphQlPost = async (query) => {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({ query }),
-    })
-        .then((res) => res.json())
-        .then((json) => {
-            return json.data;
-        })
-        .catch((err) => {
-            console.error(err);
-        });
-    return res;
+    });
+    const json = await res.json();
+    return json.data;
 };
 
-export const argsJsonStringify = (argsObject) => {
-    return argsObject
-        ? JSON.stringify(argsObject)
-              // removes quotes from keys
-              .replace(/"([^"]+)":/g, '$1:')
-              .replace('{', '(')
-              .replace('}', ')')
-        : '';
-};
+export const argsJsonStringify = (argsObject: any): string =>
+    argsObject ?
+        JSON.stringify(argsObject)
+            .replace(/"([^"]+)":/g, '$1:') // removes quotes from keys
+            .replace('{', '(')
+            .replace('}', ')')
+    :
+        '';
 
-export const fetchGraphQLData = (query) =>
-    fetch(graphQlApiUrl, {
+export const fetchGraphQLData = async (query: string) => {
+    const res = await fetch(graphQlApiUrl, {
         method: 'POST',
         credentials: 'same-origin',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({ query }),
-    })
-        .then((res) => res.json())
-        .then((json) => {
-            return json.data;
-        })
-        .catch((err) => {
-            console.error(err);
-        });
+    });
+    const json = await res.json();
+    return json.data;
+}
 
-export const getEmojis = async (argsObject = null) => {
+export const getEmojis = async (argsObject: string | null = null) => {
     const args = argsJsonStringify(argsObject);
     const query = `
         {
@@ -59,7 +48,7 @@ export const getEmojis = async (argsObject = null) => {
     return promiseResult?.getEmojis;
 };
 
-export const getBoards = async (query) => {
+export const getBoards = async (query: string) => {
     const boards = await fetch(graphQlApiUrl, {
         method: 'POST',
         credentials: 'same-origin',
@@ -67,18 +56,12 @@ export const getBoards = async (query) => {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({ query }),
-    })
-        .then((res) => res.json())
-        .then((json) => {
-            return json.data.getBoards;
-        })
-        .catch((err) => {
-            console.error(err);
-        });
-    return boards;
+    });
+    const json = await boards.json();
+    return json.data.getBoards;
 };
 
-const createBoard = async (mutation) => {
+const createBoard = async (mutation: any) => {
     const board = await fetch(graphQlApiUrl, {
         method: 'POST',
         credentials: 'same-origin',
@@ -86,23 +69,17 @@ const createBoard = async (mutation) => {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({ query: mutation }),
-    })
-        .then((res) => res.json())
-        .then((json) => {
-            return json.data.getEmojis;
-        })
-        .catch((err) => {
-            console.error(err);
-        });
-    return board;
+    });
+    const json = await board.json();
+    return json.data.getEmojis;
 };
 
-export const addGetEmojiResponseAsBoard = (array) =>
+export const addGetEmojiResponseAsBoard = (array: any) =>
     // the beginning of query
     'mutation{createBoard(emojis: ["' +
     // create array of emoji strings
     array
-        .map((x) => x.emoji)
+        .map((x: any) => x.emoji)
         // take only first 40 elements
         .slice(80, 120)
         // create a string with elements
