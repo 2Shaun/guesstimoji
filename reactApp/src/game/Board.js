@@ -59,7 +59,7 @@ const Board = ({ socket, board, player, picked, playerPicked, playerReset, resta
             dispatch(roomRestarted());
         };
         socket.on('server:players/reset', update);
-        return socket.off('server:players/reset', update);
+        return () => socket.off('server:players/reset', update);
     })
     // this is a white space char, not a space
     // a space causes shifting of rows
