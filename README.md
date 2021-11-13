@@ -43,127 +43,60 @@ There is a correspondence between action types and server events, i.e.,
 ### Back end
 
 The game logic layer runs on a `node.js` instance. Player picks are stored server side. The server groups client sockets into rooms using `socket.io` and emits game events exclusive to that room. Game state is stored in the `roomHashTable` at this layer.  
-The data access/service layer is managed with `mongoose` and the controller layer is managed with `GraphQL`. When the game ends, data from the `roomHashTable` is stored in a `mongodb` collection called `games` in the `guesstimoji` database. Here is an example document in the `games` collection:
-
-```json
-{
-    "_id": "LvvuCjDyYUsQEBC5AAAE1MqglVjwr86Z4UK4AAAF1",
-    "roomID": "aJjlA",
-    "winner": "Player 2",
-    "board": [
-        "🦇",
-        "🐺",
-        "🐗",
-        "🐴",
-        "🦄",
-        "🐝",
-        "🐛",
-        "🦋",
-        "🐌",
-        "🐚",
-        "🐞",
-        "🐜",
-        "🦗",
-        "🕷",
-        "🦂",
-        "🦟",
-        "🦠",
-        "🐢",
-        "🐍",
-        "🦎",
-        "🦖",
-        "🦕",
-        "🐙",
-        "🦑",
-        "🦐",
-        "🦀",
-        "🐡",
-        "🐠",
-        "🐟",
-        "🐬",
-        "🐳",
-        "🐋",
-        "🦈",
-        "🐊",
-        "🦦"
-    ],
-    "players": [
-        {},
-        {
-            "username": "Player 1",
-            "socketID": "LvvuCjDyYUsQEBC5AAAE",
-            "pick": "🐙"
-        },
-        {
-            "username": "Player 2",
-            "socketID": "1MqglVjwr86Z4UK4AAAF",
-            "pick": "🐍"
-        }
-    ],
-    "gameLog": [
-        {
-            "time": "2020-08-26T03:00:03Z",
-            "username": "Player 2",
-            "message": "🐙"
-        },
-        {
-            "time": "2020-08-26T02:59:40Z",
-            "username": "Player 2",
-            "message": "No."
-        },
-        {
-            "time": "2020-08-26T02:59:38Z",
-            "username": "Player 1",
-            "message": "does it live in water"
-        },
-        {
-            "time": "2020-08-26T02:59:23Z",
-            "username": "Player 1",
-            "message": "Yes."
-        },
-        {
-            "time": "2020-08-26T02:59:22Z",
-            "username": "Player 2",
-            "message": "does it have tentacles"
-        },
-        {
-            "time": "2020-08-26T02:58:45Z",
-            "username": "Player 2",
-            "message": "No."
-        },
-        {
-            "time": "2020-08-26T02:58:14Z",
-            "username": "Player 1",
-            "message": "is it a bug"
-        },
-        {
-            "time": "2020-08-26T02:57:59Z",
-            "username": "Player 1",
-            "message": "Yes."
-        },
-        {
-            "time": "2020-08-26T02:57:57Z",
-            "username": "Player 2",
-            "message": "does it live in water"
-        }
-    ],
-    "game": 1
-}
+The data access/service layer is managed with `mongoose` and the controller layer is managed with `GraphQL`. When the game ends, data from the `roomHashTable` is stored in a `mongodb` collection called `games` in the `guesstimoji` database. Here is an example of a game log stored there:
+```
+"gameLog": [
+    {
+        "time": "2020-08-26T03:00:03Z",
+        "username": "Player 2",
+        "message": "🐙"
+    },
+    {
+        "time": "2020-08-26T02:59:40Z",
+        "username": "Player 2",
+        "message": "No."
+    },
+    {
+        "time": "2020-08-26T02:59:38Z",
+        "username": "Player 1",
+        "message": "does it live in water"
+    },
+    {
+        "time": "2020-08-26T02:59:23Z",
+        "username": "Player 1",
+        "message": "Yes."
+    },
+    {
+        "time": "2020-08-26T02:59:22Z",
+        "username": "Player 2",
+        "message": "does it have tentacles"
+    },
+    {
+        "time": "2020-08-26T02:58:45Z",
+        "username": "Player 2",
+        "message": "No."
+    },
+    {
+        "time": "2020-08-26T02:58:14Z",
+        "username": "Player 1",
+        "message": "is it a bug"
+    },
+    {
+        "time": "2020-08-26T02:57:59Z",
+        "username": "Player 1",
+        "message": "Yes."
+    },
+    {
+        "time": "2020-08-26T02:57:57Z",
+        "username": "Player 2",
+        "message": "does it live in water"
+    }
+]
 ```
 
 ### Running locally
 
-In the root directory, run `npm install` in both the `client` and `server` directories. The server requires a local instance of `mongodb` running on port 27017. You must have a database named `guesstimoji` with a collection named `games`. In the `client` directory, run:
-
-```shell
-npm start
-```
-
-in both the `gameApi` and `graphQlApi` directories, run:
-
-```shell
-nodemon server
-```
+In the root directory, run `npm install` in the `reactApp`, `gameApi`, and `graphQl` directories. The server requires a local instance of `mongodb` running on port 27017. After this and `mongosh` are installed, you can create the database by running `mogosh intializeDb.js` inside the `graphQl` directories. Run `npm start` inside the `reactApp` to start the front end and both APIs.
 
 The backend uses the following environment variables:
 

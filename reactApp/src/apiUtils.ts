@@ -1,7 +1,5 @@
-const graphQlApiUrl = 'http://localhost:3005/graphql';
-
 export const graphQlPost = async (query: string) => {
-    const res = await fetch(graphQlApiUrl, {
+    const res = await fetch(process.env.REACT_APP_GRAPHQL_API_URL as RequestInfo, {
         method: 'POST',
         credentials: 'same-origin',
         headers: {
@@ -23,7 +21,7 @@ export const argsJsonStringify = (argsObject: any): string =>
         '';
 
 export const fetchGraphQLData = async (query: string) => {
-    const res = await fetch(graphQlApiUrl, {
+    const res = await fetch(process.env.REACT_APP_GRAPHQL_API_URL as RequestInfo, {
         method: 'POST',
         credentials: 'same-origin',
         headers: {
@@ -49,7 +47,7 @@ export const getEmojis = async (argsObject: string | null = null) => {
 };
 
 export const getBoards = async (query: string) => {
-    const boards = await fetch(graphQlApiUrl, {
+    const boards = await fetch(process.env.REACT_APP_GRAPHQL_API_URL as RequestInfo, {
         method: 'POST',
         credentials: 'same-origin',
         headers: {
@@ -62,7 +60,7 @@ export const getBoards = async (query: string) => {
 };
 
 const createBoard = async (mutation: any) => {
-    const board = await fetch(graphQlApiUrl, {
+    const board = await fetch(process.env.REACT_APP_GRAPHQL_API_URL as RequestInfo, {
         method: 'POST',
         credentials: 'same-origin',
         headers: {

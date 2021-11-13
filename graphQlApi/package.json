@@ -1,8 +1,8 @@
 {
-    "name": "gameApi",
+    "name": "graphQLAPI",
     "version": "1.0.0",
     "description": "",
-    "main": "server.js",
+    "main": "connectionString.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "env-cmd -f ./.env.local nodemon server.js",
@@ -13,9 +13,13 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "apollo-server": "^2.22.2",
+        "apollo-server-express": "^2.22.2",
+        "cors": "^2.8.5",
         "express": "^4.17.1",
-        "moment": "^2.29.1",
-        "socket.io": "^4.0.0"
+        "graphql": "^15.5.0",
+        "mongodb": "^3.6.5",
+        "mongoose": "^5.12.2"
     },
     "devDependencies": {
         "env-cmd": "^10.1.0",

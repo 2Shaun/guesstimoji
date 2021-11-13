@@ -10,79 +10,15 @@ const app = express();
 const server = http.Server(app);
 const io = socketIO(server, {
     cors: {
-        origin: '*',
+        origin: process.env.ALLOWED_ORIGINS,
     },
 });
-console.log(process.env.ORIGINS);
 const url = 'mongodb://127.0.0.1:27017/';
 var roomHashTable = {};
+console.log(process.env.ALLOWED_ORIGINS, 'origins');
 
 const port = process.env.PORT || 5000;
 
-// req object = THE http request
-// res object = THE http response that the Express app sends
-//              when it gets a request
-// express.static(root) is a built-in middleware function
-
-//app.use(path, express.static(__dirname+'/src'))
-// when the client requests to use path
-// express.static will serve __dirname/src/res.url to path
-//app.use('/src', express.static(__dirname + '/src'));
-// app.use(path, callback) is application level middleware
-// middleware/HTTP request method model:
-//
-// client request ---> express server ---> response
-// the express server is the middleware and runs
-// the middleware functions
-// the express server handles routing:
-// app.METHOD(PATH, HANDLER)
-// METHOD - http verb
-// PATH - url which client sent METHOD
-// HANDLER is executed when the METHOD is called on PATH
-
-// ReactDOM in index.js doesn't render
-// it probably doesn't render for the same reason
-// it doesn't when opening index.html by itself
-/*
-app.get('/', (request, response) => {
-    response.sendFile(path.join(__dirname, '/public/index.html'))
-});
-*/
-// server.js is a lot like a reducer
-// logic should be here
-// events represent action types
-// data represents actions
-// the hashtable should represent each rooms state tree
-// each room should then have a games hash table
-// representing the state tree of each game
-// game : {1:
-//            {board: board[1],
-//             players: [,{username: 'player1', pick: '😋'},{username: 'player2', pick: '😋'}]
-//             turn: [2,2],
-//             roomFull: true,
-//             gameLog:
-//                [
-//                  {username: 2, message: 'is it a mammal?'},
-//                  {username: 1, message: 'Yes.'}
-//                ]
-//
-//
-//}}
-
-/*
-const insertRecordIntoCollection = (rec, coll) => {
-  // mongoClient.connect(url, (err, db) => {
-  mongoClient.connect(mongoDBStrings.connectionString, (err, db) => {
-    if (err) throw err;
-    var dbo = db.db("guesstimoji");
-    dbo.collection(coll).insertOne(rec, (err, res) => {
-      if (err) throw err;
-      console.log("1 document inserted");
-      db.close();
-    });
-  });
-}
-*/
 const validateBoardIndex = (index) => {
     if (typeof index != 'number') {
         console.log('Invalid index type %s', typeof index);
