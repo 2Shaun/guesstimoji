@@ -15,6 +15,7 @@
     "dependencies": {
         "apollo-server": "^2.22.2",
         "apollo-server-express": "^2.22.2",
+        "cors": "^2.8.5",
         "express": "^4.17.1",
         "graphql": "^15.5.0",
         "mongodb": "^3.6.5",

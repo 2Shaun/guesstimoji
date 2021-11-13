@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors')
 const { gql, ApolloServer, graphiqlExpress } = require('apollo-server-express');
 const { typeDefs } = require('./types.js');
 const { resolvers } = require('./resolvers.js');
@@ -27,6 +28,7 @@ db.once('open', async () => {
     });
 
     const app = express();
+    app.options('*', cors({origin: process.env.ALLOWED_ORIGINS}))
     server.applyMiddleware({ app });
 
     app.listen(
