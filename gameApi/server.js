@@ -13,7 +13,6 @@ const io = socketIO(server, {
         origin: process.env.ALLOWED_ORIGINS,
     },
 });
-const url = 'mongodb://127.0.0.1:27017/';
 var roomHashTable = {};
 console.log(process.env.ALLOWED_ORIGINS, 'origins');
 

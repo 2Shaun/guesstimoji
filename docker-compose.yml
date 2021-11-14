@@ -17,7 +17,7 @@ services:
 
     graphQlApi:
         image: guesstimoji/graph-ql-api
-        build: ./graphQLAPI
+        build: ./graphQlApi
         #expose:
         #        - 5000
         # ports (HOST:CONTAINER)
@@ -32,10 +32,15 @@ services:
 
     mongo:
         image: mongo
-        volumes:
-            - /var/lib/mongodb:/data/db
-        ports:
-            - '27018:27017'
+
+    mongosh:
+        image: guesstimoji/initialize-db
+        build:
+            context: ./graphQlApi
+            dockerfile: mongosh.Dockerfile
+        depends_on:
+            - mongo
+        command: mongosh --host mongo initializeDb.js
 
     reactApp:
         image: guesstimoji/react-app
@@ -48,16 +53,16 @@ services:
             - '3000:80'
         command: [nginx, '-g', 'daemon off;']
 
-    cypress:
-        image: guesstimoji/cypress
-        build:
-            context: .
-            dockerfile: cypress.Dockerfile
-        volumes:
-            - ./cypress:/e2e
-        depends_on:
-            - graphQlApi
-            - mongo
-            - gameApi
-            - reactApp
-        command: [npx, 'cypress', 'run']
+    #cypress:
+    #    image: guesstimoji/cypress
+    #    build:
+    #        context: .
+    #        dockerfile: cypress.Dockerfile
+    #    volumes:
+    #        - ./cypress:/e2e
+    #    depends_on:
+    #        - graphQlApi
+    #        - mongo
+    #        - gameApi
+    #        - reactApp
+    #    command: [npx, 'cypress', 'run']

@@ -20,7 +20,7 @@ const resolvers = {
                 Emoji.find({ ...args }).distinct('group', (err, groups) => {
                     console.log('getEmojis -> groups', groups);
                 });
-                Emoji.count({ ...args }).count({}, (err, count) => {
+                Emoji.countDocuments({ ...args }).countDocuments({}, (err, count) => {
                     console.log('getEmojis -> count', count);
                 });
                 return emojis;

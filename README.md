@@ -96,6 +96,12 @@ The data access/service layer is managed with `mongoose` and the controller laye
 
 ### Running locally
 
+#### Docker installed
+
+Run `docker-compose up` in the project root.
+
+#### Docker not installed
+
 In the root directory, run `npm install` in the `reactApp`, `gameApi`, and `graphQl` directories. The server requires a local instance of `mongodb` running on port 27017. After this and `mongosh` are installed, you can create the database by running `mogosh intializeDb.js` inside the `graphQl` directories. Run `npm start` inside the `reactApp` to start the front end and both APIs.
 
 The backend uses the following environment variables:

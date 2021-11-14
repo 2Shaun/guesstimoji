@@ -1,7 +1,8 @@
 const boards = require('./boards.json')
 const emojis = require('./emojis.json')
+require('dotenv').config({ path: './.env.local'})
 
-conn = Mongo();
+conn = Mongo(`${process.env.MONGODB_HOST_NAME}:27017`);
 db = conn.getDB("guesstimoji")
 
 try {
@@ -22,10 +23,10 @@ try {
     console.log('Error creating games collection. Is it already created?')
 }
 
-if (db.emojis.count() === 0) {
+if (db.emojis.countDocuments() === 0) {
     db.emojis.insertMany(emojis)
 }
 
-if (db.boards.count() === 0) {
+if (db.boards.countDocuments() === 0) {
     db.boards.insertMany(boards)
 }
