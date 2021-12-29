@@ -1,0 +1,152 @@
+% resume.tex
+%
+% (c) 2002 Matthew Boedicker <mboedick@mboedick.org> (original author) http://mboedick.org
+% (c) 2003-2007 David J. Grant <davidgrant-at-gmail.com> http://www.davidgrant.ca
+%
+% This work is licensed under the Creative Commons Attribution-ShareAlike 3.0 Unported License. To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/3.0/ or send a letter to Creative Commons, 171 Second Street, Suite 300, San Francisco, California, 94105, USA.
+
+\documentclass[letterpaper,11pt]{article}
+
+%-----------------------------------------------------------
+%Margin setup
+
+\setlength{\voffset}{0.1in}
+\setlength{\paperwidth}{8.5in}
+\setlength{\paperheight}{11in}
+\setlength{\headheight}{0in}
+\setlength{\headsep}{0in}
+\setlength{\textheight}{11in}
+\setlength{\textheight}{9.5in}
+\setlength{\topmargin}{-0.25in}
+\setlength{\textwidth}{7in}
+\setlength{\topskip}{0in}
+\setlength{\oddsidemargin}{-0.25in}
+\setlength{\evensidemargin}{-0.25in}
+%-----------------------------------------------------------
+\usepackage{hyperref}
+%\usepackage{fullpage}
+%\textheight=9.0in
+\pagestyle{empty}
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+%-----------------------------------------------------------
+%Custom commands
+\newcommand{\resitem}[1]{\item #1 \vspace{-2pt}}
+\newcommand{\resheading}[1]{{\vspace{5pt}\large \textbf{#1}\\\rule{510pt}{1pt}}}
+\newcommand{\nosubheading}[2]{
+\begin{tabular*}{6.5in}{l@{\extracolsep{\fill}}r}
+		\textbf{#1} & \textit{#2} \\
+\end{tabular*}\vspace{-6pt}}
+\newcommand{\ressubheading}[4]{
+\begin{tabular*}{6.5in}{l@{\extracolsep{\fill}}r}
+		\textbf{#1} & #2 \\
+		\textit{#3} & \textit{#4} \\
+\end{tabular*}\vspace{-6pt}}
+\newcommand{\reressubheading}[6]{
+\begin{tabular*}{6.5in}{l@{\extracolsep{\fill}}r}
+		\textbf{#1} & #2 \\
+		\textit{#3} & \textit{#4} \\
+		\textit{#5} & \textit{#6} \\
+\end{tabular*}\vspace{-6pt}}
+%
+%-----------------------------------------------------------
+
+
+\begin{document}
+
+\begin{tabular*}{7in}{l@{\extracolsep{\fill}}r}
+\textbf{\Large Tom O'Shaughnessy}  & 856-952-1639\\
+101 N York St. &  tom.w.oshaughnessy@gmail.com \\
+Mechanicsburg, PA 17055 & \href{https://www.linkedin.com/in/twoshaughnessy/}{linkedin.com/in/twoshaughnessy}\\
+\end{tabular*}
+\\
+
+\vspace{0.1in}
+
+\resheading{EDUCATION}
+\begin{itemize}
+\item
+	\ressubheading{Rutgers University}{New Brunswick, NJ}{B.A., Mathematics with Computer Science Minor (GPA: 3.7)}{Jan. 2018 - May 2020}
+	\begin{itemize}
+		\resitem{Graduated with Honors}
+		\resitem{Relevant courses: Computer Architecture and C Programming, Data Structures and Algorithms in Java, Design and Analysis of Algorithms}
+	\end{itemize}
+\end{itemize}
+
+\resheading{EXPERIENCE}
+\begin{itemize}
+\item
+	\ressubheading{Select Medical}{Mechanicsburg, PA}{DevOps Specialist}{Aug. 2021 - Present}
+	\begin{itemize}
+		\resitem{Created and supported production deployment scripts using Gitlab CI/CD}
+		\resitem{Managed hybrid cloud infrastructure and identity services in Azure}
+		\resitem{Fixed production deployment issues by coordinating with security and DBAs for firewall rules and database permissions}
+		\resitem{Troubleshooted network connectivity issues using Wireshark, Fiddler, and tcpdump}
+		\resitem{Managed infrastructure and application alert system using PRTG Monitor and Splunk alerts}
+	\end{itemize}
+	\begin{tabular*}{6.5in}{l@{\extracolsep{\fill}}r}
+		\textit{IS Engagement Committee Member} & \textit{July 2021 - Present} \\
+	\end{tabular*}\vspace{-6pt}
+	\begin{itemize}
+		\resitem{Selected by director to meet biweekly with the CIO and fellow members to discuss employee survey results and changes to improve employee engagement}
+		\resitem{Presented survey results and change implementation plan during IS departmental meeting in front of over 400 viewers}
+		\resitem{Participated in video clips with fellow members discussing career advancement strategies}
+	\end{itemize}
+	\begin{tabular*}{6.5in}{l@{\extracolsep{\fill}}r}
+		\textit{Software Developer} & \textit{July 2020 - July 2021} \\
+	\end{tabular*}\vspace{-6pt}
+	\begin{itemize}
+		\resitem{Full stack Agile development and support of software built with Typescript, React, .NET Core, and Azure Cosmos DB}
+		\resitem{Implemented front end authentication and token management for \href{www.chetcommunity.com}{chetcommunity.com (CHET)} using Microsoft Authentication Library}
+		\resitem{Monitored and deployed \href{www.chetcommunity.com}{CHET} via Azure App Service}
+		\resitem{Created automated integration testing using a mock API service worker and React testing library}
+		\resitem{Discussed and documented standards as a member of the developer standards committee}
+	\end{itemize}
+
+\item 
+	\ressubheading{Mathnasium}{North Brunswick, NJ}{Instructor}{Feb. 2020 - July 2020}
+
+\item
+	\ressubheading{Rutgers Math Department}{New Brunswick, NJ}{Grader for Intro to Real Analysis and Intro to Math Reasoning}{Jan. 2019 - Jan. 2020}
+
+\item
+	\ressubheading{ESS}{Cherry Hill, NJ}{IT Specialist}{May 2018 - Sept. 2019}
+	\begin{itemize}
+		\resitem{Imaged computers, supported end users, and troubleshooted problems}
+	\end{itemize}
+
+\end{itemize}
+
+\resheading{PROJECTS}
+\begin{itemize}
+\item
+	\nosubheading{Home Lab}{Nov 2021 - Present}
+	\begin{itemize}
+		\resitem{Wireguard VPN peering with cloud VPS}
+		\resitem{Infrastructure monitoring with Prometheus and Grafana}
+		\resitem{Home automation with Home Assistant}
+	\end{itemize}
+
+
+\item
+	\ressubheading{Guesstimoji}{}{\url{www.github.com/2Shaun/guesstimoji}}{May 2020 - Present}
+	\begin{itemize}
+		\resitem{Deployed prototype to Azure Kubernetes Service}
+		\resitem{Built with the MERN stack, GraphQL, and Websockets}
+		\resitem{Tested in Gitlab CI using Cypress and Docker compose}
+		\resitem{Hosted and managed on Linux VPS}
+	\end{itemize}
+
+\end{itemize}
+\resheading{AWARDS}
+
+	\begin{tabular*}{6.5in}{l@{\extracolsep{\fill}}r}
+		Lawrence Corwin Memorial Math Prize & 2020\\
+		Jacqueline B. Lewis Memorial Award & 2020\\
+		Henry G. Sanders 1925 Memorial Scholarship in Mathematics & 2020\\
+		Best Mathematics Team of NJ Junior Colleges at NJUMC & 2017
+\end{tabular*}
+
+\end{document}
