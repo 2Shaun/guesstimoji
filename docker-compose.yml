@@ -13,7 +13,8 @@ services:
         # map it through host server port HOST
         # can access with http://{host IP}:HOST
         ports:
-            - '5000:5000'
+            # Apple Airplay uses 5000
+            - '5001:5000'
 
     graphQlApi:
         image: guesstimoji/graph-ql-api

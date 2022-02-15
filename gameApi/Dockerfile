@@ -1,8 +1,6 @@
-FROM node:current-alpine
+FROM node:16.5.0-alpine
 # sets the working director for RUN, CMD, ENTRYPOINT, COPY, and ADD
 # this will be a directory ON THE CONTAINER
-RUN mkdir -p /home/node/gameApi
-WORKDIR /home/node/gameApi
 COPY . . 
 # takes from <src> and adds them to the filesystem of the 
 # container at the path <dest>
@@ -14,5 +12,4 @@ RUN npm i
 # <dest> = . represents the WORKDIR on the container
 # I don't think I need it if I'm mounting a volume
 # COPY . .
-EXPOSE 5000:5000
-CMD ["npm", "run", "start:ci"]
+CMD ["npm", "run", "start:docker"]

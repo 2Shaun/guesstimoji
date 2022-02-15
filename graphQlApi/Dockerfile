@@ -1,8 +1,6 @@
-FROM node:current-alpine
+FROM node:16.5.0-alpine
 # sets the working director for RUN, CMD, ENTRYPOINT, COPY, and ADD
 # this will be a directory ON THE CONTAINER
-RUN mkdir -p /graphQLAPI
-WORKDIR /graphQLAPI
 COPY . .  
 RUN npm i
 # takes from <src> and adds them to the filesystem of the 
@@ -15,5 +13,4 @@ RUN npm i
 # <dest> = . represents the WORKDIR on the container
 # I don't think I need it if I'm mounting a volume
 # COPY . .
-EXPOSE 3005:3005
-CMD ["npm", "run", "start:ci"]
+CMD ["npm", "run", "start:docker"]

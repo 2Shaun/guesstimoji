@@ -3,8 +3,6 @@ import RoomName from './RoomName';
 import OpponentBoard from './OpponentBoard';
 import Board from './Board';
 import GameLog from './GameLog';
-import queryString from 'query-string';
-import socket from '../socketlocal';
 import '../index.css';
 import { connect, useDispatch } from 'react-redux';
 import { allPlayersBecameReady, roomRestartable } from '../redux/roomSlice';
@@ -60,7 +58,6 @@ const GamePage = ({
         if (winner) {
             dispatch(roomRestartable());
         }
-    
     }, [winner]);
 
     useEffect(() => {

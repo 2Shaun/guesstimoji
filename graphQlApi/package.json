@@ -7,6 +7,7 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "env-cmd -f ./.env.local nodemon server.js",
         "start:prod": "env-cmd -f ./.env.prod node server.js",
+        "start:docker": "env-cmd -f ./.env.docker node server.js",
         "start:ci": "env-cmd -f ./.env.ci node server.js"
     },
     "keywords": [],

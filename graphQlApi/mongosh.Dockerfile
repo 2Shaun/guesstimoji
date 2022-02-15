@@ -1,4 +1,4 @@
-FROM debian:latest
+FROM --platform=linux/amd64 debian:latest
 WORKDIR /root
 RUN apt-get update && apt-get install -y wget && \
     wget -O - https://downloads.mongodb.com/compass/mongosh-1.1.2-linux-x64.tgz | tar -C /usr/local/bin -xzf -
