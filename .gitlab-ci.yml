@@ -3,7 +3,7 @@ stages:
     - setup
     - jestTest
     - build
-    - cypressTest
+   # - cypressTest
 
 include:
     - template: Code-Quality.gitlab-ci.yml
