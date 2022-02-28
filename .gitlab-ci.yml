@@ -36,16 +36,16 @@ installGameApi:
         paths:
             - gameApi/node_modules/
 
-installGraphQLAPI:
+installGraphQlApi:
     stage: setup
     <<: *nodeimage
     script:
-        - cd graphQLAPI
+        - cd graphQlApi
         - npm i
     artifacts:
         expire_in: 15 mins
         paths:
-            - graphQLAPI/node_modules/
+            - graphQlApi/node_modules/
 
 jestTest:
     stage: jestTest
