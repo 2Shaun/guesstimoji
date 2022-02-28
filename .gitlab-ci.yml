@@ -9,10 +9,7 @@ include:
     - template: Code-Quality.gitlab-ci.yml
 
 code_quality:
-    services: # Shut off Docker-in-Docker
     stage: analysis
-    tags:
-        - cq-sans-dind # Set this job to only run on our new specialized runner
 
 installReactApp:
     stage: setup
@@ -59,20 +56,20 @@ build:
         expire_in: 15 mins
         paths:
             - reactApp/build
-e2eTests:
-    image: docker:19.03.12
-    variables:
-        DOCKER_TLS_CERTDIR: "/certs"
-    stage: cypressTest
-    services:
-        - docker:19.03.12-dind
-    before_script:
-        - apk update
-        - apk add py-pip musl-dev python3-dev libffi-dev openssl-dev gcc libc-dev rust cargo make
-        - pip install docker-compose
-    dependencies:
-        - build
-    services:
-        - docker:dind
-    script:
-        - docker-compose up --abort-on-container-exit --exit-code-from cypress
+#e2eTests:
+#    image: docker:19.03.12
+#    variables:
+#        DOCKER_TLS_CERTDIR: "/certs"
+#    stage: cypressTest
+#    services:
+#        - docker:19.03.12-dind
+#    before_script:
+#        - apk update
+#        - apk add py-pip musl-dev python3-dev libffi-dev openssl-dev gcc libc-dev rust cargo make
+#        - pip install docker-compose
+#    dependencies:
+#        - build
+#    services:
+#        - docker:dind
+#    script:
+#       - docker-compose up --abort-on-container-exit --exit-code-from cypress
