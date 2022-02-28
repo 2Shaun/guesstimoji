@@ -5,14 +5,18 @@ stages:
     - build
    # - cypressTest
 
-include:
-    - template: Code-Quality.gitlab-ci.yml
+#include:
+#    - template: Code-Quality.gitlab-ci.yml
 
-code_quality:
-    stage: analysis
+.nodeimage: &nodeimage
+    image: node:16.5.0-alpine
+
+#code_quality:
+#    stage: analysis
 
 installReactApp:
     stage: setup
+    <<: *nodeimage
     script:
         - cd reactApp
         - npm i
@@ -23,6 +27,7 @@ installReactApp:
 
 installGameApi:
     stage: setup
+    <<: *nodeimage
     script:
         - cd gameApi
         - npm i
@@ -33,6 +38,7 @@ installGameApi:
 
 installGraphQLAPI:
     stage: setup
+    <<: *nodeimage
     script:
         - cd graphQLAPI
         - npm i
@@ -43,12 +49,14 @@ installGraphQLAPI:
 
 jestTest:
     stage: jestTest
+    <<: *nodeimage
     script:
         - cd reactApp
         - npm t
 
 build:
     stage: build
+    <<: *nodeimage
     script:
         - cd reactApp
         - npm run build
