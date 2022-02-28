@@ -87,6 +87,7 @@ resource "aws_cloudwatch_log_group" "guesstimoji" {
   name = "guesstimoji"
 }
 
+
 # TODO: clean up name (family)
 resource "aws_ecs_task_definition" "guesstimoji" {
   family                   = "guesstimoji"
@@ -101,72 +102,15 @@ resource "aws_ecs_task_definition" "guesstimoji" {
   }
   # note the distinction between role arns and policy arns
   execution_role_arn = aws_iam_role.ecs_tasks_execution_role.arn
-  /*
-  downside to this way is the syntax validating is weak
-  needs to be done this way because of dashes?
-  */
-  # TODO: move to template
-  container_definitions = <<DEFINITION
-    [
-      {
-        "name": "game-api",
-        "image": "${aws_ecr_repository.game_api.repository_url}:latest",
-        "cpu": 256,
-        "memory": 512,
-        "essential": true,
-        "logConfiguration": {
-          "logDriver": "awslogs",
-          "options": {
-            "awslogs-group": "guesstimoji",
-            "awslogs-region": "us-east-2",
-            "awslogs-stream-prefix": "ecs"
-          }
-        },
-        "portMappings": [{
-          "containerPort": 5000,
-          "hostPort": 5000
-        }]
-      },
-      {
-        "name": "react-app",
-        "image": "${aws_ecr_repository.react_app.repository_url}:latest",
-        "cpu": 256,
-        "memory": 512,
-        "essential": true,
-        "logConfiguration": {
-          "logDriver": "awslogs",
-          "options": {
-            "awslogs-group": "guesstimoji",
-            "awslogs-region": "us-east-2",
-            "awslogs-stream-prefix": "ecs"
-          }
-        },
-        "portMappings": [{
-          "containerPort": 80,
-          "hostPort": 80
-        }]
-      },
-      {
-        "name": "graph-ql-api",
-        "image": "${aws_ecr_repository.graph_ql_api.repository_url}:latest",
-        "cpu": 256,
-        "memory": 512,
-        "essential": true,
-        "logConfiguration": {
-          "logDriver": "awslogs",
-          "options": {
-            "awslogs-group": "guesstimoji",
-            "awslogs-region": "us-east-2",
-            "awslogs-stream-prefix": "ecs"
-          }
-        },
-        "portMappings": [{
-          "containerPort": 3005,
-          "hostPort": 3005 
-        }]
-      }
-    ]
-  DEFINITION
+  //container_definitions = data.template_file.container_definitions
+  container_definitions = templatefile("${path.module}/container_definitions.json",
+    {
+      game_api_repo_url     = "${aws_ecr_repository.game_api.repository_url}"
+      graph_ql_api_repo_url = "${aws_ecr_repository.graph_ql_api.repository_url}"
+      react_app_repo_url    = "${aws_ecr_repository.react_app.repository_url}"
+      tag                   = "${var.tag}"
+    }
+  )
 }
 
 # TODO: clean up name
