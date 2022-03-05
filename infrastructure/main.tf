@@ -32,32 +32,52 @@ module "https_443_sg" {
   ingress_cidr_blocks = ["0.0.0.0/0"]
 }
 
-# what happens when this data source changes? does terraform know?
-# a role contains two new policies: the who and the what
-data "aws_iam_policy_document" "ecs_tasks_execution_role" {
-  statement {
-    # AWS Security Token Service AssumeRole
-    actions = ["sts:AssumeRole"]
-
-    # trusted account (the who policy)
-    principals {
-      type        = "Service"
-      identifiers = ["ecs-tasks.amazonaws.com"]
-    }
-  }
+module "iam_assumable_role" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role"
+  version = "~> 4"
+  create_role = true
+  role_name = "2s-guesstimoji-prod-iamrole-useast2-ecstasks"
+  # AssumeRole principal (who policy)
+  trusted_role_services = ["ecs-tasks.amazonaws.com"]
+  # what policy
+  custom_role_policy_arns = ["arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"]
+  number_of_custom_role_policy_arns = 1
 }
 
-resource "aws_iam_role" "ecs_tasks_execution_role" {
-  name               = "2s-guesstimoji-prod-iamrole-useast2-ecstasks"
-  assume_role_policy = data.aws_iam_policy_document.ecs_tasks_execution_role.json
-}
-
-resource "aws_iam_role_policy_attachment" "ecs_tasks_execution_role" {
-  role = aws_iam_role.ecs_tasks_execution_role.name
-  # the what policy
-  # Amazon manages this policy
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-}
+# the who policy
+#data "aws_iam_policy_document" "ecs_tasks_execution_role" {
+#  statement {
+#    # AWS Security Token Service AssumeRole
+#    actions = ["sts:AssumeRole"]
+#
+#    # trusted account
+#    principals {
+#      type        = "Service"
+#      identifiers = ["ecs-tasks.amazonaws.com"]
+#    }
+#  }
+#}
+#
+#resource "aws_iam_role" "ecs_tasks_execution_role" {
+#  name               = "2s-guesstimoji-prod-iamrole-useast2-ecstasks"
+#  assume_role_policy = data.aws_iam_policy_document.ecs_tasks_execution_role.json
+#}
+#
+#resource "aws_iam_role_policy_attachment" "ecs_tasks_execution_role" {
+#  role = aws_iam_role.ecs_tasks_execution_role.name
+#  # the what policy
+#  # Amazon manages this policy (exposed to all accounts by default)
+#  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+#  # AmazonECSTaskExecutionRolePolicy
+#  # Actions:
+#  #    - ecr:GetAuthorizationToken
+#  #    - ecr:BatchCheckLayerAvailablility
+#  #    - ecr:GetDownloadUrlForLayer
+#  #    - ecr:BatchGetImage
+#  #    - logs:CreateLogStream
+#  #    - logs:PutLogEvents
+#  # Resource: *
+#}
 
 resource "aws_ecr_repository" "react_app" {
   name = "react-app"
@@ -101,7 +121,8 @@ resource "aws_ecs_task_definition" "guesstimoji" {
     cpu_architecture = "ARM64"
   }
   # note the distinction between role arns and policy arns
-  execution_role_arn = aws_iam_role.ecs_tasks_execution_role.arn
+  # execution_role_arn = aws_iam_role.ecs_tasks_execution_role.arn
+  execution_role_arn = module.iam_assumable_role.iam_role_arn
   //container_definitions = data.template_file.container_definitions
   container_definitions = templatefile("${path.module}/container_definitions.json",
     {
