@@ -33,15 +33,16 @@ module "https_443_sg" {
 }
 
 module "iam_assumable_role" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role"
-  version = "~> 4"
+  source      = "terraform-aws-modules/iam/aws//modules/iam-assumable-role"
+  version     = "~> 4"
   create_role = true
-  role_name = "2s-guesstimoji-prod-iamrole-useast2-ecstasks"
+  role_name   = "2s-guesstimoji-prod-iamrole-useast2-ecstasks"
   # AssumeRole principal (who policy)
   trusted_role_services = ["ecs-tasks.amazonaws.com"]
   # what policy
-  custom_role_policy_arns = ["arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"]
+  custom_role_policy_arns           = ["arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"]
   number_of_custom_role_policy_arns = 1
+  role_requires_mfa                 = false
 }
 
 # the who policy
