@@ -7,3 +7,7 @@ variable "tag" {
   type    = string
   default = "latest"
 }
+
+variable "aws_account_id" {
+  type = string
+}

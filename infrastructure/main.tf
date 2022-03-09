@@ -32,6 +32,22 @@ module "https_443_sg" {
   ingress_cidr_blocks = ["0.0.0.0/0"]
 }
 
+resource "aws_iam_role" "vault_role" {
+  name               = "vault_role"
+  assume_role_policy = templatefile("${path.module}/vault_iam_policy.tftpl", { aws_account_id = var.aws_account_id })
+}
+
+#module "vault_assumable_roles" {
+#  for_each =
+#  source      = "terraform-aws-modules/iam/aws//modules/iam-assumable-role"
+#  version     = "~> 4"
+#  role_name = "2s-prod-iamrole-useast2-${each.role_name}"
+#  trusted_role_arns = ["arn:aws:iam::${var.aws_account_id}:user/${var.vault_user_name}"]
+#  custom_role_policy_arns = each.custom_role_policy_arns
+#  role_requires_mfa = false
+#}
+
+
 module "iam_assumable_role" {
   source      = "terraform-aws-modules/iam/aws//modules/iam-assumable-role"
   version     = "~> 4"
@@ -40,45 +56,19 @@ module "iam_assumable_role" {
   # AssumeRole principal (who policy)
   trusted_role_services = ["ecs-tasks.amazonaws.com"]
   # what policy
-  custom_role_policy_arns           = ["arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"]
+  custom_role_policy_arns = ["arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"]
+  # AmazonECSTaskExecutionRolePolicy
+  # Actions:
+  #    - ecr:GetAuthorizationToken
+  #    - ecr:BatchCheckLayerAvailablility
+  #    - ecr:GetDownloadUrlForLayer
+  #    - ecr:BatchGetImage
+  #    - logs:CreateLogStream
+  #    - logs:PutLogEvents
+  # Resource: *
   number_of_custom_role_policy_arns = 1
   role_requires_mfa                 = false
 }
-
-# the who policy
-#data "aws_iam_policy_document" "ecs_tasks_execution_role" {
-#  statement {
-#    # AWS Security Token Service AssumeRole
-#    actions = ["sts:AssumeRole"]
-#
-#    # trusted account
-#    principals {
-#      type        = "Service"
-#      identifiers = ["ecs-tasks.amazonaws.com"]
-#    }
-#  }
-#}
-#
-#resource "aws_iam_role" "ecs_tasks_execution_role" {
-#  name               = "2s-guesstimoji-prod-iamrole-useast2-ecstasks"
-#  assume_role_policy = data.aws_iam_policy_document.ecs_tasks_execution_role.json
-#}
-#
-#resource "aws_iam_role_policy_attachment" "ecs_tasks_execution_role" {
-#  role = aws_iam_role.ecs_tasks_execution_role.name
-#  # the what policy
-#  # Amazon manages this policy (exposed to all accounts by default)
-#  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-#  # AmazonECSTaskExecutionRolePolicy
-#  # Actions:
-#  #    - ecr:GetAuthorizationToken
-#  #    - ecr:BatchCheckLayerAvailablility
-#  #    - ecr:GetDownloadUrlForLayer
-#  #    - ecr:BatchGetImage
-#  #    - logs:CreateLogStream
-#  #    - logs:PutLogEvents
-#  # Resource: *
-#}
 
 resource "aws_ecr_repository" "react_app" {
   name = "react-app"
@@ -101,13 +91,10 @@ resource "aws_ecr_repository" "graph_ql_api" {
   }
 }
 
-# aws_ecr_repository.guesstimoji.repository_url
-
 # TODO: clean up name
 resource "aws_cloudwatch_log_group" "guesstimoji" {
   name = "guesstimoji"
 }
-
 
 # TODO: clean up name (family)
 resource "aws_ecs_task_definition" "guesstimoji" {
