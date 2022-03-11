@@ -51,6 +51,7 @@ module "vault_user" {
 module "vault_assumable_role" {
   source                            = "terraform-aws-modules/iam/aws//modules/iam-assumable-role"
   version                           = "~> 4"
+  create_role                       = true
   role_name                         = "2s-prod-iamrole-useast2-vaultrole"
   trusted_role_arns                 = [module.vault_user.iam_user_arn]
   custom_role_policy_arns           = [module.vault_iam_policy.arn]
