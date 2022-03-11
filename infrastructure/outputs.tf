@@ -13,3 +13,7 @@ output "graph_ql_api_url" {
 output "react_app_url" {
   value = aws_ecr_repository.react_app.repository_url
 }
+
+output "vault_user_secret_key" {
+  value = module.vault_user.keybase_secret_key_decrypt_command
+}
