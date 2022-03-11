@@ -39,16 +39,6 @@ module "vault_iam_policy" {
   policy  = templatefile("${path.module}/vault_iam_policy.tftpl", { aws_account_id = var.aws_account_id })
 }
 
-module "vault_assumable_role" {
-  source                            = "terraform-aws-modules/iam/aws//modules/iam-assumable-role"
-  version                           = "~> 4"
-  role_name                         = "2s-prod-iamrole-useast2-vaultrole"
-  trusted_role_arns                 = [module.vault_user.iam_user_arn]
-  custom_role_policy_arns           = [module.vault_iam_policy.arn]
-  number_of_custom_role_policy_arns = 1
-  role_requires_mfa                 = false
-}
-
 module "vault_user" {
   source                = "terraform-aws-modules/iam/aws//modules/iam-user"
   version               = "~> 4"
@@ -58,6 +48,15 @@ module "vault_user" {
   pgp_key               = "keybase:toshaughnessy"
 }
 
+module "vault_assumable_role" {
+  source                            = "terraform-aws-modules/iam/aws//modules/iam-assumable-role"
+  version                           = "~> 4"
+  role_name                         = "2s-prod-iamrole-useast2-vaultrole"
+  trusted_role_arns                 = [module.vault_user.iam_user_arn]
+  custom_role_policy_arns           = [module.vault_iam_policy.arn]
+  number_of_custom_role_policy_arns = 1
+  role_requires_mfa                 = false
+}
 
 module "iam_assumable_role" {
   source      = "terraform-aws-modules/iam/aws//modules/iam-assumable-role"
