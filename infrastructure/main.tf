@@ -36,7 +36,7 @@ module "vault_iam_policy" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-policy"
   version = "~> 4"
   name    = "2s-prod-iampolicy-useast2-vaultpolicy"
-  path    = "${path.module}/vault_iam_policy.tftpl"
+  policy  = templatefile("${path.module}/vault_iam_policy.tftpl", { aws_account_id = var.aws_account_id })
 }
 
 module "vault_assumable_role" {
