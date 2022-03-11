@@ -32,20 +32,31 @@ module "https_443_sg" {
   ingress_cidr_blocks = ["0.0.0.0/0"]
 }
 
-resource "aws_iam_role" "vault_role" {
-  name               = "vault_role"
-  assume_role_policy = templatefile("${path.module}/vault_iam_policy.tftpl", { aws_account_id = var.aws_account_id })
+module "vault_iam_policy" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-policy"
+  version = "~> 4"
+  name    = "2s-prod-iampolicy-useast2-vaultpolicy"
+  path    = "${path.module}/vault_iam_policy.tftpl"
 }
 
-#module "vault_assumable_roles" {
-#  for_each =
-#  source      = "terraform-aws-modules/iam/aws//modules/iam-assumable-role"
-#  version     = "~> 4"
-#  role_name = "2s-prod-iamrole-useast2-${each.role_name}"
-#  trusted_role_arns = ["arn:aws:iam::${var.aws_account_id}:user/${var.vault_user_name}"]
-#  custom_role_policy_arns = each.custom_role_policy_arns
-#  role_requires_mfa = false
-#}
+module "vault_assumable_role" {
+  source                            = "terraform-aws-modules/iam/aws//modules/iam-assumable-role"
+  version                           = "~> 4"
+  role_name                         = "2s-prod-iamrole-useast2-vaultrole"
+  trusted_role_arns                 = [module.vault_user.iam_user_arn]
+  custom_role_policy_arns           = [module.vault_iam_policy.arn]
+  number_of_custom_role_policy_arns = 1
+  role_requires_mfa                 = false
+}
+
+module "vault_user" {
+  source                = "terraform-aws-modules/iam/aws//modules/iam-user"
+  version               = "~> 4"
+  create_iam_access_key = true
+  create_user           = true
+  name                  = "vault-user"
+  pgp_key               = "keybase:toshaughnessy"
+}
 
 
 module "iam_assumable_role" {
