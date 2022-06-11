@@ -1,19 +1,29 @@
-import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
 import PlayerTurn from './PlayerTurn';
 import OpponentTurn from './OpponentTurn';
+import { useAppSelector } from '../redux/hooks';
+
+interface Props {
+    socket: any;
+    player: number;
+    turn: number;
+    roomId: string;
+    roomFull: boolean;
+    handleSubmitTurn: HandleSubmitTurn;
+    winner: boolean;
+    allPlayersReady: boolean;
+}
 
 const TurnHandler = ({
     socket,
     player,
-    picked,
     turn,
-    roomID,
+    roomId,
     roomFull,
     handleSubmitTurn,
     winner,
     allPlayersReady,
-}) => {
+}: Props) => {
+    const picked = useAppSelector((state) => state.picked);
     // turn 1/2 is answering yes or no
     // turn 2/2 is asking a question
     // TURN CYCLE:
@@ -41,7 +51,7 @@ const TurnHandler = ({
     } else if (!picked) {
         return <div></div>;
     } else if (!allPlayersReady) {
-        return <div>Waiting for opponent to select emoji...</div>
+        return <div>Waiting for opponent to select emoji...</div>;
     } else {
         return playerTurn ? (
             <PlayerTurn
@@ -54,8 +64,4 @@ const TurnHandler = ({
     }
 };
 
-const mapStateToProps = (state) => ({
-    picked: state.player,
-});
-
-export default connect(mapStateToProps, null)(TurnHandler);
+export default TurnHandler;

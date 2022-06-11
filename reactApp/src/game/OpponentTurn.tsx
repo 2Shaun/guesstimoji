@@ -1,5 +1,8 @@
-import React from 'react';
-const OpponentTurn = ({ opponent, askingTurn }) =>
+interface Props {
+    opponent: number;
+    askingTurn: boolean;
+}
+const OpponentTurn = ({ opponent, askingTurn }: Props) =>
     askingTurn ? (
         <div>{`Waiting for Player ${opponent} to ask...`}</div>
     ) : (

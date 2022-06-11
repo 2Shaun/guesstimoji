@@ -1,39 +1,51 @@
 export const graphQlPost = async (query: string) => {
-    const res = await fetch(process.env.REACT_APP_GRAPHQL_API_URL as RequestInfo, {
-        method: 'POST',
-        credentials: 'same-origin',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ query }),
-    });
+    const res = await fetch(
+        process.env.REACT_APP_GRAPHQL_API_URL as RequestInfo,
+        {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ query }),
+        }
+    );
     const json = await res.json();
     return json.data;
 };
 
 export const argsJsonStringify = (argsObject: any): string =>
-    argsObject ?
-        JSON.stringify(argsObject)
-            .replace(/"([^"]+)":/g, '$1:') // removes quotes from keys
-            .replace('{', '(')
-            .replace('}', ')')
-    :
-        '';
+    argsObject
+        ? JSON.stringify(argsObject)
+              .replace(/"([^"]+)":/g, '$1:') // removes quotes from keys
+              .replace('{', '(')
+              .replace('}', ')')
+        : '';
 
 export const fetchGraphQLData = async (query: string) => {
-    const res = await fetch(process.env.REACT_APP_GRAPHQL_API_URL as RequestInfo, {
-        method: 'POST',
-        credentials: 'same-origin',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ query }),
-    });
+    const res = await fetch(
+        process.env.REACT_APP_GRAPHQL_API_URL as RequestInfo,
+        {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ query }),
+        }
+    );
     const json = await res.json();
     return json.data;
-}
+};
 
-export const getEmojis = async (argsObject: string | null = null) => {
+type GetBoards = (query: string) => Promise<Board[]>;
+type GetEmojis = (argsObject: ArgsObject) => Promise<Emoji[]>;
+
+type ArgsObject = {
+    group: string;
+};
+
+export const getEmojis: GetEmojis = async (argsObject: ArgsObject) => {
     const args = argsJsonStringify(argsObject);
     const query = `
         {
@@ -46,28 +58,34 @@ export const getEmojis = async (argsObject: string | null = null) => {
     return promiseResult?.getEmojis;
 };
 
-export const getBoards = async (query: string) => {
-    const boards = await fetch(process.env.REACT_APP_GRAPHQL_API_URL as RequestInfo, {
-        method: 'POST',
-        credentials: 'same-origin',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ query }),
-    });
+export const getBoards: GetBoards = async (query) => {
+    const boards = await fetch(
+        process.env.REACT_APP_GRAPHQL_API_URL as RequestInfo,
+        {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ query }),
+        }
+    );
     const json = await boards.json();
     return json.data.getBoards;
 };
 
 const createBoard = async (mutation: any) => {
-    const board = await fetch(process.env.REACT_APP_GRAPHQL_API_URL as RequestInfo, {
-        method: 'POST',
-        credentials: 'same-origin',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ query: mutation }),
-    });
+    const board = await fetch(
+        process.env.REACT_APP_GRAPHQL_API_URL as RequestInfo,
+        {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ query: mutation }),
+        }
+    );
     const json = await board.json();
     return json.data.getEmojis;
 };

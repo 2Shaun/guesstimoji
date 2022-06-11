@@ -1,15 +1,21 @@
-import React, { useState } from 'react';
 import OpponentSquare from './OpponentSquare';
-import { connect } from 'react-redux';
-const OpponentBoard = ({ socket, board, show }) => {
+import { useAppSelector } from '../redux/hooks';
+
+interface Props {
+    board: string[];
+}
+
+const OpponentBoard = ({ board }: Props) => {
     //const [freshBoard, setFreshBoard] = useState(easterEgg(props.room));
 
     // it'll be way easier to have the second player submit the board I think,
     // updating the board the other player has in Game
     //socket.on(`setFreshBoard`, (newFreshBoard) => (setFreshBoard(newFreshBoard)));
 
-    const renderSquare = (i) => {
-        return <OpponentSquare index={i} value={show[i] ? board[i] : '█'} />;
+    const show = useAppSelector((state) => state.opponentBoard);
+
+    const renderSquare = (i: number) => {
+        return <OpponentSquare value={show[i] ? board[i] : '█'} />;
     };
     return (
         <div className="board">
@@ -62,8 +68,4 @@ const OpponentBoard = ({ socket, board, show }) => {
     );
 };
 
-const mapStateToProps = (state) => ({
-    show: state.opponentBoard,
-});
-
-export default connect(mapStateToProps, null)(OpponentBoard);
+export default OpponentBoard;

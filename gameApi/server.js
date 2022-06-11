@@ -54,7 +54,7 @@ const validateString = (string, key) => {
                 return false;
             }
             return true;
-        case 'roomID':
+        case 'roomId':
             if (length > utils.ROOMID_MAX_LENGTH) {
                 console.log(
                     '%s = %s, length of %d is bigger than max: %d',
@@ -138,69 +138,70 @@ io.sockets.on('connection', (socket) => {
         );
     });
 
+    // user pressed Join Room button
     socket.on('client:room/roomJoined', (joinData) => {
         if (!validateObject(joinData, utils.JOINDATA_TYPES)) {
             return;
         }
-        const { roomID, board } = joinData;
+        const { roomId, board } = joinData;
         const serverFull =
             Object.keys(roomHashTable).length > utils.ROOMHASHTABLE_MAX_ENTRIES;
         if (serverFull) {
-            console.log('Server full.');
-            socket.emit('server:room/roomJoined', null);
+            // TODO: Make event to tell front end that room is full
             return;
         }
-        socket.join(roomID);
+        socket.join(roomId);
+        console.log('joining socket: ', roomId);
         // entry shouldn't be deleted if room is full
         socket.on('disconnect', () => {
             // one player disconnected from the game
-            if (roomHashTable[roomID].roomFull === true) {
-                socket.to(roomID).emit('server:room/roomJoined', {
+            if (roomHashTable[roomId].roomFull === true) {
+                socket.to(roomId).emit('server:room/roomJoined', {
                     roomFull: false,
                     player: 1,
                 });
-                roomHashTable[roomID].roomFull = false;
+                roomHashTable[roomId].roomFull = false;
                 // player 1 disconnected
-                if (roomHashTable[roomID].players[1].socketID === socket.id) {
+                if (roomHashTable[roomId].players[1].socketID === socket.id) {
                     // player 2 now player 1
-                    roomHashTable[roomID].players[1] =
-                        roomHashTable[roomID].players[2];
+                    roomHashTable[roomId].players[1] =
+                        roomHashTable[roomId].players[2];
                 }
-                roomHashTable[roomID].players[2] = {
+                roomHashTable[roomId].players[2] = {
                     username: 'Player 2',
                     socketID: '',
                     pick: '',
                 };
-                socket.to(roomID).emit('server:gameLog/cleared');
-                roomHashTable[roomID].gameLog = [];
+                socket.to(roomId).emit('server:gameLog/cleared');
+                roomHashTable[roomId].gameLog = [];
             } else {
-                delete roomHashTable[roomID];
+                delete roomHashTable[roomId];
             }
             console.log(roomHashTable);
         });
-        if (roomHashTable[roomID]) {
+        if (roomHashTable[roomId]) {
             // if this is defined
             // the room has a player
             // hence it is now full
             // to sender
             socket.emit('server:room/roomJoined', {
-                roomID: roomID,
-                board: roomHashTable[roomID].board,
+                roomId: roomId,
+                // even though Player 2's joinData had a board
+                // the board selected by Player 1 takes precedence
+                board: roomHashTable[roomId].board,
                 roomFull: true,
                 player: 2,
             });
             // to player 1
-            socket.to(roomID).emit('server:room/roomJoined', {
-                roomFull: true,
-            });
-            roomHashTable[roomID].roomFull = true;
-            roomHashTable[roomID].players[2].socketID = socket.id;
+            socket.to(roomId).emit('server:room/player2Joined');
+            roomHashTable[roomId].roomFull = true;
+            roomHashTable[roomId].players[2].socketID = socket.id;
         } else {
             // roomData EXAMPLE:
             // {xCf6: {board: boards[2], roomFull: false, picks: {1: 😎, 2: 😎},
             //   gameLog[ {username: 'player1', message: 'is it an animal?'}, {username: 'player2', message:'Yes.'}, ...] }}
             const roomData = {
-                [roomID]: {
+                [roomId]: {
                     board: board,
                     roomFull: false,
                     players: [
@@ -217,7 +218,7 @@ io.sockets.on('connection', (socket) => {
             // {AdxD5: {board: boards[5], roomFull: true}, bxCf6: {board: boards[2], roomFull: false}}
             roomHashTable = { ...roomHashTable, ...roomData };
             socket.emit('server:room/roomJoined', {
-                roomID: roomID,
+                roomId: roomId,
                 board: board,
                 roomFull: false,
                 player: 1,
@@ -230,12 +231,12 @@ io.sockets.on('connection', (socket) => {
                 return;
             }
             const { player, message } = turnData;
-            const roomEntry = roomHashTable[roomID];
+            const roomEntry = roomHashTable[roomId];
             const { board, players } = roomEntry;
             // players is an array of objects
             const { username } = players[player];
             const newTurnData = { username: username, message: message };
-            socket.to(roomID).emit('server:gameLog/turnSubmitted', newTurnData);
+            socket.to(roomId).emit('server:gameLog/turnSubmitted', newTurnData);
             // notice if we use pure immutability,
             // i'd have to make a new roomEntry AND a new hashtable!
             roomEntry.gameLog = [
@@ -255,7 +256,7 @@ io.sockets.on('connection', (socket) => {
             if (gameOver) {
                 // now that I've created a new object,
                 // all previous variables are stale
-                roomHashTable[roomID] = {
+                roomHashTable[roomId] = {
                     ...roomEntry,
                     game: roomEntry.game + 1,
                 };
@@ -272,16 +273,16 @@ io.sockets.on('connection', (socket) => {
                 const record = (({ board, players, gameLog, game }) => ({
                     // unique game id is [player1 socketid][player2 socketid][game count]
                     _id: players[1].socketID + players[2].socketID + game,
-                    roomID: roomID,
+                    roomId: roomId,
                     winner: winner,
                     board,
                     players,
                     gameLog,
                     game,
-                }))(roomHashTable[roomID]);
+                }))(roomHashTable[roomId]);
                 /* const record = {
                     _id: gameID,
-                    roomID: roomID,
+                    roomId: roomId,
                     winner: winner,
                     board: board,
                     players: players,
@@ -291,10 +292,10 @@ io.sockets.on('connection', (socket) => {
                 */
                 //insertRecordIntoCollection(record, "games");
                 // if it is gameOver, log game
-                io.in(roomID).emit('server:room/roomJoined', {
+                io.in(roomId).emit('server:room/roomJoined', {
                     winner: winner,
                 });
-                io.in(roomID).emit(
+                io.in(roomId).emit(
                     'server:gameLog/turnSubmitted',
                     playerWin
                         ? {
@@ -314,29 +315,32 @@ io.sockets.on('connection', (socket) => {
                 return;
             }
             const { pick, player } = pickData;
-            // {roomID: players: [{username: , pick: }, {username: ,pick:}]}
-            roomHashTable[roomID].players[player].pick = pick;
-            if (roomHashTable[roomID].players[1].pick && roomHashTable[roomID].players[2].pick) {
-                io.in(roomID).emit('server:room/allPlayersBecameReady', {});
+            // {roomId: players: [{username: , pick: }, {username: ,pick:}]}
+            roomHashTable[roomId].players[player].pick = pick;
+            if (
+                roomHashTable[roomId].players[1].pick &&
+                roomHashTable[roomId].players[2].pick
+            ) {
+                io.in(roomId).emit('server:room/allPlayersBecameReady', {});
             }
-            console.log(roomHashTable[roomID].players[player]);
+            console.log(roomHashTable[roomId].players[player]);
         });
         socket.on('client:players/reset', (resetData) => {
             console.log('Trying to reset', resetData);
             if (!validateObject(resetData, utils.RESETDATA_TYPES)) {
                 return;
             }
-            // {roomID: players: [{username: , pick: }, {username: ,pick:}]}
-            delete roomHashTable[roomID].players[2].pick;
-            delete roomHashTable[roomID].players[1].pick;
-            socket.to(roomID).emit('server:players/reset', resetData);
+            // {roomId: players: [{username: , pick: }, {username: ,pick:}]}
+            delete roomHashTable[roomId].players[2].pick;
+            delete roomHashTable[roomId].players[1].pick;
+            socket.to(roomId).emit('server:players/reset', resetData);
         });
         socket.on('client:opponentBoard/clicked', (unflooredIndex) => {
             const index = Math.floor(unflooredIndex);
             if (!validateBoardIndex(index)) {
                 return;
             }
-            socket.to(roomID).emit('server:opponentBoard/clicked', index);
+            socket.to(roomId).emit('server:opponentBoard/clicked', index);
         });
     });
 });

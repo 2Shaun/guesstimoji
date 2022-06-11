@@ -1,69 +1,75 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import RoomName from './RoomName';
 import OpponentBoard from './OpponentBoard';
 import Board from './Board';
 import GameLog from './GameLog';
 import '../index.css';
-import { connect, useDispatch } from 'react-redux';
+import { connect, ConnectedProps, useDispatch } from 'react-redux';
 import { allPlayersBecameReady, roomRestartable } from '../redux/roomSlice';
 import { turnSubmitted, cleared, gameRestarted } from '../redux/gameLogSlice';
 import { clicked } from '../redux/opponentBoardSlice';
+import { useAppSelector } from '../redux/hooks';
+import { serverEvents } from '../events';
 //import socket from '../../socket';
 
 // This is the VIEW in MVC
 
-// props are a way of passing data from parent to child
-//      props are passed to the component
-// state is reserved for interactivity
-//      states are modified within the component
+interface Props extends PropsFromRedux {
+    socket: any;
+    winner: boolean;
+}
 
-// I can send requests with the root room
-// the response will go to the game specific room
-
-// I need to figure out how to pass down the values
-const GamePage = ({
+const GamePage: React.FC<Props> = ({
     socket,
-    roomID,
-    roomFull,
-    board,
-    player,
-    gameCount,
     winner,
     roomRestartable,
     allPlayersBecameReady,
-    allPlayersReady,
+    turnSubmitted,
+    clicked,
+    cleared,
 }) => {
-    const dispatch = useDispatch();
+    const roomId = useAppSelector((state) => state.room.roomId);
+    const roomFull = useAppSelector((state) => state.room.roomFull);
+    const board = useAppSelector((state) => state.room.board);
+    const allPlayersReady = useAppSelector(
+        (state) => state.room.allPlayersReady
+    );
+    const player = useAppSelector((state) => state.room.player);
+
     useEffect(() => {
-        if (roomFull) {
-            socket.on('server:gameLog/turnSubmitted', (turnData) => {
-                dispatch(turnSubmitted(turnData));
-            });
-            socket.on('server:opponentBoard/clicked', (index) => {
-                dispatch(clicked(index));
-            });
-        } else {
-            socket.off('server:gameLog/turnSubmitted');
-            socket.off('server:gameLog/restartGame');
-            socket.off('server:opponentBoard/clicked');
+        const { _callbacks } = socket;
+        const turnListeners =
+            _callbacks[`$${serverEvents.gameLog.turnSubmitted}`];
+        // this is for development only
+        // useEffect with an empty array will run twice in StrictMode
+        // causing 2 turn listeners on the socket
+        if (!turnListeners) {
+            socket.on(serverEvents.gameLog.turnSubmitted, turnSubmitted);
+            socket.on(serverEvents.opponentBoard.clicked, clicked);
         }
-    }, [roomFull]);
+    }, []);
+
     useEffect(() => {
-        const update = () => dispatch(cleared());
-        socket.on('server:gameLog/cleared', update);
-        return socket.off('server:gameLog/cleared', update);
+        socket.on(serverEvents.gameLog.cleared, cleared);
+        return () => socket.off(serverEvents.gameLog.cleared, cleared);
     }, []);
 
     useEffect(() => {
         if (winner) {
-            dispatch(roomRestartable());
+            roomRestartable();
         }
     }, [winner]);
 
     useEffect(() => {
-        const update = () => dispatch(allPlayersBecameReady());
-        socket.on('server:room/allPlayersBecameReady', update);
-        return () => socket.off('server:room/allPlayersBecameReady', update);
+        socket.on(
+            serverEvents.room.allPlayersBecameReady,
+            allPlayersBecameReady
+        );
+        return () =>
+            socket.off(
+                serverEvents.room.allPlayersBecameReady,
+                allPlayersBecameReady
+            );
     });
 
     // make sure that you check to see if you can import socket
@@ -74,17 +80,12 @@ const GamePage = ({
     return (
         <div>
             <div>
-                <RoomName roomID={roomID} />
-                <OpponentBoard board={board} socket={socket} roomID={roomID} />
-                <Board
-                    board={board}
-                    socket={socket}
-                    roomID={roomID}
-                    player={player}
-                />
+                <RoomName roomId={roomId} />
+                <OpponentBoard board={board} />
+                <Board board={board} socket={socket} player={player} />
                 <GameLog
                     socket={socket}
-                    roomID={roomID}
+                    roomId={roomId}
                     roomFull={roomFull}
                     player={player}
                     winner={winner}
@@ -120,15 +121,16 @@ const GamePage = ({
 //      value
 //      onClick
 
-const mapStateToProps = (state) => ({
-    ...state.room,
-});
-
 const mapDispatchToProps = {
     turnSubmitted,
+    clicked,
     cleared,
     roomRestartable,
     allPlayersBecameReady,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(GamePage);
+const connector = connect(null, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(GamePage);

@@ -16,14 +16,14 @@ const SERVER_TIMEOUT = 600000;
 const JOINDATA_TYPES = {
     // it's a BAD idea to send objects in objects over the server
     board: 'object',
-    roomID: 'string',
+    roomId: 'string',
 };
 
 const RESTARTDATA_TYPES = {
     // it's a BAD idea to send objects in objects over the server
     board: 'object',
-    roomID: 'string',
-}
+    roomId: 'string',
+};
 
 const PICKDATA_TYPES = {
     pick: 'string',

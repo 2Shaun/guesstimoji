@@ -1,29 +1,32 @@
-import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { useEffect } from 'react';
 // import socket from "./socket";
 import socket from './socketlocal';
-import HomePage from './home.page';
-import GamePage from './game/game.page';
-import Footer from './footer';
+import HomePage from './HomePage';
+import GamePage from './game/GamePage';
+import Footer from './Footer';
 import './index.css';
-import { connect } from 'react-redux';
-import { homePageLoaded, roomJoined } from './redux/roomSlice';
+import { connect, ConnectedProps } from 'react-redux';
+import { homePageLoaded, roomJoined, player2Joined } from './redux/roomSlice';
 import { getBoards, getEmojis } from './apiUtils';
 import { gotBoards } from './redux/boardsSlice';
 import { gotRooms } from './redux/roomsSlice';
+import { useAppSelector } from './redux/hooks';
+import { clientEvents, serverEvents } from './events';
 // view layer
 
 // handleJoin data should have both id and board selection
 
 // the first argument to a component is always the props obj
-const App = ({
+const App: React.FC<PropsFromRedux> = ({
     roomJoined,
     homePageLoaded,
     gotBoards,
     gotRooms,
-    roomID,
-    player,
+    player2Joined,
 }) => {
+    const roomId = useAppSelector((state) => state.room.roomId);
+    const player = useAppSelector((state) => state.room.player);
+
     useEffect(() => {
         getBoards('{getBoards{emojis}}')
             .then((res) => res.map((x) => x.emojis))
@@ -38,35 +41,42 @@ const App = ({
                 homePageLoaded('❌');
                 console.error(err);
             });
-        socket.emit('client:rooms/roomsRequested');
-        socket.on('server:rooms/roomsResponded', gotRooms);
-        
-        return () => socket.off('server:rooms/roomsResponded', gotRooms);
+        socket.emit(clientEvents.rooms.roomsRequested);
+        socket.on(serverEvents.rooms.roomsResponded, gotRooms);
+
+        return () => {
+            socket.off(serverEvents.rooms.roomsResponded, gotRooms);
+        };
     }, []);
 
-    const handleJoin = (joinData) => {
-        socket.emit('client:room/roomJoined', joinData);
-        socket.on('server:room/roomJoined', (joinData) => {
-            if (joinData) {
-                roomJoined(joinData);
-            } else {
-                return;
-            }
+    const handleJoin: HandleJoin = (joinData) => {
+        socket.emit(clientEvents.room.roomJoined, joinData);
+        /*
+        joinData {
+            roomId
+            board
+
+        }
+        */
+        socket.on(serverEvents.room.roomJoined, (joinData: ServerJoinData) => {
+            roomJoined(joinData);
         });
+
+        socket.on(serverEvents.room.player2Joined, player2Joined);
     };
 
     return (
-        <div className="App" align="center">
+        <div className="App">
             {
                 // player should only be defined if you're in a room
                 // might wanna turn this into a switch statement
                 // page state = {home, game, find}
                 player ? (
-                    <GamePage socket={socket} />
+                    <GamePage socket={socket} winner={false} />
                 ) : (
                     <HomePage
                         handleJoin={handleJoin}
-                        roomID={roomID}
+                        roomId={roomId}
                         socket={socket}
                     />
                 )
@@ -75,11 +85,6 @@ const App = ({
         </div>
     );
 };
-
-const mapStateToProps = (state) => ({
-    roomID: state.room.roomID,
-    player: state.room.player,
-});
 
 // actions : {type: TYPE, ...} ARE OBJECTS
 // actionCreators : (obj) => {...action, ...obj} RETURN ACTIONS
@@ -95,6 +100,11 @@ const mapDispatchToProps = {
     gotBoards,
     gotRooms,
     homePageLoaded,
+    player2Joined,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+const connector = connect(null, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(App);
