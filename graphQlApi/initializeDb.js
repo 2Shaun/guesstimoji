@@ -1,32 +1,36 @@
-const boards = require('./boards.json')
-const emojis = require('./emojis.json')
-require('dotenv').config({ path: './.env.local'})
+#!/opt/homebrew/bin/mongosh
+
+// first line lets you do `chmod +x ./initializeDb.js` and run it standalone on Mac OSX
+// can also be ran with `mongosh ./initializeDb.js`
+const boards = require('./boards.json');
+const emojis = require('./emojis.json');
+require('dotenv').config({ path: './.env.local' });
 
 conn = Mongo(`${process.env.MONGODB_HOST_NAME}:27017`);
-db = conn.getDB("guesstimoji")
+db = conn.getDB('guesstimoji');
 
 try {
-    db.createCollection("emojis")
+    db.createCollection('emojis');
 } catch {
-    console.log('Error creating emojis collection. Is it already created?')
+    console.log('Error creating emojis collection. Is it already created?');
 }
 
 try {
-    db.createCollection("boards")
+    db.createCollection('boards');
 } catch {
-    console.log('Error creating boards collection. Is it already created?')
+    console.log('Error creating boards collection. Is it already created?');
 }
 
 try {
-    db.createCollection("games")
+    db.createCollection('games');
 } catch {
-    console.log('Error creating games collection. Is it already created?')
+    console.log('Error creating games collection. Is it already created?');
 }
 
 if (db.emojis.countDocuments() === 0) {
-    db.emojis.insertMany(emojis)
+    db.emojis.insertMany(emojis);
 }
 
 if (db.boards.countDocuments() === 0) {
-    db.boards.insertMany(boards)
+    db.boards.insertMany(boards);
 }

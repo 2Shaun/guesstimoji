@@ -1,15 +1,21 @@
 {
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Chrome",
-            "type": "chrome",
+            "type": "pwa-chrome",
             "request": "launch",
+            "name": "Launch Chrome against localhost",
+            "//": "[::1] instead of localhost is necessary, not sure why",
+            "//": "VSCode cannot resolve localhost:3000 on Macbook",
             "url": "http://localhost:3000",
-            "webRoot": "${workspaceRoot}/src",
+            "webRoot": "${workspaceFolder}/reactApp/src",
             "sourceMapPathOverrides": {
                 "webpack:///src/*": "${webRoot}/*"
-            }
+            },
+            "sourceMaps": true
         }
     ]
 }

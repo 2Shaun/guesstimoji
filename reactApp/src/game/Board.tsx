@@ -1,22 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import Square from './Square';
 import Choice from './PickTextBox';
-import { connect, useDispatch } from 'react-redux';
-import { playerPicked, playerReset } from '../redux/playersSlice';
+import { connect, ConnectedProps, useDispatch } from 'react-redux';
+import { playerPicked, playerReset } from '../redux/pickedSlice';
 import { gameRestarted } from '../redux/gameLogSlice';
 import { roomRestarted } from '../redux/roomSlice';
 import './game.css';
+import { useAppSelector } from '../redux/hooks';
+
+interface Props extends PropsFromRedux {
+    socket: any;
+    board: string[];
+    player: number;
+}
 
 // i'm hoping that when the client socket emits a request,
 // the server will be able to extract room information
 // and access gamedata hashtable with that
-const Board = ({ socket, board, player, picked, playerPicked, playerReset, restartable }) => {
+const Board = ({ socket, board, player, playerPicked, playerReset }: Props) => {
     //const [freshBoard, setFreshBoard] = useState(easterEgg(props.room));
     // THE INITIAL VALUE OF STATE WILL BE ASSIGNED ONLY
     // ON THE INITIAL RENDER
     // IN SUBSEQUENT RENDERS, THE ARGUMENT OF USESTATE
     // WILL BE IGNORED AND THE CURRENT VALUE WILL BE
     // RETRIEVED
+    const picked = useAppSelector((state) => state.picked);
+    const restartable = useAppSelector((state) => state.room.restartable);
 
     const [pick, setPick] = useState('');
     const dispatch = useDispatch();
@@ -24,7 +33,7 @@ const Board = ({ socket, board, player, picked, playerPicked, playerReset, resta
     // with 2 boards, there is no reason to listen on the player's board
     //socket.on(`setState`, (newSquares) => (setSquares(newSquares)));
     //socket.on(`setFreshBoard`, (newFreshBoard) => (setFreshBoard(newFreshBoard)));
-    const handlePick = (i) => {
+    const handlePick = (i: number) => {
         // saves typing this.state.
         // can only change board if 2 players in room
         // will need some 'original player' condition if I
@@ -45,8 +54,8 @@ const Board = ({ socket, board, player, picked, playerPicked, playerReset, resta
         socket.emit('client:players/reset', {});
         setPick('');
         playerReset();
-        gameRestarted({});
-        dispatch(gameRestarted({}));
+        gameRestarted();
+        dispatch(gameRestarted());
         dispatch(roomRestarted());
     };
 
@@ -54,13 +63,13 @@ const Board = ({ socket, board, player, picked, playerPicked, playerReset, resta
         const update = () => {
             setPick('');
             playerReset();
-            gameRestarted({});
-            dispatch(gameRestarted({}));
+            gameRestarted();
+            dispatch(gameRestarted());
             dispatch(roomRestarted());
         };
         socket.on('server:players/reset', update);
         return () => socket.off('server:players/reset', update);
-    })
+    });
     // this is a white space char, not a space
     // a space causes shifting of rows
 
@@ -71,7 +80,7 @@ const Board = ({ socket, board, player, picked, playerPicked, playerReset, resta
     //socket.emit("newState", { squares: newSquares });
     //setSquares(newSquares);
 
-    const handleContextMenu = (i) => {
+    const handleContextMenu = (i: number) => {
         navigator.clipboard.writeText(board[i]).then(
             () => {
                 alert(board[i] + ' copied! Paste it in the board to guess!');
@@ -82,7 +91,7 @@ const Board = ({ socket, board, player, picked, playerPicked, playerReset, resta
         );
     };
 
-    const renderSquare = (i) => {
+    const renderSquare = (i: number) => {
         return (
             <Square
                 index={i}
@@ -95,7 +104,7 @@ const Board = ({ socket, board, player, picked, playerPicked, playerReset, resta
             />
         );
     };
-    
+
     return (
         <div>
             <div className="board-row">
@@ -146,26 +155,24 @@ const Board = ({ socket, board, player, picked, playerPicked, playerReset, resta
             <div className="text-row">
                 <Choice pick={pick} />
             </div>
-            {
-                restartable ?
-                    <button className="golden-button" onClick={handleGameRestart}>RESTART GAME</button>
-                :
-                    <div></div>
-            }
+            {restartable ? (
+                <button className="golden-button" onClick={handleGameRestart}>
+                    RESTART GAME
+                </button>
+            ) : (
+                <div></div>
+            )}
         </div>
     );
 };
-
-const mapStateToProps = (state) => ({
-    roomID: state.roomID,
-    picked: state.player,
-
-    restartable: state.room.restartable,
-});
 
 const mapDispatchToProps = {
     playerPicked,
     playerReset,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Board);
+const connector = connect(null, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(Board);

@@ -1,19 +1,35 @@
-import React, { useEffect, useState } from 'react';
 import TurnHandler from './TurnHandler';
-import { connect, useDispatch } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
 import { turnSubmitted } from '../redux/gameLogSlice';
+import { useAppSelector } from '../redux/hooks';
 
-const GameLog = ({ socket, roomID, roomFull, gameLog, player, winner, allPlayersReady }) => {
-    const opponent = (player % 2) + 1;
-    const dispatch = useDispatch();
+interface Props extends PropsFromRedux {
+    socket: any;
+    roomId: string;
+    roomFull: boolean;
+    player: number;
+    winner: boolean;
+    allPlayersReady: boolean;
+}
 
-    const handleSubmitTurn = (untrimmedMessage) => {
+const GameLog = ({
+    socket,
+    roomId,
+    roomFull,
+    player,
+    winner,
+    allPlayersReady,
+    turnSubmitted,
+}: Props) => {
+    const gameLog = useAppSelector((state) => state.gameLog);
+
+    const handleSubmitTurn: HandleSubmitTurn = (untrimmedMessage) => {
         const message = untrimmedMessage.trim();
         socket.emit('client:gameLog/turnSubmitted', {
             player: player,
             message: message,
         });
-        dispatch(turnSubmitted({ username: 'You', message: message }));
+        turnSubmitted({ username: 'You', message: message });
     };
 
     const renderGameLog = () => {
@@ -22,7 +38,9 @@ const GameLog = ({ socket, roomID, roomFull, gameLog, player, winner, allPlayers
         // don't use curly brace tuples that don't have tags!!
         return gameLog.map(({ username: username, message: message }, i) => (
             <div
-                className={i === 0 ? 'game-log-last-message' : 'game-log-message'}
+                className={
+                    i === 0 ? 'game-log-last-message' : 'game-log-message'
+                }
                 key={i}
             >
                 <span>{username + ':'}</span>
@@ -36,7 +54,7 @@ const GameLog = ({ socket, roomID, roomFull, gameLog, player, winner, allPlayers
                 socket={socket}
                 player={player}
                 turn={gameLog.length}
-                roomID={roomID}
+                roomId={roomId}
                 roomFull={roomFull}
                 handleSubmitTurn={handleSubmitTurn}
                 winner={winner}
@@ -47,12 +65,12 @@ const GameLog = ({ socket, roomID, roomFull, gameLog, player, winner, allPlayers
     );
 };
 
-const mapStateToProps = (state) => ({
-    gameLog: state.gameLog,
-});
-
 const mapDispatchToProps = {
     turnSubmitted,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(GameLog);
+const connector = connect(null, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(GameLog);

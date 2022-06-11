@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+interface Props {
+    pick: string;
+}
 
-function PickTextBox({ pick }) {
+function PickTextBox({ pick }: Props) {
     return (
         <button className="choice">
             {pick ? `You picked ${pick}.` : `Pick your emoji!`}

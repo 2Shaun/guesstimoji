@@ -32,7 +32,7 @@ const typeDefs = gql`
     # instead of socket.io listeners
     type Game {
         _id: ID!
-        roomID: String!
+        roomId: String!
         board: Board!
         players: [Player]!
         gameLog: [Message!]!

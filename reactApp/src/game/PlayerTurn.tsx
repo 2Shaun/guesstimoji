@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
 
-const PlayerTurn = ({ handleSubmitTurn, askingTurn }) => {
+interface Props {
+    handleSubmitTurn: HandleSubmitTurn;
+    askingTurn: boolean;
+}
+
+const PlayerTurn = ({ handleSubmitTurn, askingTurn }: Props) => {
     const [tempQuestion, setTempQuestion] = useState('');
-    const onChange = (e) => {
+    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setTempQuestion(e.target.value);
     };
     return askingTurn ? (
