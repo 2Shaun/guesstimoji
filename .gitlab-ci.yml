@@ -74,10 +74,12 @@ variables:
 terraformFormat:
     extends: .terraform:fmt
     <<: *azTfRoot
+    needs: []
 
 terraformValidate:
     extends: .terraform:validate
     <<: *azTfRoot
+    needs: []
 installReactApp:
     stage: setup
     <<: *nodeImage
