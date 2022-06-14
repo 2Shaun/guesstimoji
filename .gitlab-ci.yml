@@ -59,7 +59,6 @@ stages:
 
 terraformValidate:
     extends: .terraform:fmt
-    extends: .terraform:validate
     variables:
         TF_ROOT: '${CI_PROJECT_DIR}/azInfrastructure'
 
