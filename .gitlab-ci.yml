@@ -1,4 +1,8 @@
+include:
+    - template: Terraform/Base.gitlab-ci.yml
+    - template: Jobs/SAST-IaC.gitlab-ci.yml
 stages:
+    - validate
     - analysis
     - setup
     - jestTest
@@ -53,10 +57,17 @@ stages:
 #code_quality:
 #    stage: analysis
 
+terraformValidate:
+    extends: .terraform:fmt
+    extends: .terraform:validate
+    variables:
+        TF_ROOT: '${CI_PROJECT_DIR}/azInfrastructure'
+
 installReactApp:
     stage: setup
     <<: *nodeImage
     script:
+        - npm i yarn
         - cd reactApp
         - yarn
     artifacts:
