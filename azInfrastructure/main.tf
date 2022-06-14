@@ -13,11 +13,11 @@ provider "azurerm" {
 
 resource "azurerm_resource_group" "guesstimojiRg" {
     location = var.location
-    name = "az-${app}-rg-${location}-01"
+    name = "az-${var.app}-rg-${var.location}-01"
 } 
 
 resource "azurerm_cosmosdb_account" "dbAcct" {
-    name = "az-${app}-prod-cosmosacct-${location}-01"
+    name = "az-${var.app}-prod-cosmosacct-${var.location}-01"
     location = azurerm_resource_group.guesstimojiRg.location
     resource_group_name = azurerm_resource_group.guesstimojiRg.name
     kind = "MongoDB"
