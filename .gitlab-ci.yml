@@ -1,5 +1,5 @@
 include:
-    - template: Terraform/Base.gitlab-ci.yml
+    - template: Terraform.latest.gitlab-ci.yml
     - template: Jobs/SAST-IaC.gitlab-ci.yml
 stages:
     - validate
@@ -19,6 +19,8 @@ variables:
     TF_HTTP_UNLOCK_ADDRESS: $TF_HTTP_LOCK_ADDRESS
     TF_HTTP_UNLOCK_METHOD: "DELETE"
     TF_HTTP_RETRY_WAIT_MIN: 5
+
+    TF_STATE_NAME: default
 #include:
 #    - template: Code-Quality.gitlab-ci.yml
 
@@ -29,6 +31,8 @@ variables:
 .azTfRoot: &azTfRoot
     variables:
         TF_ROOT: '${CI_PROJECT_DIR}/azInfrastructure'
+    script:
+        cd $TF_ROOT
 
 .deployGraphQlApiRules: &deployGraphQlApiRules
     rules:
