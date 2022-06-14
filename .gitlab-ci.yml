@@ -4,8 +4,8 @@ include:
 stages:
     - validate
     - analysis
-    - setup
-    - test
+    #- setup
+    #- test
     - build
     - deploy
     # - cypressTest
@@ -15,6 +15,11 @@ stages:
 
 .nodeImage: &nodeImage
     image: node:18.3.0-alpine3.16
+
+# must be added after extends bc it overwrites vars
+.azTfRoot: &azTfRoot
+    variables:
+        TF_ROOT: '${CI_PROJECT_DIR}/azInfrastructure'
 
 .deployGraphQlApiRules: &deployGraphQlApiRules
     rules:
@@ -57,11 +62,13 @@ stages:
 #code_quality:
 #    stage: analysis
 
-terraformValidate:
+terraformFormat:
     extends: .terraform:fmt
-    variables:
-        TF_ROOT: '${CI_PROJECT_DIR}/azInfrastructure'
+    <<: *azTfRoot
 
+terraformValidate:
+    extends: .terraform:validate
+    <<: *azTfRoot
 installReactApp:
     stage: setup
     <<: *nodeImage
@@ -74,6 +81,9 @@ installReactApp:
         paths:
             - reactApp/node_modules/
 
+terraformPlan:
+    extends: .terraform:build
+    <<: *azTfRoot
 buildReactApp:
     stage: build
     <<: *nodeImage
