@@ -5,7 +5,7 @@ stages:
     - validate
     - analysis
     #- setup
-    #- test
+    - test
     - build
     - deploy
     # - cypressTest
