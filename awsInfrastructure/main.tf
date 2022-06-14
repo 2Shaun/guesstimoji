@@ -1,12 +1,13 @@
 # naming pattern
-# 2s-guesstimoji-[env]-[resource]-[location]-[description]-[number]
+# [cloud]-[app]-[env]-[resource]-[location]-[description]-[number]
+# if a resource is meant for multiple apps, it will not have the [app] prefix
 provider "aws" {
   region = var.region
 }
 
 module "vpc" {
   source         = "terraform-aws-modules/vpc/aws"
-  name           = "2s-prod-vpc-useast2"
+  name           = "aws-prod-vpc-useast2"
   cidr           = "10.0.0.0/16"
   azs            = ["us-east-2a"]
   public_subnets = ["10.0.101.0/24"]
@@ -18,7 +19,7 @@ module "vpc" {
 
 module "http_80_sg" {
   source              = "terraform-aws-modules/security-group/aws//modules/http-80"
-  name                = "2s-sg-useast2-http"
+  name                = "aws-sg-useast2-http"
   description         = "Security group for web-server with HTTP ports open within VPC"
   vpc_id              = module.vpc.vpc_id
   ingress_cidr_blocks = ["0.0.0.0/0"]
@@ -26,44 +27,17 @@ module "http_80_sg" {
 
 module "https_443_sg" {
   source              = "terraform-aws-modules/security-group/aws//modules/https-443"
-  name                = "2s-sg-useast2-https"
+  name                = "aws-sg-useast2-https"
   description         = "Security group for web-server with HTTPS ports open within VPC"
   vpc_id              = module.vpc.vpc_id
   ingress_cidr_blocks = ["0.0.0.0/0"]
-}
-
-module "vault_iam_policy" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-policy"
-  version = "~> 4"
-  name    = "2s-prod-iampolicy-useast2-vaultpolicy"
-  policy  = templatefile("${path.module}/vault_iam_policy.tftpl", { aws_account_id = var.aws_account_id })
-}
-
-module "vault_user" {
-  source                = "terraform-aws-modules/iam/aws//modules/iam-user"
-  version               = "~> 4"
-  create_iam_access_key = true
-  create_user           = true
-  name                  = "vault-user"
-  pgp_key               = "keybase:toshaughnessy"
-}
-
-module "vault_assumable_role" {
-  source                            = "terraform-aws-modules/iam/aws//modules/iam-assumable-role"
-  version                           = "~> 4"
-  create_role                       = true
-  role_name                         = "2s-prod-iamrole-useast2-vaultrole"
-  trusted_role_arns                 = [module.vault_user.iam_user_arn]
-  custom_role_policy_arns           = [module.vault_iam_policy.arn]
-  number_of_custom_role_policy_arns = 1
-  role_requires_mfa                 = false
 }
 
 module "iam_assumable_role" {
   source      = "terraform-aws-modules/iam/aws//modules/iam-assumable-role"
   version     = "~> 4"
   create_role = true
-  role_name   = "2s-guesstimoji-prod-iamrole-useast2-ecstasks"
+  role_name   = "aws-guesstimoji-prod-iamrole-useast2-ecstasks"
   # AssumeRole principal (who policy)
   trusted_role_services = ["ecs-tasks.amazonaws.com"]
   # what policy
@@ -151,7 +125,7 @@ resource "aws_ecs_service" "guesstimoji" {
 
 module "ecs" {
   source             = "terraform-aws-modules/ecs/aws"
-  name               = "2s-guesstimoji-prod-ecs-useast2"
+  name               = "aws-guesstimoji-prod-ecs-useast2"
   container_insights = true
   capacity_providers = ["FARGATE_SPOT"]
   default_capacity_provider_strategy = [
