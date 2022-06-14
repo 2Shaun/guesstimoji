@@ -18,6 +18,7 @@ variables:
     TF_HTTP_LOCK_METHOD: "POST"
     TF_HTTP_UNLOCK_ADDRESS: $TF_HTTP_LOCK_ADDRESS
     TF_HTTP_UNLOCK_METHOD: "DELETE"
+    TF_HTTP_RETRY_WAIT_MIN: 5
 #include:
 #    - template: Code-Quality.gitlab-ci.yml
 
