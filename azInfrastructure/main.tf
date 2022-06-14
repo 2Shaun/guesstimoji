@@ -2,7 +2,7 @@ terraform {
   required_providers {
       azurerm = {
           source = "hashicorp/azurerm"
-          version = "=3.0.0"
+          version = "=3.10.0"
       }
   }
 }
@@ -39,12 +39,12 @@ resource "azurerm_cosmosdb_account" "dbAcct" {
 }
  resource "azurerm_cosmosdb_mongo_database" "db" {
      name = var.app
-     resource_group_name = azurerm_resource_group.guesstimojiRg
-     account_name = azurerm_cosmosdb_account.dbAcct
+     resource_group_name = azurerm_resource_group.guesstimojiRg.name
+     account_name = azurerm_cosmosdb_account.dbAcct.name
  }
 
  resource "azurerm_cosmosdb_mongo_collection" "colls" {
-     for_each = toset(local.collNames)
+     for_each = toset(var.collNames)
      name = each.key
      resource_group_name = azurerm_resource_group.guesstimojiRg.name
      account_name = azurerm_cosmosdb_account.dbAcct.name
