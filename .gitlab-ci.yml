@@ -1,6 +1,7 @@
 include:
-    - template: Terraform/Base.latest.gitlab-ci.yml
-    - template: Jobs/SAST-IaC.latest.gitlab-ci.yml
+  - template: Terraform/Base.latest.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Terraform/Base.latest.gitlab-ci.yml
+  - template: Jobs/SAST-IaC.latest.gitlab-ci.yml   # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/SAST-IaC.latest.gitlab-ci.yml
+
 stages:
     - validate
     - analysis
@@ -30,8 +31,6 @@ variables:
 .azTfRoot: &azTfRoot
     variables:
         TF_ROOT: '${CI_PROJECT_DIR}/azInfrastructure'
-    script:
-        cd $TF_ROOT
 
 .deployGraphQlApiRules: &deployGraphQlApiRules
     rules:
