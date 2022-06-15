@@ -1,6 +1,6 @@
 include:
     - template: Terraform.latest.gitlab-ci.yml
-    - template: Jobs/SAST-IaC.gitlab-ci.yml
+    - template: Jobs/SAST-IaC.latest.gitlab-ci.yml
 stages:
     - validate
     - analysis
@@ -11,16 +11,15 @@ stages:
     # - cypressTest
 
 variables:
-    TF_HTTP_PASSWORD: $CI_JOB_JWT
+    TF_HTTP_PASSWORD: ${CI_JOB_JWT}
     TF_HTTP_USERNAME: "gitlab-ci-token"
     TF_HTTP_ADDRESS: "https://gitlab.com/api/v4/projects/31299207/terraform/state/azInfrastructure"
     TF_HTTP_LOCK_ADDRESS: "${TF_HTTP_ADDRESS}/lock"
     TF_HTTP_LOCK_METHOD: "POST"
-    TF_HTTP_UNLOCK_ADDRESS: $TF_HTTP_LOCK_ADDRESS
+    TF_HTTP_UNLOCK_ADDRESS: ${TF_HTTP_LOCK_ADDRESS}
     TF_HTTP_UNLOCK_METHOD: "DELETE"
     TF_HTTP_RETRY_WAIT_MIN: 5
-
-    TF_STATE_NAME: default
+    TF_STATE_NAME: azInfrastructure
 #include:
 #    - template: Code-Quality.gitlab-ci.yml
 
