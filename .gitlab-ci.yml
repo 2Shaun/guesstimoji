@@ -12,6 +12,21 @@ stages:
 .nodeImage: &nodeImage
     image: node:18.3.0-alpine3.16
 
+.deployGraphQlApiRules: &deployGraphQlApiRules
+    rules:
+        - if: $CI_COMMIT_TAG =~ /^graphqlapi/i
+          when: always
+
+.deployGameApiRules: &deployGameApiRules
+    rules:
+        - if: $CI_COMMIT_TAG =~ /^gameApi/i
+          when: always
+
+.deployInitializeDbRules: &deployInitializeDbRules
+    rules:
+        - if: $CI_COMMIT_TAG =~ /^initializeDb/i
+          when: always
+
 .dockerHubDeployConfig: &dockerHubDeployConfig
     secrets:
         REGISTRY_USER:
@@ -73,6 +88,7 @@ installGameApi:
         expire_in: 15 mins
         paths:
             - gameApi/node_modules/
+    <<: *deployGameApiRules
 
 installGraphQlApi:
     stage: setup
@@ -84,6 +100,8 @@ installGraphQlApi:
         expire_in: 15 mins
         paths:
             - graphQlApi/node_modules/
+    <<: *deployGraphQlApiRules
+
 
 #jestTest:
 #    stage: jestTest
@@ -111,6 +129,8 @@ deployGameApiImage:
         - *dockerHubDeployScript
     dependencies:
         - 'installGameApi'
+    <<: *deployGameApiRules
+
 
 deployGraphQlApiImage:
     <<: *dockerHubDeployConfig
@@ -121,6 +141,7 @@ deployGraphQlApiImage:
         - *dockerHubDeployScript
     dependencies:
         - 'installGraphQlApi'
+    <<: *deployGraphQlApiRules
 
 deployInitializeDbImage:
     <<: *dockerHubDeployConfig
@@ -130,6 +151,8 @@ deployInitializeDbImage:
     script:
         - cd graphQlApi
         - *dockerHubDeployScript
+    <<: *deployInitializeDbRules
+
 #e2eTests:
 #    image: docker:19.03.12
 #    variables:
