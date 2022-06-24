@@ -116,6 +116,7 @@ deployReactAppImage:
         IMAGE_NAME: '$REGISTRY_USER/guesstimoji-react-app'
     script:
         - cd reactApp
+        - sed -i s/REPLACE_ME_WITH_REACT_APP_COMMIT_SHA/$CI_COMMIT_SHORT_SHA/g docker-compose.prod.yml
         - *dockerHubDeployScript
     dependencies:
         - 'buildReactApp'
