@@ -1,15 +1,17 @@
+const graphQlApiUrl =
+    (process.env.REACT_APP_PROTOCOL as string) +
+    process.env.REACT_APP_HOST +
+    process.env.REACT_APP_GRAPH_QL_API_PORT;
+
 export const graphQlPost = async (query: string) => {
-    const res = await fetch(
-        process.env.REACT_APP_GRAPHQL_API_URL as RequestInfo,
-        {
-            method: 'POST',
-            credentials: 'same-origin',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ query }),
-        }
-    );
+    const res = await fetch(graphQlApiUrl as RequestInfo, {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query }),
+    });
     const json = await res.json();
     return json.data;
 };
@@ -23,17 +25,14 @@ export const argsJsonStringify = (argsObject: any): string =>
         : '';
 
 export const fetchGraphQLData = async (query: string) => {
-    const res = await fetch(
-        process.env.REACT_APP_GRAPHQL_API_URL as RequestInfo,
-        {
-            method: 'POST',
-            credentials: 'same-origin',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ query }),
-        }
-    );
+    const res = await fetch(graphQlApiUrl as RequestInfo, {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query }),
+    });
     const json = await res.json();
     return json.data;
 };
@@ -59,33 +58,27 @@ export const getEmojis: GetEmojis = async (argsObject: ArgsObject) => {
 };
 
 export const getBoards: GetBoards = async (query) => {
-    const boards = await fetch(
-        process.env.REACT_APP_GRAPHQL_API_URL as RequestInfo,
-        {
-            method: 'POST',
-            credentials: 'same-origin',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ query }),
-        }
-    );
+    const boards = await fetch(graphQlApiUrl as RequestInfo, {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query }),
+    });
     const json = await boards.json();
     return json.data.getBoards;
 };
 
 const createBoard = async (mutation: any) => {
-    const board = await fetch(
-        process.env.REACT_APP_GRAPHQL_API_URL as RequestInfo,
-        {
-            method: 'POST',
-            credentials: 'same-origin',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ query: mutation }),
-        }
-    );
+    const board = await fetch(graphQlApiUrl as RequestInfo, {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query: mutation }),
+    });
     const json = await board.json();
     return json.data.getEmojis;
 };
