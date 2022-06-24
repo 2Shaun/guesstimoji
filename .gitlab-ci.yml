@@ -10,7 +10,7 @@ stages:
 #    - template: Code-Quality.gitlab-ci.yml
 
 .nodeImage: &nodeImage
-    image: node:18
+    image: node:18.3.0-alpine3.16
 
 .dockerHubDeployConfig: &dockerHubDeployConfig
     secrets:
