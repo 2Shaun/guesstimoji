@@ -55,7 +55,10 @@ buildReactApp:
     <<: *nodeImage
     script:
         - cd reactApp
+        - cat ./.env.prod
         - npm run build:prod
+    dependencies:
+        - "installReactApp"
     artifacts:
         expire_in: 15 mins
         paths:
@@ -97,6 +100,8 @@ deployReactAppImage:
     script:
         - cd reactApp
         - *dockerHubDeployScript
+    dependencies:
+        - "buildReactApp"
 
 deployGameApiImage:
     <<: *dockerHubDeployConfig
@@ -105,6 +110,8 @@ deployGameApiImage:
     script:
         - cd gameApi
         - *dockerHubDeployScript
+    dependencies:
+        - "installGameApi"
 
 deployGraphQlApiImage:
     <<: *dockerHubDeployConfig
@@ -113,6 +120,8 @@ deployGraphQlApiImage:
     script:
         - cd graphQlApi
         - *dockerHubDeployScript
+    dependencies:
+        - "installGraphQlApi"
 
 deployInitializeDbImage:
     <<: *dockerHubDeployConfig
