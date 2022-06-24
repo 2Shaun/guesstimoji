@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
-// import socket from "./socket";
-import socket from './socketlocal';
+import socket from './socket';
 import HomePage from './HomePage';
 import GamePage from './game/GamePage';
 import Footer from './Footer';

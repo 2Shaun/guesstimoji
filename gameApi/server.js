@@ -10,13 +10,12 @@ const app = express();
 const server = http.Server(app);
 const io = socketIO(server, {
     cors: {
-        origin: process.env.ALLOWED_ORIGINS,
+        origin: process.env.ALLOWED_ORIGINS.split(', '),
     },
 });
 var roomHashTable = {};
-console.log(process.env.ALLOWED_ORIGINS, 'origins');
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5001;
 
 const validateBoardIndex = (index) => {
     if (typeof index != 'number') {
@@ -351,5 +350,6 @@ app.get('/', (req, res) => {
 
 // servers are kind of all-receiving
 server.listen(port, () => {
+    console.log('ORIGINS: ', process.env.ALLOWED_ORIGINS.split(', '));
     console.log(`Starting server on port ${port}`);
 });

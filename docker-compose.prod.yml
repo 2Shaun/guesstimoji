@@ -2,12 +2,7 @@ version: '2'
 
 services:
     gameApi:
-        # where the dockerfile is
-        image: guesstimoji-game-api
-        build:
-            context: ./gameApi
-            args:
-                - env=local
+        image: ${REGISTRY_USER}/guesstimoji-game-api:latest
         #expose:
         #        - 5000
         # ports (HOST:CONTAINER)
@@ -19,11 +14,7 @@ services:
             - '5001:5001'
 
     graphQlApi:
-        image: guesstimoji-graph-ql-api
-        build:
-            context: ./graphQlApi
-            args:
-                - env=local
+        image: ${REGISTRY_USER}/guesstimoji-graph-ql-api:latest
         #expose:
         #        - 5000
         # ports (HOST:CONTAINER)
@@ -40,17 +31,13 @@ services:
         image: mongo
 
     mongosh:
-        image: guesstimoji-initialize-db
-        build:
-            context: ./graphQlApi
-            dockerfile: mongosh.Dockerfile
+        image: ${REGISTRY_USER}/guesstimoji-initialize-db:latest
         depends_on:
             - mongo
         command: mongosh --host mongo initializeDb.js
 
     reactApp:
-        image: guesstimoji-react-app
-        build: ./reactApp
+        image: ${REGISTRY_USER}/guesstimoji-react-app:latest
         depends_on:
             - graphQlApi
             - mongo
@@ -58,17 +45,3 @@ services:
         ports:
             - '80:80'
         command: [nginx, '-g', 'daemon off;']
-
-    #cypress:
-    #    image: guesstimoji/cypress
-    #    build:
-    #        context: .
-    #        dockerfile: cypress.Dockerfile
-    #    volumes:
-    #        - ./cypress:/e2e
-    #    depends_on:
-    #        - graphQlApi
-    #        - mongo
-    #        - gameApi
-    #        - reactApp
-    #    command: [npx, 'cypress', 'run']

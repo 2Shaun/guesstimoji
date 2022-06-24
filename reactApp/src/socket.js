@@ -1,3 +1,3 @@
 import io from 'socket.io-client';
-let socket = io('http://157.245.254.196:5000/');
+let socket = io(process.env.REACT_APP_GAME_API_URL);
 export default socket;

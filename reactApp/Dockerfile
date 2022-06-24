@@ -1,10 +1,10 @@
 FROM nginx:1.21.6-alpine
 # sets the working director for RUN, CMD, ENTRYPOINT, COPY, and ADD
 # this will be a directory ON THE CONTAINER
-ADD . .
-RUN apk add --update nodejs npm
-RUN npm run build
-RUN mv ./build/* /usr/share/nginx/html
+ADD build build
+#RUN apk add --update nodejs npm
+#RUN npm run build
+RUN mv build/* /usr/share/nginx/html
 # takes from <src> and adds them to the filesystem of the 
 # container at the path <dest>
 # RUN excutes commands in a new layer on top of the current image

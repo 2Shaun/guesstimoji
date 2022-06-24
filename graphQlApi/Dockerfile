@@ -13,4 +13,6 @@ RUN npm i
 # <dest> = . represents the WORKDIR on the container
 # I don't think I need it if I'm mounting a volume
 # COPY . .
-CMD ["npm", "run", "start:docker"]
+ARG env
+ENV env=$env
+CMD npm run start:docker:$env

@@ -44,6 +44,7 @@ There is a correspondence between action types and server events, i.e.,
 
 The game logic layer runs on a `node.js` instance. Player picks are stored server side. The server groups client sockets into rooms using `socket.io` and emits game events exclusive to that room. Game state is stored in the `roomHashTable` at this layer.  
 The data access/service layer is managed with `mongoose` and the controller layer is managed with `GraphQL`. When the game ends, data from the `roomHashTable` is stored in a `mongodb` collection called `games` in the `guesstimoji` database. Here is an example of a game log stored there:
+
 ```
 "gameLog": [
     {
@@ -106,14 +107,14 @@ In the root directory, run `npm install` in the `reactApp`, `gameApi`, and `grap
 
 The backend uses the following environment variables:
 
-- `MONGODB_HOST_NAME`
-    - This is the host name of the mongodb server.
-    - For example, it may be `mongo` or `localhost`.
-    - It defaults to `mongo`.
-- `MONGODB_DB_NAME`:
-    - This is the name of the mongodb database we use.
-    - For example, it might be `guesstimoji`.
-    - It defaults to `guesstimoji`.
+-   `MONGODB_HOST_NAME`
+    -   This is the host name of the mongodb server.
+    -   For example, it may be `mongo` or `localhost`.
+    -   It defaults to `mongo`.
+-   `MONGODB_DB_NAME`:
+    -   This is the name of the mongodb database we use.
+    -   For example, it might be `guesstimoji`.
+    -   It defaults to `guesstimoji`.
 
 ### Deployment
 
@@ -151,7 +152,7 @@ After=network.target
 
 [Service]
 User=tommy
-Environment=GAME_API_PORT=5000
+Environment=GAME_API_PORT=5001
 Type=simple
 WorkingDirectory=/var/www/html/gameApi
 ExecStart=/usr/bin/node server.js
