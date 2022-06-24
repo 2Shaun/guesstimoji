@@ -26,10 +26,9 @@ stages:
     services:
         - docker:20.10.16-dind
     variables:
-        DOCKER_TLS_CERTDIR: "/certs"
+        DOCKER_TLS_CERTDIR: '/certs'
     before_script:
         - docker login -u $REGISTRY_USER -p $REGISTRY_PASS
-
 
 .dockerHubDeployScript: &dockerHubDeployScript
     - docker build -t $IMAGE_NAME:$CI_COMMIT_SHORT_SHA --build-arg env=prod -f ${DOCKERFILE_NAME-Dockerfile} .
@@ -58,7 +57,7 @@ buildReactApp:
         - cat ./.env.prod
         - npm run build:prod
     dependencies:
-        - "installReactApp"
+        - 'installReactApp'
     artifacts:
         expire_in: 15 mins
         paths:
@@ -101,7 +100,7 @@ deployReactAppImage:
         - cd reactApp
         - *dockerHubDeployScript
     dependencies:
-        - "buildReactApp"
+        - 'buildReactApp'
 
 deployGameApiImage:
     <<: *dockerHubDeployConfig
@@ -111,7 +110,7 @@ deployGameApiImage:
         - cd gameApi
         - *dockerHubDeployScript
     dependencies:
-        - "installGameApi"
+        - 'installGameApi'
 
 deployGraphQlApiImage:
     <<: *dockerHubDeployConfig
@@ -121,7 +120,7 @@ deployGraphQlApiImage:
         - cd graphQlApi
         - *dockerHubDeployScript
     dependencies:
-        - "installGraphQlApi"
+        - 'installGraphQlApi'
 
 deployInitializeDbImage:
     <<: *dockerHubDeployConfig
@@ -131,7 +130,6 @@ deployInitializeDbImage:
     script:
         - cd graphQlApi
         - *dockerHubDeployScript
-
 #e2eTests:
 #    image: docker:19.03.12
 #    variables:

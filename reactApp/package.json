@@ -10,9 +10,9 @@
         "start:graphQlApi": "cd ../graphQlApi && npm start",
         "start:reactApp": "react-scripts start",
         "build": "react-scripts build",
-        "build:local": "env-cmd -f ./.env.local react-scripts build",
-        "build:ci": "env-cmd -f ./.env.ci react-scripts build",
-        "build:prod": "env-cmd -f ./.env.prod react-scripts build"
+        "build:local": "env-cmd -f .env.local react-scripts build",
+        "build:ci": "env-cmd -f .env.ci react-scripts build",
+        "build:prod": "env-cmd -f .env.prod react-scripts build"
     },
     "keywords": [],
     "author": "",
