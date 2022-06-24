@@ -3,12 +3,13 @@ stages:
     - setup
     - jestTest
     - build
+    - deploy
     # - cypressTest
 
 #include:
 #    - template: Code-Quality.gitlab-ci.yml
 
-.nodeimage: &nodeimage
+.nodeImage: &nodeImage
     image: node:18
 
 .dockerRegistryCredentials: &dockerRegistryCredentials
@@ -25,7 +26,7 @@ stages:
 
 installReactApp:
     stage: setup
-    <<: *nodeimage
+    <<: *nodeImage
     script:
         - cd reactApp
         - yarn
@@ -33,6 +34,17 @@ installReactApp:
         expire_in: 15 mins
         paths:
             - reactApp/node_modules/
+
+buildReactApp:
+    stage: build
+    <<: *nodeImage
+    script:
+        - cd reactApp
+        - npm run build:prod
+    artifacts:
+        expire_in: 15 mins
+        paths:
+            - reactApp/build
 
 #installGameApi:
 #    stage: setup
@@ -64,22 +76,22 @@ installReactApp:
 #        - npm t
 
 build:
-    stage: build
+    stage: deploy
     <<: *dockerRegistryCredentials
-    <<: *nodeimage
+    image: docker:20.10.16
+    # service container
+    services:
+        - docker:20.10.16-dind
     variables:
         IMAGE_NAME: '$REGISTRY_USER/guesstimoji-react-app'
         IMAGE_TAG: '$CI_COMMIT_SHORT_SHA'
+        DOCKER_TLS_CERTDIR: "/certs"
     script:
         - cd reactApp
-        - npm run build:prod
         - docker build -t $IMAGE_NAME:$IMAGE_TAG .
         - docker login -u $REGISTRY_USER -p $REGISTRY_PASS
         - docker push $IMAGE_NAME:$IMAGE_TAG
-    artifacts:
-        expire_in: 15 mins
-        paths:
-            - reactApp/build
+
 #e2eTests:
 #    image: docker:19.03.12
 #    variables:
