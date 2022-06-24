@@ -3,13 +3,22 @@ stages:
     - setup
     - jestTest
     - build
-   # - cypressTest
+    # - cypressTest
 
 #include:
 #    - template: Code-Quality.gitlab-ci.yml
 
 .nodeimage: &nodeimage
-    image: node:16.5.0-alpine
+    image: node:18
+
+.dockerRegistryCredentials: &dockerRegistryCredentials
+    secrets:
+        REGISTRY_USER:
+            vault: docker_hub/registry_user@kv
+            file: false
+        REGISTRY_PASS:
+            vault: docker_hub/registry_pass@kv
+            file: false
 
 #code_quality:
 #    stage: analysis
@@ -19,47 +28,54 @@ installReactApp:
     <<: *nodeimage
     script:
         - cd reactApp
-        - npm i
+        - yarn
     artifacts:
         expire_in: 15 mins
         paths:
             - reactApp/node_modules/
 
-installGameApi:
-    stage: setup
-    <<: *nodeimage
-    script:
-        - cd gameApi
-        - npm i
-    artifacts:
-        expire_in: 15 mins
-        paths:
-            - gameApi/node_modules/
+#installGameApi:
+#    stage: setup
+#    <<: *nodeimage
+#    script:
+#        - cd gameApi
+#        - npm i
+#    artifacts:
+#        expire_in: 15 mins
+#        paths:
+#            - gameApi/node_modules/
 
-installGraphQlApi:
-    stage: setup
-    <<: *nodeimage
-    script:
-        - cd graphQlApi
-        - npm i
-    artifacts:
-        expire_in: 15 mins
-        paths:
-            - graphQlApi/node_modules/
+#installGraphQlApi:
+#    stage: setup
+#    <<: *nodeimage
+#    script:
+#        - cd graphQlApi
+#        - npm i
+#    artifacts:
+#        expire_in: 15 mins
+#        paths:
+#            - graphQlApi/node_modules/
 
-jestTest:
-    stage: jestTest
-    <<: *nodeimage
-    script:
-        - cd reactApp
-        - npm t
+#jestTest:
+#    stage: jestTest
+#    <<: *nodeimage
+#    script:
+#        - cd reactApp
+#        - npm t
 
 build:
     stage: build
+    <<: *dockerRegistryCredentials
     <<: *nodeimage
+    variables:
+        IMAGE_NAME: '$REGISTRY_USER/guesstimoji-react-app'
+        IMAGE_TAG: '$CI_COMMIT_SHORT_SHA'
     script:
         - cd reactApp
-        - npm run build
+        - npm run build:prod
+        - docker build -t $IMAGE_NAME:$IMAGE_TAG .
+        - docker login -u $REGISTRY_USER -p $REGISTRY_PASS
+        - docker push $IMAGE_NAME:$IMAGE_TAG
     artifacts:
         expire_in: 15 mins
         paths:
