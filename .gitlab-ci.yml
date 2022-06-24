@@ -9,7 +9,7 @@ stages:
 #    - template: Code-Quality.gitlab-ci.yml
 
 .nodeimage: &nodeimage
-    image: node:16.5.0-alpine
+    image: node:18
 
 .dockerRegistryCredentials: &dockerRegistryCredentials
     secrets:
