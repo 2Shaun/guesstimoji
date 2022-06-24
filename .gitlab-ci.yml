@@ -26,13 +26,12 @@ stages:
     services:
         - docker:20.10.16-dind
     variables:
-        IMAGE_TAG: '$CI_COMMIT_SHORT_SHA'
         DOCKER_TLS_CERTDIR: "/certs"
 
 .dockerHubDeployScript: &dockerHubDeployScript
-    - docker build -t $IMAGE_NAME:$IMAGE_TAG --build-arg env=prod -f ${DOCKERFILE_NAME-Dockerfile} .
+    - docker build -t $IMAGE_NAME:$CI_COMMIT_SHORT_SHA --build-arg env=prod -f ${DOCKERFILE_NAME-Dockerfile} .
     - docker login -u $REGISTRY_USER -p $REGISTRY_PASS
-    - docker push $IMAGE_NAME:$IMAGE_TAG
+    - docker push $IMAGE_NAME:$CI_COMMIT_SHORT_SHA
 
 #code_quality:
 #    stage: analysis
