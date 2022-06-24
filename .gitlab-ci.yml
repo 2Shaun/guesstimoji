@@ -28,40 +28,40 @@ installReactApp:
     <<: *nodeimage
     script:
         - cd reactApp
-        - npm i
+        - yarn
     artifacts:
         expire_in: 15 mins
         paths:
             - reactApp/node_modules/
 
-installGameApi:
-    stage: setup
-    <<: *nodeimage
-    script:
-        - cd gameApi
-        - npm i
-    artifacts:
-        expire_in: 15 mins
-        paths:
-            - gameApi/node_modules/
+#installGameApi:
+#    stage: setup
+#    <<: *nodeimage
+#    script:
+#        - cd gameApi
+#        - npm i
+#    artifacts:
+#        expire_in: 15 mins
+#        paths:
+#            - gameApi/node_modules/
 
-installGraphQlApi:
-    stage: setup
-    <<: *nodeimage
-    script:
-        - cd graphQlApi
-        - npm i
-    artifacts:
-        expire_in: 15 mins
-        paths:
-            - graphQlApi/node_modules/
+#installGraphQlApi:
+#    stage: setup
+#    <<: *nodeimage
+#    script:
+#        - cd graphQlApi
+#        - npm i
+#    artifacts:
+#        expire_in: 15 mins
+#        paths:
+#            - graphQlApi/node_modules/
 
-jestTest:
-    stage: jestTest
-    <<: *nodeimage
-    script:
-        - cd reactApp
-        - npm t
+#jestTest:
+#    stage: jestTest
+#    <<: *nodeimage
+#    script:
+#        - cd reactApp
+#        - npm t
 
 build:
     stage: build
