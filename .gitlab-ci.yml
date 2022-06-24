@@ -12,7 +12,7 @@ stages:
 .nodeImage: &nodeImage
     image: node:18
 
-.dockerRegistryCredentials: &dockerRegistryCredentials
+.dockerHubDeployConfig: &dockerHubDeployConfig
     secrets:
         REGISTRY_USER:
             vault: docker_hub/registry_user@kv
@@ -20,6 +20,19 @@ stages:
         REGISTRY_PASS:
             vault: docker_hub/registry_pass@kv
             file: false
+    stage: deploy
+    image: docker:20.10.16
+    # service container
+    services:
+        - docker:20.10.16-dind
+    variables:
+        IMAGE_TAG: '$CI_COMMIT_SHORT_SHA'
+        DOCKER_TLS_CERTDIR: "/certs"
+
+.dockerHubDeployScript: &dockerHubDeployScript
+    - docker build -t $IMAGE_NAME:$IMAGE_TAG --build-arg env=prod -f ${DOCKERFILE_NAME-Dockerfile} .
+    - docker login -u $REGISTRY_USER -p $REGISTRY_PASS
+    - docker push $IMAGE_NAME:$IMAGE_TAG
 
 #code_quality:
 #    stage: analysis
@@ -46,27 +59,27 @@ buildReactApp:
         paths:
             - reactApp/build
 
-#installGameApi:
-#    stage: setup
-#    <<: *nodeimage
-#    script:
-#        - cd gameApi
-#        - npm i
-#    artifacts:
-#        expire_in: 15 mins
-#        paths:
-#            - gameApi/node_modules/
+installGameApi:
+    stage: setup
+    <<: *nodeImage
+    script:
+        - cd gameApi
+        - npm i
+    artifacts:
+        expire_in: 15 mins
+        paths:
+            - gameApi/node_modules/
 
-#installGraphQlApi:
-#    stage: setup
-#    <<: *nodeimage
-#    script:
-#        - cd graphQlApi
-#        - npm i
-#    artifacts:
-#        expire_in: 15 mins
-#        paths:
-#            - graphQlApi/node_modules/
+installGraphQlApi:
+    stage: setup
+    <<: *nodeImage
+    script:
+        - cd graphQlApi
+        - npm i
+    artifacts:
+        expire_in: 15 mins
+        paths:
+            - graphQlApi/node_modules/
 
 #jestTest:
 #    stage: jestTest
@@ -75,22 +88,38 @@ buildReactApp:
 #        - cd reactApp
 #        - npm t
 
-build:
-    stage: deploy
-    <<: *dockerRegistryCredentials
-    image: docker:20.10.16
-    # service container
-    services:
-        - docker:20.10.16-dind
+deployReactAppImage:
+    <<: *dockerHubDeployConfig
     variables:
         IMAGE_NAME: '$REGISTRY_USER/guesstimoji-react-app'
-        IMAGE_TAG: '$CI_COMMIT_SHORT_SHA'
-        DOCKER_TLS_CERTDIR: "/certs"
     script:
         - cd reactApp
-        - docker build -t $IMAGE_NAME:$IMAGE_TAG .
-        - docker login -u $REGISTRY_USER -p $REGISTRY_PASS
-        - docker push $IMAGE_NAME:$IMAGE_TAG
+        - *dockerHubDeployScript
+
+deployGameApiImage:
+    <<: *dockerHubDeployConfig
+    variables:
+        IMAGE_NAME: '$REGISTRY_USER/guesstimoji-game-api'
+    script:
+        - cd gameApi
+        - *dockerHubDeployScript
+
+deployGraphQlApiImage:
+    <<: *dockerHubDeployConfig
+    variables:
+        IMAGE_NAME: '$REGISTRY_USER/guesstimoji-graph-ql-api'
+    script:
+        - cd graphQlApi
+        - *dockerHubDeployScript
+
+deployInitializeDbImage:
+    <<: *dockerHubDeployConfig
+    variables:
+        IMAGE_NAME: '$REGISTRY_USER/guesstimoji-initialize-db'
+        DOCKERFILE_NAME: mongosh.Dockerfile
+    script:
+        - cd graphQlApi
+        - *dockerHubDeployScript
 
 #e2eTests:
 #    image: docker:19.03.12
