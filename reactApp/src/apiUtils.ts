@@ -1,8 +1,6 @@
 export const graphQlApiUrl =
     (process.env.REACT_APP_PROTOCOL as string) +
     process.env.REACT_APP_HOST +
-    ':' +
-    process.env.REACT_APP_GRAPH_QL_API_PORT +
     '/graphQl';
 
 export const graphQlPost = async (query: string) => {

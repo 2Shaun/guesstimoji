@@ -5,11 +5,11 @@
 
 pushd ~/guesstimoji
 pushd reactApp
+npm run build:minikube:local
 docker build -t guesstimoji-react-app --build-arg env=local --platform=linux/arm64 .
 popd
 pushd graphQlApi
 docker build -t guesstimoji-graph-ql-api --build-arg env=local --platform=linux/arm64 .
-docker build -t guesstimoji-initialize-db --build-arg env=local -f mongosh.Dockerfile --platform=linux/arm64 .
 popd
 pushd gameApi
 docker build -t guesstimoji-game-api --build-arg env=local --platform=linux/arm64 .
