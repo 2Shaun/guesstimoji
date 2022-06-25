@@ -69,18 +69,19 @@ variables:
     variables:
         TF_ROOT: '${CI_PROJECT_DIR}/azInfrastructure'
 
-terraformFormat:
-    extends: .terraform:fmt
-    <<: *azTfRoot
-    needs: []
+#terraformFormat:
+#    extends: .terraform:fmt
+#    <<: *azTfRoot
+#    needs: []
 
-terraformValidate:
-    extends: .terraform:validate
-    <<: *azTfRoot
-    needs: []
+#terraformValidate:
+#    extends: .terraform:validate
+#    <<: *azTfRoot
+#    needs: []
 
 terraformPlan:
     extends: .terraform:build
+    image: toshaughnessy/az-gitops-image:v1.0.0
     <<: *azTfRoot
 
 ####################################### END GITOPS JOBS #######################################
