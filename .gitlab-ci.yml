@@ -73,13 +73,13 @@ variables:
     secrets:
       CLIENT_ID:
         vault: azure/service-principal/gitops/client_id@kv
-        ile: false
+        file: false
       CLIENT_SECRET:
         vault: azure/service-principal/gitops/client_secret@kv
-        ile: false
+        file: false
       TENANT_ID:
         vault: azure/service-principal/gitops/tenant_id@kv
-        ile: false
+        file: false
     before_script:
         - $ az login --service-principal -u $CLIENT_ID -p $CLIENT_SECRET --tenant $TENANT_ID
 
