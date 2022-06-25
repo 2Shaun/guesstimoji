@@ -69,6 +69,20 @@ variables:
     variables:
         TF_ROOT: '${CI_PROJECT_DIR}/azInfrastructure'
 
+.azTfAuth: &azTfAuth
+    secrets:
+      CLIENT_ID:
+        vault: azure/service-principal/gitops/client_id@kv
+        ile: false
+      CLIENT_SECRET:
+        vault: azure/service-principal/gitops/client_secret@kv
+        ile: false
+      TENANT_ID:
+        vault: azure/service-principal/gitops/tenant_id@kv
+        ile: false
+    before_script:
+        - $ az login --service-principal -u $CLIENT_ID -p $CLIENT_SECRET --tenant $TENANT_ID
+
 #terraformFormat:
 #    extends: .terraform:fmt
 #    <<: *azTfRoot
@@ -82,6 +96,7 @@ variables:
 terraformPlan:
     extends: .terraform:build
     image: toshaughnessy/az-gitops-image:v1.0.0
+    <<: *azTfAuth
     <<: *azTfRoot
 
 ####################################### END GITOPS JOBS #######################################
