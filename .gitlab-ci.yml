@@ -81,7 +81,7 @@ variables:
         vault: azure/service-principal/gitops/tenant_id@kv
         file: false
     before_script:
-        - $ az login --service-principal -u $CLIENT_ID -p $CLIENT_SECRET --tenant $TENANT_ID
+        - az login --service-principal -u $CLIENT_ID -p $CLIENT_SECRET --tenant $TENANT_ID
 
 #terraformFormat:
 #    extends: .terraform:fmt
