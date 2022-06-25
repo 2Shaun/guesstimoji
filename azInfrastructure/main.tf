@@ -23,6 +23,8 @@ resource "azurerm_cosmosdb_account" "dbAcct" {
     kind = "MongoDB"
     mongo_server_version = 4.2
     offer_type = "Standard"
+    network_acl_bypass_ids = []
+    tags = {}
 
     consistency_policy {
       consistency_level = "Session"
@@ -30,6 +32,10 @@ resource "azurerm_cosmosdb_account" "dbAcct" {
 
     capabilities {
       name = "EnableServerless"
+    }
+
+    capabilities {
+      name = "EnableMongo"
     }
 
     geo_location {
