@@ -1,6 +1,6 @@
 include:
-  - template: Terraform/Base.latest.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Terraform/Base.latest.gitlab-ci.yml
-  - template: Jobs/SAST-IaC.latest.gitlab-ci.yml   # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/SAST-IaC.latest.gitlab-ci.yml
+    - template: Terraform/Base.latest.gitlab-ci.yml # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Terraform/Base.latest.gitlab-ci.yml
+    - template: Jobs/SAST-IaC.latest.gitlab-ci.yml # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/SAST-IaC.latest.gitlab-ci.yml
 
 stages:
     - validate
@@ -20,7 +20,6 @@ stages:
 #    stage: analysis
 
 ####################################### END CODE ANALYSIS JOBS #######################################
-
 
 ####################################### BEGIN TEST JOBS #######################################
 
@@ -55,13 +54,13 @@ stages:
 
 variables:
     TF_HTTP_PASSWORD: ${CI_JOB_TOKEN}
-    TF_HTTP_USERNAME: "gitlab-ci-token"
-    TF_HTTP_ADDRESS: "https://gitlab.com/api/v4/projects/31299207/terraform/state/azInfrastructure"
-    TF_HTTP_LOCK_ADDRESS: "${TF_HTTP_ADDRESS}/lock"
-    TF_HTTP_LOCK_METHOD: "POST"
+    TF_HTTP_USERNAME: 'gitlab-ci-token'
+    TF_HTTP_ADDRESS: 'https://gitlab.com/api/v4/projects/31299207/terraform/state/azInfrastructure'
+    TF_HTTP_LOCK_ADDRESS: '${TF_HTTP_ADDRESS}/lock'
+    TF_HTTP_LOCK_METHOD: 'POST'
     TF_HTTP_UNLOCK_ADDRESS: ${TF_HTTP_LOCK_ADDRESS}
-    TF_HTTP_UNLOCK_METHOD: "DELETE"
-    TF_HTTP_RETRY_WAIT_MIN: "5"
+    TF_HTTP_UNLOCK_METHOD: 'DELETE'
+    TF_HTTP_RETRY_WAIT_MIN: '5'
     TF_STATE_NAME: azInfrastructure
 
 # must be added after extends bc it overwrites vars
@@ -69,36 +68,59 @@ variables:
     variables:
         TF_ROOT: '${CI_PROJECT_DIR}/azInfrastructure'
 
-.azTfAuth: &azTfAuth
+.azTfCreds: &azTfCreds
     secrets:
-      ARM_CLIENT_ID:
-        vault: azure/service-principal/gitops/client_id@kv
-        file: false
-      ARM_CLIENT_SECRET:
-        vault: azure/service-principal/gitops/client_secret@kv
-        file: false
-      ARM_SUBSCRIPTION_ID:
-        vault: azure/service-principal/gitops/subscription_id@kv
-        file: false
-      ARM_TENANT_ID:
-        vault: azure/service-principal/gitops/tenant_id@kv
-        file: false
+        ARM_CLIENT_ID:
+            vault: azure/service-principal/gitops/client_id@kv
+            file: false
+        ARM_CLIENT_SECRET:
+            vault: azure/service-principal/gitops/client_secret@kv
+            file: false
+        ARM_SUBSCRIPTION_ID:
+            vault: azure/service-principal/gitops/subscription_id@kv
+            file: false
+        ARM_TENANT_ID:
+            vault: azure/service-principal/gitops/tenant_id@kv
+            file: false
 
-#terraformFormat:
-#    extends: .terraform:fmt
-#    <<: *azTfRoot
-#    needs: []
+.applyAzTfRules: &applyAzTfRules
+    rules:
+        - if: $CI_COMMIT_BRANCH == "master"
+          changes:
+              - 'azInfrastructure/*'
 
-#terraformValidate:
-#    extends: .terraform:validate
-#    <<: *azTfRoot
-#    needs: []
+.planAzTfRules: &planAzTfRules
+    rules:
+        - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+          changes:
+              - 'azInfrastructure/*'
+
+terraformFormat:
+    extends: .terraform:fmt
+    <<: *azTfRoot
+    needs: []
+
+terraformValidate:
+    extends: .terraform:validate
+    <<: *azTfRoot
+    <<: *planAzTfRules
+    <<: *applyAzTfRules
 
 terraformPlan:
     extends: .terraform:build
     image: toshaughnessy/az-gitops-image:v1.0.0
-    <<: *azTfAuth
+    <<: *azTfCreds
     <<: *azTfRoot
+    <<: *planAzTfRules
+    <<: *applyAzTfRules
+
+terraformApply:
+    extends: .terraform:deploy
+    image: toshaughnessy/az-gitops-image:v1.0.0
+    <<: *azTfCreds
+    <<: *azTfRoot
+    <<: *applyAzTfRules
+    when: manual
 
 ####################################### END GITOPS JOBS #######################################
 
@@ -128,13 +150,19 @@ terraformPlan:
     - docker tag $IMAGE_NAME:$CI_COMMIT_SHORT_SHA $IMAGE_NAME:latest
     - docker push --all-tags $IMAGE_NAME
 
-
 ####################################### BEGIN REACT APP JOBS #######################################
 
 .deployReactAppRules: &deployReactAppRules
     rules:
-        - if: $CI_COMMIT_TAG =~ /^reactApp/i
-          when: always
+        - if: $CI_COMMIT_BRANCH == "master"
+          changes:
+              - 'reactApp/*'
+
+.buildReactAppRules: &buildReactAppRules
+    rules:
+        - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+          changes:
+              - 'reactApp/*'
 
 installReactApp:
     stage: setup
@@ -147,6 +175,7 @@ installReactApp:
         expire_in: 15 mins
         paths:
             - reactApp/node_modules/
+    <<: *buildReactAppRules
     <<: *deployReactAppRules
 
 buildReactApp:
@@ -162,7 +191,8 @@ buildReactApp:
         expire_in: 15 mins
         paths:
             - reactApp/build
-    <<: *deployReactAppRules  
+    <<: *buildReactAppRules
+    <<: *deployReactAppRules
 
 deployReactAppImage:
     <<: *dockerHubDeployConfig
@@ -181,8 +211,9 @@ deployReactAppImage:
 
 .deployGameApiRules: &deployGameApiRules
     rules:
-        - if: $CI_COMMIT_TAG =~ /^gameApi/i
-          when: always
+        - if: $CI_COMMIT_BRANCH == "master"
+          changes:
+              - 'gameApi/*'
 
 installGameApi:
     stage: setup
@@ -213,8 +244,9 @@ deployGameApiImage:
 
 .deployGraphQlApiRules: &deployGraphQlApiRules
     rules:
-        - if: $CI_COMMIT_TAG =~ /^graphqlApi/i
-          when: always
+        - if: $CI_COMMIT_BRANCH == "master"
+          changes:
+              - 'graphQlApi/*'
 
 installGraphQlApi:
     stage: setup
@@ -227,7 +259,6 @@ installGraphQlApi:
         paths:
             - graphQlApi/node_modules/
     <<: *deployGraphQlApiRules
-
 
 deployGraphQlApiImage:
     <<: *dockerHubDeployConfig
@@ -242,22 +273,20 @@ deployGraphQlApiImage:
 
 ####################################### END GRAPH QL API JOBS #######################################
 
-####################################### BEGIN INITIALIZE DB JOBS #######################################
+####################################### BEGIN INITIALIZE DB JOB #######################################
 
 .deployInitializeDbRules: &deployInitializeDbRules
-    rules:
-        - if: $CI_COMMIT_TAG =~ /^initializeDb/i
-          when: always
+    when: manual
 
 deployInitializeDbImage:
-    <<: *dockerHubDeployConfig
-    variables:
-        IMAGE_NAME: '$REGISTRY_USER/guesstimoji-initialize-db'
-        DOCKERFILE_NAME: mongosh.Dockerfile
+    <<: toshaughnessy/guesstimoji-initialize-db:latest
+    secrets:
+        MONGODB_CONNECTION_STRING:
+            vault: azure/cosmos-db/connection_string@kv
+            file: false
     script:
         - cd graphQlApi
-        - *dockerHubDeployScript
+        - mongosh initializeDb.js
     <<: *deployInitializeDbRules
-
-####################################### END INITIALIZE DB JOBS #######################################
+####################################### END INITIALIZE DB JOB #######################################
 

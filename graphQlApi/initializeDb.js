@@ -6,7 +6,7 @@ const boards = require('./boards.json');
 const emojis = require('./emojis.json');
 require('dotenv').config({ path: './.env.local' });
 
-conn = Mongo(`${process.env.MONGODB_HOST_NAME}:27017`);
+conn = Mongo(process.env.MONGODB_CONNECTION_STRING);
 db = conn.getDB('guesstimoji');
 
 try {
