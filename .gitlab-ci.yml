@@ -54,7 +54,7 @@ stages:
 ####################################### BEGIN GITOPS JOBS #######################################
 
 variables:
-    TF_HTTP_PASSWORD: ${CI_JOB_JWT}
+    TF_HTTP_PASSWORD: ${CI_JOB_TOKEN}
     TF_HTTP_USERNAME: "gitlab-ci-token"
     TF_HTTP_ADDRESS: "https://gitlab.com/api/v4/projects/31299207/terraform/state/azInfrastructure"
     TF_HTTP_LOCK_ADDRESS: "${TF_HTTP_ADDRESS}/lock"
