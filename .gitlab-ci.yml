@@ -1,31 +1,108 @@
+include:
+  - template: Terraform/Base.latest.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Terraform/Base.latest.gitlab-ci.yml
+  - template: Jobs/SAST-IaC.latest.gitlab-ci.yml   # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/SAST-IaC.latest.gitlab-ci.yml
+
 stages:
+    - validate
     - analysis
     - setup
-    - jestTest
+    - test
     - build
     - deploy
     # - cypressTest
 
+####################################### BEGIN CODE ANALYSIS JOBS #######################################
+
 #include:
 #    - template: Code-Quality.gitlab-ci.yml
 
+#code_quality:
+#    stage: analysis
+
+####################################### END CODE ANALYSIS JOBS #######################################
+
+
+####################################### BEGIN TEST JOBS #######################################
+
+#jestTest:
+#    stage: jestTest
+#    <<: *nodeimage
+#    script:
+#        - cd reactApp
+#        - npm t
+
+#e2eTests:
+#    image: docker:19.03.12
+#    variables:
+#        DOCKER_TLS_CERTDIR: "/certs"
+#    stage: cypressTest
+#    services:
+#        - docker:19.03.12-dind
+#    before_script:
+#        - apk update
+#        - apk add py-pip musl-dev python3-dev libffi-dev openssl-dev gcc libc-dev rust cargo make
+#        - pip install docker-compose
+#    dependencies:
+#        - build
+#    services:
+#        - docker:dind
+#    script:
+#       - docker-compose up --abort-on-container-exit --exit-code-from cypress
+
+####################################### END TEST JOBS #######################################
+
+####################################### BEGIN GITOPS JOBS #######################################
+
+variables:
+    TF_HTTP_PASSWORD: ${CI_JOB_TOKEN}
+    TF_HTTP_USERNAME: "gitlab-ci-token"
+    TF_HTTP_ADDRESS: "https://gitlab.com/api/v4/projects/31299207/terraform/state/azInfrastructure"
+    TF_HTTP_LOCK_ADDRESS: "${TF_HTTP_ADDRESS}/lock"
+    TF_HTTP_LOCK_METHOD: "POST"
+    TF_HTTP_UNLOCK_ADDRESS: ${TF_HTTP_LOCK_ADDRESS}
+    TF_HTTP_UNLOCK_METHOD: "DELETE"
+    TF_HTTP_RETRY_WAIT_MIN: "5"
+    TF_STATE_NAME: azInfrastructure
+
+# must be added after extends bc it overwrites vars
+.azTfRoot: &azTfRoot
+    variables:
+        TF_ROOT: '${CI_PROJECT_DIR}/azInfrastructure'
+
+.azTfAuth: &azTfAuth
+    secrets:
+      CLIENT_ID:
+        vault: azure/service-principal/gitops/client_id@kv
+        file: false
+      CLIENT_SECRET:
+        vault: azure/service-principal/gitops/client_secret@kv
+        file: false
+      TENANT_ID:
+        vault: azure/service-principal/gitops/tenant_id@kv
+        file: false
+    before_script:
+        - $ az login --service-principal -u $CLIENT_ID -p $CLIENT_SECRET --tenant $TENANT_ID
+
+#terraformFormat:
+#    extends: .terraform:fmt
+#    <<: *azTfRoot
+#    needs: []
+
+#terraformValidate:
+#    extends: .terraform:validate
+#    <<: *azTfRoot
+#    needs: []
+
+terraformPlan:
+    extends: .terraform:build
+    image: toshaughnessy/az-gitops-image:v1.0.0
+    <<: *azTfAuth
+    <<: *azTfRoot
+
+####################################### END GITOPS JOBS #######################################
+
 .nodeImage: &nodeImage
     image: node:18.3.0-alpine3.16
-
-.deployGraphQlApiRules: &deployGraphQlApiRules
-    rules:
-        - if: $CI_COMMIT_TAG =~ /^graphqlapi/i
-          when: always
-
-.deployGameApiRules: &deployGameApiRules
-    rules:
-        - if: $CI_COMMIT_TAG =~ /^gameApi/i
-          when: always
-
-.deployInitializeDbRules: &deployInitializeDbRules
-    rules:
-        - if: $CI_COMMIT_TAG =~ /^initializeDb/i
-          when: always
 
 .dockerHubDeployConfig: &dockerHubDeployConfig
     secrets:
@@ -50,19 +127,26 @@ stages:
     - docker tag $IMAGE_NAME:$CI_COMMIT_SHORT_SHA $IMAGE_NAME:latest
     - docker push --all-tags $IMAGE_NAME
 
-#code_quality:
-#    stage: analysis
+
+####################################### BEGIN REACT APP JOBS #######################################
+
+.deployReactAppRules: &deployReactAppRules
+    rules:
+        - if: $CI_COMMIT_TAG =~ /^reactApp/i
+          when: always
 
 installReactApp:
     stage: setup
     <<: *nodeImage
     script:
+        - npm i yarn
         - cd reactApp
         - yarn
     artifacts:
         expire_in: 15 mins
         paths:
             - reactApp/node_modules/
+    <<: *deployReactAppRules
 
 buildReactApp:
     stage: build
@@ -77,6 +161,27 @@ buildReactApp:
         expire_in: 15 mins
         paths:
             - reactApp/build
+    <<: *deployReactAppRules  
+
+deployReactAppImage:
+    <<: *dockerHubDeployConfig
+    variables:
+        IMAGE_NAME: '$REGISTRY_USER/guesstimoji-react-app'
+    script:
+        - cd reactApp
+        - *dockerHubDeployScript
+    dependencies:
+        - 'buildReactApp'
+    <<: *deployReactAppRules
+
+####################################### END REACT APP JOBS #######################################
+
+####################################### BEGIN GAME API JOBS #######################################
+
+.deployGameApiRules: &deployGameApiRules
+    rules:
+        - if: $CI_COMMIT_TAG =~ /^gameApi/i
+          when: always
 
 installGameApi:
     stage: setup
@@ -90,6 +195,26 @@ installGameApi:
             - gameApi/node_modules/
     <<: *deployGameApiRules
 
+deployGameApiImage:
+    <<: *dockerHubDeployConfig
+    variables:
+        IMAGE_NAME: '$REGISTRY_USER/guesstimoji-game-api'
+    script:
+        - cd gameApi
+        - *dockerHubDeployScript
+    dependencies:
+        - 'installGameApi'
+    <<: *deployGameApiRules
+
+####################################### END GAME API JOBS #######################################
+
+####################################### BEGIN GRAPH QL API JOBS #######################################
+
+.deployGraphQlApiRules: &deployGraphQlApiRules
+    rules:
+        - if: $CI_COMMIT_TAG =~ /^graphqlApi/i
+          when: always
+
 installGraphQlApi:
     stage: setup
     <<: *nodeImage
@@ -102,33 +227,6 @@ installGraphQlApi:
             - graphQlApi/node_modules/
     <<: *deployGraphQlApiRules
 
-#jestTest:
-#    stage: jestTest
-#    <<: *nodeimage
-#    script:
-#        - cd reactApp
-#        - npm t
-
-deployReactAppImage:
-    <<: *dockerHubDeployConfig
-    variables:
-        IMAGE_NAME: '$REGISTRY_USER/guesstimoji-react-app'
-    script:
-        - cd reactApp
-        - *dockerHubDeployScript
-    dependencies:
-        - 'buildReactApp'
-
-deployGameApiImage:
-    <<: *dockerHubDeployConfig
-    variables:
-        IMAGE_NAME: '$REGISTRY_USER/guesstimoji-game-api'
-    script:
-        - cd gameApi
-        - *dockerHubDeployScript
-    dependencies:
-        - 'installGameApi'
-    <<: *deployGameApiRules
 
 deployGraphQlApiImage:
     <<: *dockerHubDeployConfig
@@ -141,6 +239,15 @@ deployGraphQlApiImage:
         - 'installGraphQlApi'
     <<: *deployGraphQlApiRules
 
+####################################### END GRAPH QL API JOBS #######################################
+
+####################################### BEGIN INITIALIZE DB JOBS #######################################
+
+.deployInitializeDbRules: &deployInitializeDbRules
+    rules:
+        - if: $CI_COMMIT_TAG =~ /^initializeDb/i
+          when: always
+
 deployInitializeDbImage:
     <<: *dockerHubDeployConfig
     variables:
@@ -150,20 +257,6 @@ deployInitializeDbImage:
         - cd graphQlApi
         - *dockerHubDeployScript
     <<: *deployInitializeDbRules
-#e2eTests:
-#    image: docker:19.03.12
-#    variables:
-#        DOCKER_TLS_CERTDIR: "/certs"
-#    stage: cypressTest
-#    services:
-#        - docker:19.03.12-dind
-#    before_script:
-#        - apk update
-#        - apk add py-pip musl-dev python3-dev libffi-dev openssl-dev gcc libc-dev rust cargo make
-#        - pip install docker-compose
-#    dependencies:
-#        - build
-#    services:
-#        - docker:dind
-#    script:
-#       - docker-compose up --abort-on-container-exit --exit-code-from cypress
+
+####################################### END INITIALIZE DB JOBS #######################################
+

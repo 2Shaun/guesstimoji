@@ -45,6 +45,7 @@ crash.*.log
 # to change depending on the environment.
 *.tfvars
 *.tfvars.json
+backend.conf
 
 # Ignore override files as they are usually used to override resources locally and so
 # are not checked in
@@ -64,4 +65,4 @@ override.tf.json
 terraform.rc
 
 backend.conf
-kubernetes/.envrc
+.envrc
