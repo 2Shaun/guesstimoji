@@ -71,17 +71,18 @@ variables:
 
 .azTfAuth: &azTfAuth
     secrets:
-      CLIENT_ID:
+      ARM_CLIENT_ID:
         vault: azure/service-principal/gitops/client_id@kv
         file: false
-      CLIENT_SECRET:
+      ARM_CLIENT_SECRET:
         vault: azure/service-principal/gitops/client_secret@kv
         file: false
-      TENANT_ID:
+      ARM_SUBSCRIPTION_ID:
+        vault: azure/service-principal/gitops/subscription_id@kv
+        file: false
+      ARM_TENANT_ID:
         vault: azure/service-principal/gitops/tenant_id@kv
         file: false
-    before_script:
-        - az login --service-principal -u $CLIENT_ID -p $CLIENT_SECRET --tenant $TENANT_ID
 
 #terraformFormat:
 #    extends: .terraform:fmt
