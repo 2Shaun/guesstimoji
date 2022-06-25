@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+    annotations:
+        kompose.cmd: kompose convert -o kubernetes
+        kompose.image-pull-policy: IfNotPresent
+        kompose.service.type: nodeport
+        kompose.version: 1.26.1 (HEAD)
+    creationTimestamp: null
+    labels:
+        io.kompose.service: react-app
+    name: react-app
+spec:
+    ports:
+        - name: '80'
+          port: 80
+          targetPort: 80
+    selector:
+        io.kompose.service: react-app
+status:
+    loadBalancer: {}

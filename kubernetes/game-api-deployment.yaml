@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -o kubernetes
+    kompose.image-pull-policy: IfNotPresent
+    kompose.version: 1.26.1 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: game-api
+  name: game-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: game-api
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -o kubernetes
+        kompose.image-pull-policy: IfNotPresent
+        kompose.version: 1.26.1 (HEAD)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: game-api
+    spec:
+      containers:
+        - image: guesstimoji-game-api
+          imagePullPolicy: IfNotPresent
+          name: game-api
+          ports:
+            - containerPort: 5001
+          resources: {}
+      restartPolicy: Always
+status: {}
