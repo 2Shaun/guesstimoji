@@ -22,25 +22,13 @@ services:
         #       this step seems to make expose redundant
         # map it through host server port HOST
         # can access with http://{host IP}:HOST
-        depends_on:
-            - mongo
         ports:
             - '3005:3005'
-
-    mongo:
-        image: mongo
-
-    mongosh:
-        image: ${REGISTRY_USER}/guesstimoji-initialize-db:latest
-        depends_on:
-            - mongo
-        command: mongosh --host mongo initializeDb.js
 
     reactApp:
         image: ${REGISTRY_USER}/guesstimoji-react-app:latest
         depends_on:
             - graphQlApi
-            - mongo
             - gameApi
         ports:
             - '80:80'

@@ -21,3 +21,17 @@ spec:
                             name: react-app
                             port:
                                 number: 80
+                  - path: /socket.io
+                    pathType: Prefix
+                    backend:
+                        service:
+                            name: game-api
+                            port:
+                                number: 5001
+                  - path: /graphQl
+                    pathType: Prefix
+                    backend:
+                        service:
+                            name: graph-ql-api
+                            port:
+                                number: 3005
