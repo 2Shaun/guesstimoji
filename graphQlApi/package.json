@@ -21,6 +21,7 @@
         "dotenv": "^10.0.0",
         "express": "^4.17.1",
         "graphql": "^15.5.0",
+        "hashi-vault-js": "^0.4.9",
         "mongodb": "^4.7.0",
         "mongoose": "^5.12.2"
     },
