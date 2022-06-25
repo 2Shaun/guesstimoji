@@ -279,7 +279,7 @@ deployGraphQlApiImage:
     when: manual
 
 deployInitializeDbImage:
-    <<: toshaughnessy/guesstimoji-initialize-db:latest
+    image: toshaughnessy/guesstimoji-initialize-db:latest
     secrets:
         MONGODB_CONNECTION_STRING:
             vault: azure/cosmos-db/connection_string@kv
