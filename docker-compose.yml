@@ -1,7 +1,7 @@
 version: '2'
 
 services:
-    gameApi:
+    game-api:
         # where the dockerfile is
         image: guesstimoji-game-api
         build:
@@ -17,8 +17,10 @@ services:
         # can access with http://{host IP}:HOST
         ports:
             - '5001:5001'
+        labels:
+            kompose.image-pull-policy: IfNotPresent
 
-    graphQlApi:
+    graph-ql-api:
         image: guesstimoji-graph-ql-api
         build:
             context: ./graphQlApi
@@ -35,6 +37,8 @@ services:
             - mongo
         ports:
             - '3005:3005'
+        labels:
+            kompose.image-pull-policy: IfNotPresent
 
     mongo:
         image: mongo
@@ -47,8 +51,10 @@ services:
         depends_on:
             - mongo
         command: mongosh --host mongo initializeDb.js
+        labels:
+            kompose.image-pull-policy: IfNotPresent
 
-    reactApp:
+    react-app:
         image: guesstimoji-react-app
         build: ./reactApp
         depends_on:
@@ -58,6 +64,9 @@ services:
         ports:
             - '80:80'
         command: [nginx, '-g', 'daemon off;']
+        labels:
+            kompose.image-pull-policy: IfNotPresent
+            kompose.service.type: nodeport
 
     #cypress:
     #    image: guesstimoji/cypress

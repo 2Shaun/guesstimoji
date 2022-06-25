@@ -64,3 +64,4 @@ override.tf.json
 terraform.rc
 
 backend.conf
+kubernetes/.envrc

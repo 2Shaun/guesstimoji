@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -o kubernetes
+    kompose.image-pull-policy: IfNotPresent
+    kompose.service.type: nodeport
+    kompose.version: 1.26.1 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: react-app
+  name: react-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: react-app
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -o kubernetes
+        kompose.image-pull-policy: IfNotPresent
+        kompose.service.type: nodeport
+        kompose.version: 1.26.1 (HEAD)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: react-app
+    spec:
+      containers:
+        - args:
+            - nginx
+            - -g
+            - daemon off;
+          image: guesstimoji-react-app
+          imagePullPolicy: IfNotPresent
+          name: react-app
+          ports:
+            - containerPort: 80
+          resources: {}
+      restartPolicy: Always
+status: {}
