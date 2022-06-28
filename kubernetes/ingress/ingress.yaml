@@ -1,37 +1,42 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-    name: ingress
-    annotations:
-        # target URL
-        nginx.ingress.kubernetes.io/rewrite-target: /
-        # spec.ingressClassName did not work
-        kubernetes.io/ingress.class: 'nginx'
+  name: ingress
+  annotations:
+    # target URL
+    # spec.ingressClassName did not work
+    kubernetes.io/ingress.class: 'nginx'
+    cert-manager.io/issuer: letsencrypt-staging
+    nginx.ingress.kubernetes.io/ssl-redirect: 'false'
 spec:
-    rules:
-        # request header matching
-        # bypassing hostname to ip wont match service
-        - host: guesstimoji.test
-          http:
-              paths:
-                  - path: /
-                    pathType: Prefix
-                    backend:
-                        service:
-                            name: react-app
-                            port:
-                                number: 80
-                  - path: /socket.io
-                    pathType: Prefix
-                    backend:
-                        service:
-                            name: game-api
-                            port:
-                                number: 5001
-                  - path: /graphQl
-                    pathType: Prefix
-                    backend:
-                        service:
-                            name: graph-ql-api
-                            port:
-                                number: 3005
+  tls:
+  - hosts:
+    - guesstimoji.dev
+    secretName: letsencrypt-staging
+  rules:
+    # request header matching
+    # bypassing hostname to ip wont match service
+    - host: guesstimoji.dev
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: react-app
+                port:
+                  number: 80
+          - path: /socket.io
+            pathType: Prefix
+            backend:
+              service:
+                name: game-api
+                port:
+                  number: 5001
+          - path: /graphQl
+            pathType: Prefix
+            backend:
+              service:
+                name: graph-ql-api
+                port:
+                  number: 3005

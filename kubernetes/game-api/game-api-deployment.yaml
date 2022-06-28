@@ -26,7 +26,7 @@ spec:
         io.kompose.service: game-api
     spec:
       containers:
-        - image: guesstimoji-game-api
+        - image: localhost/guesstimoji-game-api
           imagePullPolicy: IfNotPresent
           name: game-api
           ports:

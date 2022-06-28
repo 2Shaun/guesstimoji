@@ -32,7 +32,7 @@ spec:
             - nginx
             - -g
             - daemon off;
-          image: guesstimoji-react-app
+          image: localhost/guesstimoji-react-app:latest
           imagePullPolicy: IfNotPresent
           name: react-app
           ports:
