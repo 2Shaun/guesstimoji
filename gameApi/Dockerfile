@@ -14,4 +14,4 @@ RUN npm i
 # COPY . .
 ARG env
 ENV env=$env
-CMD npm run start:docker:$env
+CMD npm run start:minikube:$env

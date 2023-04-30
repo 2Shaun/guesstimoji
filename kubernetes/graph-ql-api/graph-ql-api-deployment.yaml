@@ -26,7 +26,7 @@ spec:
         io.kompose.service: graph-ql-api
     spec:
       containers:
-        - image: guesstimoji-graph-ql-api
+        - image: localhost/guesstimoji-graph-ql-api
           imagePullPolicy: IfNotPresent
           name: graph-ql-api
           ports:
