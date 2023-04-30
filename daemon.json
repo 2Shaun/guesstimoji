@@ -1,0 +1,10 @@
+{
+  "insecure-registries": [
+    "localhost:5003",
+    "127.0.0.1:5003",
+    "0.0.0.0:5003",
+    "registry.me:5003"
+  ],
+  "debug": true,
+  "experimental": true
+}
