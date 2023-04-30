@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.gameApi.name }}
+  labels:
+    {{- include "guesstimoji.labels" . | nindent 4 }}
+    {{- include "guesstimoji.gameApi.selectorLabels" . | nindent 4 }}
+spec:
+  {{- if not .Values.gameApi.autoscaling.enabled }}
+  replicas: {{ .Values.gameApi.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "guesstimoji.gameApi.selectorLabels" . | nindent 6 }}
+  template:
+    spec:
+      {{- include "microservice.Deployment.spec.template.metadata" .Values.gameApi | nindent 6 }}
+      serviceAccountName: {{ include "guesstimoji.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.gameApi.podSecurityContext | nindent 8 }}
+      containers:
+        - image:
+{{- printf " %s/%s-%s:%s" .Values.image.repository .Chart.Name .Values.gameApi.name .Values.gameApi.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- include "microservice.Deployment.spec.template.containers" .Values.gameApi | nindent 10 }}
+    metadata:
+      labels:
+        {{- include "guesstimoji.gameApi.selectorLabels" . | nindent 8 }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "guesstimoji.fullname" . }}
+  labels:
+    {{- include "guesstimoji.gameApi.selectorLabels" . | nindent 4 }}
+spec:
+  {{- include "microservice.Service.spec" .Values.gameApi | nindent 2 }}
+  selector:
+    {{- include "guesstimoji.gameApi.selectorLabels" . | nindent 4 }}
