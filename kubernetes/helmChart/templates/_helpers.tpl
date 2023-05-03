@@ -110,6 +110,22 @@ app.kubernetes.io/version: "{{ $microserviceVersion }}"
 {{- end }}
 
 {{/*
+React App Selector labels
+*/}}
+{{- define "guesstimoji.graphQlApi.selectorLabels" -}}
+{{- $microserviceVersion := "" }}
+{{- if .Values.image }}
+{{- $microserviceVersion = default .Release.Name (.Values.image.tag | toString ) }}
+{{- else }}
+{{- $microserviceVersion = .Release.Name }}
+{{- end -}}
+app.kubernetes.io/component: api
+app.kubernetes.io/name: {{ .Values.graphQlApi.name }}
+app.kubernetes.io/instance: {{ .Values.graphQlApi.name }}-{{ $microserviceVersion }}
+app.kubernetes.io/version: "{{ $microserviceVersion }}"
+{{- end }}
+
+{{/*
 Microservice labels
 */}}
 {{- define "guesstimoji.labels" -}}
