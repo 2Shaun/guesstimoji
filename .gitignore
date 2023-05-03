@@ -67,3 +67,8 @@ terraform.rc
 
 backend.conf
 .envrc
+
+
+**.tgz
+minikube-linux-amd64
+values.yaml

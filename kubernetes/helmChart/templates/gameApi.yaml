@@ -6,7 +6,7 @@ metadata:
     {{- include "guesstimoji.labels" . | nindent 4 }}
     {{- include "guesstimoji.gameApi.selectorLabels" . | nindent 4 }}
 spec:
-  {{- if not .Values.gameApi.autoscaling.enabled }}
+  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.gameApi.replicaCount }}
   {{- end }}
   selector:
@@ -17,10 +17,10 @@ spec:
       {{- include "microservice.Deployment.spec.template.metadata" .Values.gameApi | nindent 6 }}
       serviceAccountName: {{ include "guesstimoji.serviceAccountName" . }}
       securityContext:
-        {{- toYaml .Values.gameApi.podSecurityContext | nindent 8 }}
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - image:
-{{- printf " %s/%s-%s:%s" .Values.image.repository .Chart.Name .Values.gameApi.name .Values.gameApi.image.tag }}
+{{- printf " %s/%s-%s:%s" .Values.image.repository .Chart.Name .Values.gameApi.name .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- include "microservice.Deployment.spec.template.containers" .Values.gameApi | nindent 10 }}
     metadata:
@@ -34,10 +34,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "guesstimoji.fullname" . }}
+  name: {{ printf "%s-%s" (include "guesstimoji.fullname" .) .Values.gameApi.name | trunc 63 | trimSuffix "-" }}
   labels:
     {{- include "guesstimoji.gameApi.selectorLabels" . | nindent 4 }}
 spec:
   {{- include "microservice.Service.spec" .Values.gameApi | nindent 2 }}
   selector:
     {{- include "guesstimoji.gameApi.selectorLabels" . | nindent 4 }}
+  type: {{ .Values.service.type }}

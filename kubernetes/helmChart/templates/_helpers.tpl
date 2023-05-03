@@ -37,7 +37,7 @@ Service spec for each microservice. Accepts `.Values.MICROSERVICE_NAME` as scope
 type: {{ .service.type }}
 ports:
   - port: {{ .service.port }}
-    targetPort: {{ .service.portName }}
+    targetPort: {{ .service.port }}
     name: http
 {{- end }}
 
@@ -64,6 +64,9 @@ ports:
   - containerPort: {{ .service.port }}
 resources:
     {{- toYaml .resources | nindent 2 }}
+{{- end }}
+
+{{- define "microservice.Deployment.spec.template.containerProbes" -}}
 livenessProbe:
   httpGet:
     path: /
@@ -79,15 +82,31 @@ Game API Selector labels
 */}}
 {{- define "guesstimoji.gameApi.selectorLabels" -}}
 {{- $microserviceVersion := "" }}
-{{- if .Values.gameApi.image }}
-{{- $microserviceVersion = default .Release.Name .Values.gameApi.image.tag }}
+{{- if .Values.image }}
+{{- $microserviceVersion = default .Release.Name (.Values.image.tag | toString) }}
 {{- else }}
 {{- $microserviceVersion = .Release.Name }}
 {{- end -}}
 app.kubernetes.io/component: api
 app.kubernetes.io/name: {{ .Values.gameApi.name }}
-app.kubernetes.io/instance: {{ .Values.gameApi.name }}-{{ $microserviceVersion }}
-app.kubernetes.io/version: {{ $microserviceVersion }}
+app.kubernetes.io/instance: {{ .Values.gameApi.name }}-{{ $microserviceVersion | toString }}
+app.kubernetes.io/version: "{{ $microserviceVersion }}"
+{{- end }}
+
+{{/*
+React App Selector labels
+*/}}
+{{- define "guesstimoji.reactApp.selectorLabels" -}}
+{{- $microserviceVersion := "" }}
+{{- if .Values.image }}
+{{- $microserviceVersion = default .Release.Name (.Values.image.tag | toString ) }}
+{{- else }}
+{{- $microserviceVersion = .Release.Name }}
+{{- end -}}
+app.kubernetes.io/component: api
+app.kubernetes.io/name: {{ .Values.reactApp.name }}
+app.kubernetes.io/instance: {{ .Values.reactApp.name }}-{{ $microserviceVersion }}
+app.kubernetes.io/version: "{{ $microserviceVersion }}"
 {{- end }}
 
 {{/*
