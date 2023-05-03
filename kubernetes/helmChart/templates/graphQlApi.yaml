@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.graphQlApi.name }}
+  labels:
+    {{- include "guesstimoji.labels" . | nindent 4 }}
+    {{- include "guesstimoji.graphQlApi.selectorLabels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.graphQlApi.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "guesstimoji.graphQlApi.selectorLabels" . | nindent 6 }}
+  template:
+    spec:
+      {{- include "microservice.Deployment.spec.template.metadata" .Values.graphQlApi | nindent 6 }}
+      serviceAccountName: {{ include "guesstimoji.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - image:
+{{- printf " %s/%s-%s:%s" .Values.image.repository .Chart.Name .Values.graphQlApi.name .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- include "microservice.Deployment.spec.template.containers" .Values.graphQlApi | nindent 10 }}
+    metadata:
+      labels:
+        {{- include "guesstimoji.graphQlApi.selectorLabels" . | nindent 8 }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ printf "%s-%s" (include "guesstimoji.fullname" .) .Values.graphQlApi.name | trunc 63 | trimSuffix "-" }}
+  labels:
+    {{- include "guesstimoji.graphQlApi.selectorLabels" . | nindent 4 }}
+spec:
+  {{- include "microservice.Service.spec" .Values.graphQlApi | nindent 2 }}
+  selector:
+    {{- include "guesstimoji.graphQlApi.selectorLabels" . | nindent 4 }}
+  type: {{ .Values.service.type }}

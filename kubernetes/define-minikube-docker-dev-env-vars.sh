@@ -18,7 +18,7 @@ case $os_type in
     ;;
 esac
 
-export UNIQUE_IMAGE_TAG=$(date +%s)
+export UNIQUE_IMAGE_TAG=$(git rev-parse --short HEAD)
 
 # Define environment variables
 export KUBE_SERVICE_SSH_PORT=22
@@ -45,6 +45,8 @@ kubernetes_api_host_port=$(echo "$output" | jq ".[\"$KUBE_SERVICE_KUBERNETES_API
 nodeport_range_host_port=$(echo "$output" | jq ".[\"$KUBE_SERVICE_NODEPORT_RANGE_PORT/tcp\"][0].HostPort" --raw-output)
 
 # Optional: Define environment variables for the HOST network namespace
+export HOST_SERVICE_MINIKUBE_IP=$(minikube ip)
+
 export HOST_SERVICE_SSH_PORT=$ssh_host_port
 
 export HOST_SERVICE_DOCKER_DAEMON_PORT=$docker_daemon_host_port
@@ -55,3 +57,5 @@ export HOST_SERVICE_DOCKER_REGISTRY_HOSTPORT="localhost:$docker_registry_host_po
 export HOST_SERVICE_KUBERNETES_API_PORT=$kubernetes_api_host_port
 
 export HOST_SERVICE_NODEPORT_RANGE_PORT=$nodeport_range_host_port
+
+export EXTERNAL_SERVICE_INGRESS_DOMAIN_NAME="guesstimoji.local"

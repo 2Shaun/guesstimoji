@@ -40,31 +40,25 @@ spec:
     - host: {{ .Values.ingress.host | quote }}
       http:
         paths:
-          {{- with .Values.reactApp }}
-          - path: {{ .path }}
+          - path: {{ .Values.reactApp.path }}
             pathType: Prefix
             backend:
               service:
-                name: {{ .name }}
+                name: {{ printf "%s-%s" (include "guesstimoji.fullname" .) .Values.reactApp.name | trunc 63 | trimSuffix "-" }}
                 port:
-                  number: {{ .service.port }}
-          {{- end }}
-          {{- with .Values.gameApi }}
-          - path: {{ .path }}
+                  number: {{ .Values.reactApp.service.port }}
+          - path: {{ .Values.gameApi.path }}
             pathType: Prefix
             backend:
               service:
-                name: {{ .name }}
+                name: {{ printf "%s-%s" (include "guesstimoji.fullname" .) .Values.gameApi.name | trunc 63 | trimSuffix "-" }}
                 port:
-                  number: {{ .service.port }}
-          {{- end }}
-          {{- with .Values.graphQlApi }}
-          - path: {{ .path }}
+                  number: {{ .Values.gameApi.service.port }}
+          - path: {{ .Values.graphQlApi.path }}
             pathType: Prefix
             backend:
               service:
-                name: {{ .name }}
+                name: {{ printf "%s-%s" (include "guesstimoji.fullname" .) .Values.graphQlApi.name | trunc 63 | trimSuffix "-" }}
                 port:
-                  number: {{ .service.port }}
-          {{- end }}
+                  number: {{ .Values.graphQlApi.service.port }}
 {{- end }}
