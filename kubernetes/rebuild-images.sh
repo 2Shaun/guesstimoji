@@ -9,7 +9,7 @@ pushd ..
 pushd reactApp
 npm run build:minikube:local
 export image_name='guesstimoji-react-app'
-docker build -t $image_name --build-arg env=local --platform $DOCKER_PLATFORM .
+docker build -t $image_name --build-arg env=local,hostname=$EXTERNAL_SERVICE_INGRESS_DOMAIN_NAME --platform $DOCKER_PLATFORM .
 docker tag $image_name "$HOST_SERVICE_DOCKER_REGISTRY_HOSTPORT/$image_name:$UNIQUE_IMAGE_TAG"
 docker push "$HOST_SERVICE_DOCKER_REGISTRY_HOSTPORT/$image_name:$UNIQUE_IMAGE_TAG"
 popd

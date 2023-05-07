@@ -67,4 +67,4 @@ export HOST_SERVICE_KUBERNETES_API_PORT=$kubernetes_api_host_port
 
 export HOST_SERVICE_NODEPORT_RANGE_PORT=$nodeport_range_host_port
 
-export EXTERNAL_SERVICE_INGRESS_DOMAIN_NAME="guesstimoji.local"
+export EXTERNAL_SERVICE_INGRESS_DOMAIN_NAME=$(kubectl get ingress | awk 'NR==1 { for (i=1; i<=NF; i++) { if ($i == "HOSTS") col=i } } NR==2{ print $col }')

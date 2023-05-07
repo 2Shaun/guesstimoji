@@ -23,6 +23,8 @@ spec:
 {{- printf " %s/%s-%s:%s" .Values.image.repository .Chart.Name .Values.graphQlApi.name .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- include "microservice.Deployment.spec.template.containers" .Values.graphQlApi | nindent 10 }}
+          env:
+            {{- toYaml .Values.graphQlApi.env | nindent 12 }}
     metadata:
       labels:
         {{- include "guesstimoji.graphQlApi.selectorLabels" . | nindent 8 }}

@@ -55,6 +55,9 @@ graphQlApi:
   name: graph-ql-api
   replicaCount: 1
   path: /graphQl
+  env:
+    - name: MONGODB_HOST_NAME
+      value: ${MONGODB_HOST_NAME}
   service:
     port: ${KUBE_SERVICE_GRAPH_QL_API_PORT}
 
