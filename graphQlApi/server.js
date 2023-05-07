@@ -7,6 +7,7 @@ const Vault = require('hashi-vault-js');
 const mongoose = require('mongoose');
 
 const startup = async () => {
+  /*
     const vault = new Vault({
         https: true,
         baseUrl: process.env.VAULT_BASE_URL,
@@ -28,11 +29,13 @@ const startup = async () => {
         1,
         'v1/kv'
     );
+    */
 };
 
 // data layer
-startup().then((secret) => {
-    mongoose.connect(secret.data.connection_string, {
+//startup().then((secret) => {
+//  mongoose.connect(secret.data.connection_string, {
+    mongoose.connect(`mongodb://${process.env.MONGODB_HOST_NAME}/guesstimoji`, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         dbName: 'guesstimoji',
@@ -69,4 +72,4 @@ startup().then((secret) => {
             () => console.log('Starting server on port 3005')
         );
     });
-});
+//});

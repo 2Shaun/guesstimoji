@@ -5,6 +5,7 @@ provider "aws" {
   region = var.region
 }
 
+# EKS on Fargate requires private subnets
 module "vpc" {
   source         = "terraform-aws-modules/vpc/aws"
   name           = "aws-prod-vpc-useast2"

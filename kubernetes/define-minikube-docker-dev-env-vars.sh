@@ -20,6 +20,15 @@ esac
 
 export UNIQUE_IMAGE_TAG=$(git rev-parse --short HEAD)
 
+export HOST_MINIKUBE_BRIDGE_IP=$(docker network inspect minikube | jq -r '.[] | .IPAM.Config[0].Gateway')
+export KUBE_SERVICE_MONGO_DB_API_PORT=27017
+export MONGODB_HOST_NAME="$HOST_MINIKUBE_BRIDGE_IP:$KUBE_SERVICE_MONGO_DB_API_PORT"
+export HOST_MINIKUBE_BRIDGE_NAME=$(ip addr show | grep -w $HOST_MINIKUBE_BRIDGE_IP | awk '{print $NF}')
+
+# sudo needed
+# export KUBE_MINIKUBE_BRIDGE_MAC=$(sudo arping -c 1 -I $HOST_MINIKUBE_BRIDGE_NAME $(minikube ip) | awk '/bytes/ {print $4}')
+export KUBE_MINIKUBE_BRIDGE_NAME=$(docker container exec minikube ip link | grep -B1 "link/ether $KUBE_MINIKUBE_BRIDGE_MAC" | head -n 1 | awk '{print $2}' | sed 's/://')
+
 # Define environment variables
 export KUBE_SERVICE_SSH_PORT=22
 
