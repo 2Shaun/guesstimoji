@@ -14,7 +14,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "express": "^4.17.1",
+        "express": "^4.17.3",
         "moment": "^2.29.1",
         "socket.io": "^4.0.0"
     },
